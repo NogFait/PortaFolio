@@ -174,7 +174,7 @@ const Footer = () => {
             display: 'flex',
             gap: '0.875rem' /* REDUCIDO */
           }}>
-            <li><a href="https://github.com/NogFait" target="blanc" style={{
+            <li><a href="https://github.com/NogFait" target="_blank" style={{
               fontFamily: '"Inter", sans-serif',
               color: '#c7c4d7',
               textDecoration: 'none',
@@ -184,7 +184,7 @@ const Footer = () => {
             onMouseEnter={(e) => { e.currentTarget.style.color = '#c0c1ff'; }}
             onMouseLeave={(e) => { e.currentTarget.style.color = '#c7c4d7'; }}
             >GitHub</a></li>
-            <li><a href="https://www.linkedin.com/in/fausto-chirino-76b7572b6" target="blanc" style={{
+            <li><a href="https://www.linkedin.com/in/fausto-chirino-76b7572b6" target="_blank" style={{
               fontFamily: '"Inter", sans-serif',
               color: '#c7c4d7',
               textDecoration: 'none',

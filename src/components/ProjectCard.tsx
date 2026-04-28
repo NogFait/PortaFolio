@@ -104,7 +104,7 @@ const ProjectCard = ({project}:Props) => {
         {project.link && (
           <a 
             href={project.link}
-            target="blanc"
+            target="_blank"
             style={{
               fontFamily: '"Inter", sans-serif',
               color: '#c0c1ff',
