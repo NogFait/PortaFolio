@@ -1,4 +1,18 @@
+import { useEffect, useRef, useState } from 'react'
+
 const Hero = () => {
+  const [isVisible, setIsVisible] = useState(false)
+  const [isDesktop, setIsDesktop] = useState(false)
+  const contentRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    setIsVisible(true)
+    const checkDesktop = () => setIsDesktop(window.innerWidth >= 1024)
+    checkDesktop()
+    window.addEventListener('resize', checkDesktop)
+    return () => window.removeEventListener('resize', checkDesktop)
+  }, [])
+
   return (
     <section style={{
       background: 'linear-gradient(45deg, #0b1326 0%, #131b2e 50%, #0b1326 100%)',
@@ -27,7 +41,10 @@ const Hero = () => {
       <div style={{
         position: 'relative',
         zIndex: 1,
-        maxWidth: '800px'
+        maxWidth: '800px',
+        opacity: isVisible ? 1 : 0,
+        transform: isVisible ? 'translateY(0)' : 'translateY(30px)',
+        transition: 'all 1s ease-out',
       }}>
         <span className="font-mono" style={{
           color: '#4edea3',
@@ -41,7 +58,7 @@ const Hero = () => {
         
         <h1 style={{
           fontFamily: '"Plus Jakarta Sans", sans-serif',
-          fontSize: '3.5rem',
+          fontSize: isDesktop ? '4.5rem' : '3.5rem',
           lineHeight: '1.1',
           fontWeight: 700,
           color: '#dae2fd',

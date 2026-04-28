@@ -1,6 +1,38 @@
+import { useEffect, useRef, useState } from 'react'
+
 const About = () => {
+  const sectionRef = useRef<HTMLElement>(null)
+  const [isVisible, setIsVisible] = useState(false)
+  const [isDesktop, setIsDesktop] = useState(false)
+
+  useEffect(() => {
+    const element = sectionRef.current
+    if (!element) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true)
+          observer.unobserve(element)
+        }
+      },
+      { threshold: 0.1 }
+    )
+
+    observer.observe(element)
+    
+    const checkDesktop = () => setIsDesktop(window.innerWidth >= 1024)
+    checkDesktop()
+    window.addEventListener('resize', checkDesktop)
+    
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('resize', checkDesktop)
+    }
+  }, [])
+
   return (
-    <section id="about" style={{
+    <section ref={sectionRef} id="about" style={{
       padding: '6rem 2rem',
       backgroundColor: '#0b1326',
       minHeight: '100vh',
@@ -12,7 +44,10 @@ const About = () => {
         <div style={{
           maxWidth: '1200px',
           width: '100%',
-          textAlign: 'center'
+          textAlign: 'center',
+          opacity: isVisible ? 1 : 0,
+          transform: isVisible ? 'translateY(0)' : 'translateY(40px)',
+          transition: 'all 0.8s ease-out',
         }}>
           <span style={{
             fontFamily: '"JetBrains Mono", monospace',
@@ -27,8 +62,8 @@ const About = () => {
         
           <h2 style={{
               fontFamily: '"Plus Jakarta Sans", sans-serif',
-              fontSize: '2rem',
-              lineHeight: '1.3',
+              fontSize: isDesktop ? '3rem' : '2rem',
+              lineHeight: '1.2',
               fontWeight: 600,
               color: '#dae2fd',
               marginBottom: '2.5rem',

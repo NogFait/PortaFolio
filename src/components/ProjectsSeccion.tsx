@@ -3,16 +3,17 @@ import ProjectCard from "./ProjectCard";
 
 const ProjectsSeccion = () => {
   return (
-    <div style={{
+<div style={{
       display: 'grid',
       gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
       gap: '1.5rem',
-      width: '100%'
+      width: '100%',
+      alignItems: 'start'
     }}>
       {projects.map((project) => (
-        <div key={project.id} style={{
+        <div style={{
           background: 'linear-gradient(145deg, #222a3d 0%, #2d3449 100%)',
-          padding: '2.5rem',
+          padding: '1.5rem',
           borderRadius: '1rem',
           boxShadow: '0 10px 40px rgba(218, 226, 253, 0.06), 0 0 100px rgba(192, 193, 255, 0.05)',
           transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
