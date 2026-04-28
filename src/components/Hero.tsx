@@ -1,9 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const Hero = () => {
   const [isVisible, setIsVisible] = useState(false)
   const [isDesktop, setIsDesktop] = useState(false)
-  const contentRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     setIsVisible(true)
