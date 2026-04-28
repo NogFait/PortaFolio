@@ -1,0 +1,288 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* === CSS RESET & FORCE DARK BACKGROUND === */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  background-color: #0b1326 !important;
+  color: #dae2fd !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+/* === CSS VARIABLES === */
+:root {
+  --surface: #0b1326;
+  --surface-container-lowest: #060e20;
+  --surface-container-low: #131b2e;
+  --surface-container: #171f33;
+  --surface-container-high: #222a3d;
+  --surface-container-highest: #2d3449;
+  
+  --primary: #c0c1ff;
+  --primary-container: #8083ff;
+  
+  --secondary: #4edea3;
+  --secondary-container: #00a572;
+  
+  --on-surface: #dae2fd;
+  --ghost-border: rgba(70, 69, 84, 0.2);
+  
+  --font-display: "Plus Jakarta Sans", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  
+  --spacing-4: 1rem;
+  --spacing-6: 1.5rem;
+  --spacing-8: 2rem;
+  --spacing-16: 4rem;
+  
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-full: 9999px;
+  
+  --shadow-ghost: 0 8px 32px rgba(218, 226, 253, 0.04);
+}
+
+/* === TYPOGRAPHY RESET === */
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  letter-spacing: -0.02em;
+  color: #dae2fd;
+  margin-bottom: 1rem;
+}
+
+h1 { font-size: 3.5rem; font-weight: 700; line-height: 1.1; }
+h2 { font-size: 2rem; font-weight: 600; line-height: 1.3; }
+
+p {
+  color: #c7c4d7;
+  margin-bottom: 1rem;
+}
+
+a {
+  color: #c0c1ff;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: #8083ff;
+}
+
+/* === BUTTONS === */
+button {
+  font-family: "Inter", sans-serif;
+  cursor: pointer;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 1rem 1.5rem;
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* === UTILITY CLASSES === */
+.gradient-glow-primary {
+  background: linear-gradient(45deg, #c0c1ff, #8083ff);
+  box-shadow: 0 0 20px rgba(192, 193, 255, 0.3);
+}
+
+.bento-card {
+  background-color: #222a3d;
+  padding: 2rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 8px 32px rgba(218, 226, 253, 0.04);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.bento-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 48px rgba(218, 226, 253, 0.04);
+}
+
+.tech-chip {
+  display: inline-block;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.75rem;
+  background-color: #00a572;
+  color: #003824;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  border: none;
+  margin: 0.25rem;
+}
+
+.btn-primary {
+  background: linear-gradient(45deg, #c0c1ff, #8083ff);
+  color: #1000a9;
+  padding: 1rem 1.5rem;
+  border-radius: 0.75rem;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 0 20px rgba(192, 193, 255, 0.3);
+}
+
+.btn-primary:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 30px rgba(192, 193, 255, 0.5);
+}
+
+.glass {
+  background: rgba(45, 52, 73, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* === IMPROVED SPACING & LAYOUT === */
+section, footer {
+  padding: 4rem 2rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+section:nth-child(odd) {
+  background-color: #0b1326;
+}
+
+section:nth-child(even) {
+  background-color: #131b2e;
+}
+
+footer {
+  background-color: #171f33;
+  border-top: none;
+}
+
+/* === BENTO GRID === */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  padding: 1.5rem;
+}
+
+/* === INPUT FIELDS === */
+input, textarea {
+  background-color: #060e20;
+  color: #dae2fd;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  font-family: "Inter", sans-serif;
+  font-size: 0.875rem;
+  width: 100%;
+  transition: box-shadow 0.3s ease;
+  box-sizing: border-box;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  border: 1px solid #c0c1ff;
+  box-shadow: 0 0 15px rgba(192, 193, 255, 0.4);
+}
+
+/* === RESPONSIVE: MOBILE FIRST === */
+@media (max-width: 768px) {
+  h1 { font-size: 2.5rem; }
+  h2 { font-size: 2rem; }
+  
+  section, footer {
+    padding: 3rem 1rem !important;
+  }
+  
+  .bento-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  
+  .bento-card {
+    padding: 1.5rem !important;
+  }
+  
+  button, .btn-primary, .btn-secondary {
+    width: 100%;
+    text-align: center;
+  }
+  
+  /* Footer responsive: 1 column */
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+    max-width: 100% !important;
+  }
+}
+
+/* === TABLET: 2 COLUMNS === */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .bento-grid-3-col {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  section, footer {
+    padding: 4rem 2rem;
+  }
+}
+
+/* === FOOTER GRID - DEFAULT (DESKTOP) === */
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr) !important; /* 4 columnas en desktop */
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* === DESKTOP: FULL SPLENDOR === */
+@media (min-width: 1025px) {
+  section, footer {
+    padding: 6rem 4rem;
+  }
+  
+  .bento-grid-3-col {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+  
+  .bento-grid-2-col {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* === TABLET: 2 COLUMNS === */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .bento-grid-3-col {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  section, footer {
+    padding: 4rem 2rem;
+  }
+}
+
+/* === FOOTER RESPONSIVE: MOBILE FIRST === */
+@media (max-width: 768px) {
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+    max-width: 100% !important;
+  }
+  
+  footer {
+    padding: 2rem 1rem 1rem !important;
+  }
+}
