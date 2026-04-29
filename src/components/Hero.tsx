@@ -25,26 +25,26 @@ const Hero = () => {
       position: 'relative',
       overflow: 'hidden'
     }}>
-      {/* Efecto de gradiente glow */}
-      <div style={{
-        position: 'absolute',
-        top: '-50%',
-        right: '-20%',
-        width: '600px',
-        height: '600px',
-        background: 'radial-gradient(circle, rgba(192, 193, 255, 0.15) 0%, transparent 70%)',
-        filter: 'blur(60px)',
-        pointerEvents: 'none'
-      }} />
-      
-      <div style={{
-        position: 'relative',
-        zIndex: 1,
-        maxWidth: '800px',
-        opacity: isVisible ? 1 : 0,
-        transform: isVisible ? 'translateY(0)' : 'translateY(30px)',
-        transition: 'all 1s ease-out',
-      }}>
+       {/* Efecto de gradiente glow */}
+       <div style={{
+         position: 'absolute',
+         top: '-50%',
+         right: '-20%',
+         width: '600px',
+         height: '600px',
+         background: 'radial-gradient(circle, rgba(192, 193, 255, 0.15) 0%, transparent 70%)',
+         filter: 'blur(60px)',
+         pointerEvents: 'none'
+       }} />
+
+       <div style={{
+         position: 'relative',
+         zIndex: 1,
+         maxWidth: '800px',
+         opacity: isVisible ? 1 : 0,
+         transform: isVisible ? 'translateY(0)' : 'translateY(30px)',
+         transition: 'all 1s ease-out',
+       }}>
         <span className="font-mono" style={{
           color: '#4edea3',
           letterSpacing: '0.1em',

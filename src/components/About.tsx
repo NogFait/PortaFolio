@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import perfil from '../assets/perfil.png'
 
 const About = () => {
   const sectionRef = useRef<HTMLElement>(null)
@@ -20,11 +21,11 @@ const About = () => {
     )
 
     observer.observe(element)
-    
+
     const checkDesktop = () => setIsDesktop(window.innerWidth >= 1024)
     checkDesktop()
     window.addEventListener('resize', checkDesktop)
-    
+
     return () => {
       observer.disconnect()
       window.removeEventListener('resize', checkDesktop)
@@ -33,7 +34,7 @@ const About = () => {
 
   return (
     <section ref={sectionRef} id="about" style={{
-      padding: '6rem 2rem',
+      padding: '4rem 2rem',
       backgroundColor: '#0b1326',
       minHeight: '100vh',
       display: 'flex',
@@ -59,52 +60,77 @@ const About = () => {
             fontWeight: 600,
             textTransform: 'uppercase'
           }}>PERFIL PROFESIONAL</span>
-        
+
+          {/* Foto de perfil responsive */}
+          <div style={{
+            width: isDesktop ? '220px' : '280px',
+            height: isDesktop ? '220px' : '280px',
+            borderRadius: '50%',
+            border: '3px solid rgba(192, 193, 255, 0.4)',
+            boxShadow: '0 0 40px rgba(192, 193, 255, 0.3)',
+            marginBottom: '2rem',
+            overflow: 'hidden',
+            display: 'inline-block',
+            position: 'relative'
+          }}>
+            <img
+              src={perfil}
+              alt="Foto de perfil"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                transform: 'scale(1.3)',
+                transformOrigin: '50% 0%'
+              }}
+            />
+          </div>
+
           <h2 style={{
               fontFamily: '"Plus Jakarta Sans", sans-serif',
-              fontSize: isDesktop ? '3rem' : '2rem',
+              fontSize: isDesktop ? '2.75rem' : '2rem',
               lineHeight: '1.2',
               fontWeight: 600,
               color: '#dae2fd',
-              marginBottom: '2.5rem',
+              marginBottom: '1.5rem',
               letterSpacing: '-0.02em',
               textShadow: '0 0 50px rgba(192, 193, 255, 0.2)'
           }}>
               Sobre mi como desarrollador
           </h2>
-        
+
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-            gap: '2rem',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: '1.5rem',
             maxWidth: '1200px',
             width: '100%',
             textAlign: 'left'
           }}>
             {/* Columna izquierda: Texto descriptivo */}
             <div>
-              <p style={{
-                  fontFamily: '"Inter", sans-serif',
-                  fontSize: '1.125rem',
-                  lineHeight: '1.8',
-                  color: '#c7c4d7',
-                  marginBottom: '1.5rem'
-              }}>
-                Soy estudiante de Programación en la UTN, enfocado en el desarrollo Full-stack. Me interesa construir aplicaciones que no solo funcionen, sino que
-                estén bien estructuradas, sean mantenibles y puedan escalar.
-                Disfruto trabajar en la lógica detrás de los sistemas, el manejo de datos y la
-                organización del código. Busco entender cómo funcionan las cosas en profundidad
-                para poder diseñar soluciones más eficientes y sólidas.
-                Mi enfoque está en escribir código claro, aplicar buenas prácticas y construir
-                proyectos que simulen entornos reales, donde la escalabilidad y el rendimiento
-                son importantes.
-              </p>
+               <p style={{
+                   fontFamily: '"Inter", sans-serif',
+                   fontSize: '1.0625rem',
+                   lineHeight: '1.65',
+                   color: '#c7c4d7',
+                   marginBottom: '1rem'
+               }}>
+                 Soy estudiante de Programación en la UTN, enfocado en el desarrollo Full-stack. Me interesa construir aplicaciones que no solo funcionen, sino que
+                 estén bien estructuradas, sean mantenibles y puedan escalar.
+                 Disfruto trabajar en la lógica detrás de los sistemas, el manejo de datos y la
+                 organización del código. Busco entender cómo funcionan las cosas en profundidad
+                 para poder diseñar soluciones más eficientes y sólidas.
+                 Mi enfoque está en escribir código claro, aplicar buenas prácticas y construir
+                 proyectos que simulen entornos reales, donde la escalabilidad y el rendimiento
+                 son importantes.
+               </p>
             </div>
-          
-            {/* Columna derecha: Tarjeta con información clave - VISUALMENTE MEJORADA */}
+
+            {/* Columna derecha: Tarjeta con información clave */}
             <div style={{
               background: 'linear-gradient(145deg, #222a3d 0%, #2d3449 100%)',
-              padding: '2.5rem',
+              padding: '1.25rem',
               borderRadius: '1rem',
               boxShadow: '0 10px 50px rgba(218, 226, 253, 0.08), 0 0 120px rgba(192, 193, 255, 0.05)',
               border: '1px solid rgba(192, 193, 255, 0.15)',
@@ -128,14 +154,14 @@ const About = () => {
                 margin: 0,
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '1.5rem'
+                gap: '0.875rem'
               }}>
-                {/* Stack con Tech Chips VISUALES */}
+                {/* Stack con Tech Chips */}
                 <li style={{ color: '#dae2fd', fontFamily: '"Inter", sans-serif', fontSize: '0.9375rem' }}>
                   <div style={{
                     color: '#c0c1ff',
                     fontWeight: 600,
-                    marginBottom: '0.75rem',
+                    marginBottom: '0.625rem',
                     fontSize: '0.875rem',
                     letterSpacing: '0.05em',
                     textTransform: 'uppercase',
@@ -201,4 +227,4 @@ const About = () => {
   )
 }
 
-export default About;
+export default About
