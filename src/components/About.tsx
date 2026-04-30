@@ -118,13 +118,26 @@ const About = () => {
                }}>
                  Soy estudiante de Programación en la UTN, enfocado en el desarrollo Full-stack. Me interesa construir aplicaciones que no solo funcionen, sino que
                  estén bien estructuradas, sean mantenibles y puedan escalar.
-                 Disfruto trabajar en la lógica detrás de los sistemas, el manejo de datos y la
+               </p>
+               <p style={{
+                   fontFamily: '"Inter", sans-serif',
+                   fontSize: '1.0625rem',
+                   lineHeight: '1.65',
+                   color: '#c7c4d7',
+                   marginBottom: '1rem'
+               }}>Disfruto trabajar en la lógica detrás de los sistemas, el manejo de datos y la
                  organización del código. Busco entender cómo funcionan las cosas en profundidad
-                 para poder diseñar soluciones más eficientes y sólidas.
+                 para poder diseñar soluciones más eficientes y sólidas.</p>
+                 <p style={{
+                   fontFamily: '"Inter", sans-serif',
+                   fontSize: '1.0625rem',
+                   lineHeight: '1.65',
+                   color: '#c7c4d7',
+                   marginBottom: '1rem'}}> 
                  Mi enfoque está en escribir código claro, aplicar buenas prácticas y construir
                  proyectos que simulen entornos reales, donde la escalabilidad y el rendimiento
                  son importantes.
-               </p>
+                 </p>
             </div>
 
             {/* Columna derecha: Tarjeta con información clave */}

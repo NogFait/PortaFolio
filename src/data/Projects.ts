@@ -11,11 +11,11 @@ export const projects: Project[] = [
 },
 {
     id:"2",
-    titulo:"Aegis Guard",
-    descripcion:"Seguridad para Kubernetes",
-    imagen:"/images/aegis.png",
-    tecnologias:["Python", "Docker", "Kubernetes", "Redis"],
-    link:"#",
+    titulo:"Studio Glam",
+    descripcion:"Sitio web premium para salón de alta gama en Mendoza.",
+    imagen:"./src/assets/studioglam.png",
+    tecnologias:["React", "Typescript", "Vite", "CSS"],
+    link:"https://studio-glam-landing.vercel.app",
 },
 {
     id:"3",

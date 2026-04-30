@@ -34,17 +34,6 @@ const ProjectCard = ({project}:Props) => {
               onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.08)'; }}
               onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}
             />
-            {/* Overlay gradiente */}
-            <div style={{
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              right: 0,
-              height: '50%',
-              background: 'linear-gradient(to top, rgba(34, 42, 61, 0.9), transparent)',
-              borderRadius: '0 0 0.75rem 0.75rem',
-              pointerEvents: 'none'
-            }} />
           </div>
         )}
         
@@ -107,7 +96,7 @@ const ProjectCard = ({project}:Props) => {
             target="_blank"
             style={{
               fontFamily: '"Inter", sans-serif',
-              color: '#c0c1ff',
+              color: '#1000a9',
               textDecoration: 'none',
               fontWeight: 600,
               fontSize: '0.875rem',
@@ -115,15 +104,21 @@ const ProjectCard = ({project}:Props) => {
               alignItems: 'center',
               gap: '0.375rem',
               transition: 'all 0.3s ease',
-              marginTop: 'auto'
+              marginTop: 'auto',
+              background: 'linear-gradient(45deg, #c0c1ff, #8083ff)',
+              padding: '0.625rem 1.25rem',
+              borderRadius: '0.75rem',
+              boxShadow: '0 0 20px rgba(192, 193, 255, 0.3)'
             }}
             onMouseEnter={(e) => { 
-              e.currentTarget.style.color = '#8083ff'; 
               e.currentTarget.style.gap = '0.5rem';
+              e.currentTarget.style.transform = 'scale(1.02)';
+              e.currentTarget.style.boxShadow = '0 0 30px rgba(192, 193, 255, 0.5)';
             }}
             onMouseLeave={(e) => { 
-              e.currentTarget.style.color = '#c0c1ff'; 
               e.currentTarget.style.gap = '0.375rem';
+              e.currentTarget.style.transform = 'scale(1)';
+              e.currentTarget.style.boxShadow = '0 0 20px rgba(192, 193, 255, 0.3)';
             }}
           >
             Explorar →
