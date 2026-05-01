@@ -19,10 +19,10 @@ export const projects: Project[] = [
 },
 {
     id:"3",
-    titulo:"Hydra Mesh",
-    descripcion:"Red distribuida",
-    imagen:"/images/hydra.png",
-    tecnologias:["Go", "gRPC", "PostgreSQL"],
-    link:"#",
+    titulo:"El Tornillo",
+    descripcion:"Landing para ferretería con diseño moderno y enfoque en usabilidad.",
+    imagen:"/eltornillo.png",
+    tecnologias:["React", "Typescript", "Vite", "CSS"],
+    link:"https://el-tornillo-landing.vercel.app/",
 },
 ]

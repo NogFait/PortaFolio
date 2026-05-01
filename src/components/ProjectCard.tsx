@@ -15,11 +15,12 @@ const ProjectCard = ({project}:Props) => {
         {project.imagen && (
           <div style={{
             width: '100%',
-            height: '250px',
+            aspectRatio: '16/9',
             overflow: 'hidden',
             borderRadius: '0.75rem',
             position: 'relative',
-            marginBottom: '0.5rem'
+            marginBottom: '0.5rem',
+            backgroundColor: '#0b1326'
           }}>
             <img 
               src={project.imagen} 
@@ -28,10 +29,11 @@ const ProjectCard = ({project}:Props) => {
                 width: '100%',
                 height: '100%',
                 objectFit: 'cover',
+                objectPosition: 'top',
                 transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
                 borderRadius: '0.75rem'
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.08)'; }}
+              onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.05)'; }}
               onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}
             />
           </div>
