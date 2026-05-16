@@ -1,5 +1,31 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
+/* === KEYFRAMES === */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+@keyframes shimmer {
+  0% { background-position: 0% center; }
+  100% { background-position: 100% center; }
+}
+
+/* === PREFERS REDUCED MOTION === */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* === CSS RESET & FORCE DARK BACKGROUND === */
 * {
   box-sizing: border-box;
@@ -71,15 +97,7 @@ p {
   margin-bottom: 1rem;
 }
 
-a {
-  color: #c0c1ff;
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
 
-a:hover {
-  color: #8083ff;
-}
 
 /* === BUTTONS === */
 button {
@@ -98,18 +116,6 @@ button {
   box-shadow: 0 0 20px rgba(192, 193, 255, 0.3);
 }
 
-.bento-card {
-  background-color: #222a3d;
-  padding: 2rem;
-  border-radius: 0.75rem;
-  box-shadow: 0 8px 32px rgba(218, 226, 253, 0.04);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.bento-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 16px 48px rgba(218, 226, 253, 0.04);
-}
 
 .tech-chip {
   display: inline-block;
@@ -146,13 +152,22 @@ button {
   -webkit-backdrop-filter: blur(12px);
 }
 
-/* === IMPROVED SPACING & LAYOUT === */
-section, footer {
-  padding: 4rem 2rem;
-  min-height: 100vh;
+/* === SECTION TRANSITIONS === */
+section {
+  padding: 2rem;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  transition: background-color 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+footer {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transition: background-color 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 section:nth-child(odd) {
@@ -166,14 +181,6 @@ section:nth-child(even) {
 footer {
   background-color: #171f33;
   border-top: none;
-}
-
-/* === BENTO GRID === */
-.bento-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1.5rem;
-  padding: 1.5rem;
 }
 
 /* === INPUT FIELDS === */
@@ -202,18 +209,10 @@ input:focus, textarea:focus {
   h2 { font-size: 2rem; }
   
   section, footer {
-    padding: 3rem 1rem !important;
+    padding: 1.5rem 1rem !important;
   }
   
-  .bento-grid {
-    grid-template-columns: 1fr !important;
-    gap: 1rem;
-    padding: 1rem;
-  }
   
-  .bento-card {
-    padding: 1.5rem !important;
-  }
   
   button, .btn-primary, .btn-secondary {
     width: 100%;
@@ -235,7 +234,7 @@ input:focus, textarea:focus {
   }
   
   section, footer {
-    padding: 4rem 2rem;
+    padding: 2rem;
   }
 }
 
@@ -251,27 +250,22 @@ input:focus, textarea:focus {
 /* === DESKTOP: FULL SPLENDOR === */
 @media (min-width: 1025px) {
   section, footer {
-    padding: 6rem 4rem;
+    padding: 2rem 4rem;
   }
   
-  .bento-grid-3-col {
-    grid-template-columns: repeat(3, 1fr) !important;
-  }
-  
-  .bento-grid-2-col {
-    grid-template-columns: repeat(2, 1fr) !important;
-  }
+  h1 { font-size: 4rem; }
+  h2 { font-size: 2.5rem; }
+
 }
 
-/* === TABLET: 2 COLUMNS === */
-@media (min-width: 769px) and (max-width: 1024px) {
-  .bento-grid-3-col {
-    grid-template-columns: repeat(2, 1fr) !important;
+/* === LARGE DESKTOP: ESPACIOSO === */
+@media (min-width: 1440px) {
+  section, footer {
+    padding: 4rem 6rem;
   }
   
-  section, footer {
-    padding: 4rem 2rem;
-  }
+  h1 { font-size: 4.5rem; }
+  h2 { font-size: 3rem; }
 }
 
 /* === FOOTER RESPONSIVE: MOBILE FIRST === */

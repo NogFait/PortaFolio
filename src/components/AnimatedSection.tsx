@@ -1,90 +1,49 @@
-import { useEffect, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
 import type { ReactNode } from 'react';
 
 interface AnimatedSectionProps {
   children: ReactNode;
-  direction?: 'up' | 'down' | 'left' | 'right' | 'fade';
+  direction?: 'up' | 'down' | 'left' | 'right' | 'fade' | 'scale';
   delay?: number;
   duration?: number;
+  className?: string;
 }
+
+const getVariants = (direction: string) => {
+  switch (direction) {
+    case 'up':
+      return { hidden: { opacity: 0, y: 40 }, visible: { opacity: 1, y: 0 } };
+    case 'down':
+      return { hidden: { opacity: 0, y: -40 }, visible: { opacity: 1, y: 0 } };
+    case 'left':
+      return { hidden: { opacity: 0, x: 40 }, visible: { opacity: 1, x: 0 } };
+    case 'right':
+      return { hidden: { opacity: 0, x: -40 }, visible: { opacity: 1, x: 0 } };
+    case 'scale':
+      return { hidden: { opacity: 0, scale: 0.95 }, visible: { opacity: 1, scale: 1 } };
+    case 'fade':
+    default:
+      return { hidden: { opacity: 0 }, visible: { opacity: 1 } };
+  }
+};
 
 export default function AnimatedSection({
   children,
   direction = 'up',
   delay = 0,
-  duration = 0.6,
+  duration = 0.8,
+  className,
 }: AnimatedSectionProps) {
-  const ref = useRef<HTMLElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const element = ref.current;
-    if (!element) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.unobserve(element);
-        }
-      },
-      { threshold: 0.1, rootMargin: '0px' }
-    );
-
-    observer.observe(element);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
-
-  const getInitialStyle = () => {
-    switch (direction) {
-      case 'up':
-        return { opacity: 0, transform: 'translateY(40px)' };
-      case 'down':
-        return { opacity: 0, transform: 'translateY(-40px)' };
-      case 'left':
-        return { opacity: 0, transform: 'translateX(40px)' };
-      case 'right':
-        return { opacity: 0, transform: 'translateX(-40px)' };
-      case 'fade':
-      default:
-        return { opacity: 0 };
-    }
-  };
-
-  const getAnimateStyle = () => {
-    switch (direction) {
-      case 'up':
-      case 'down':
-        return { opacity: 1, transform: 'translateY(0)' };
-      case 'left':
-      case 'right':
-        return { opacity: 1, transform: 'translateX(0)' };
-      case 'fade':
-      default:
-        return { opacity: 1 };
-    }
-  };
-
-  const initial = getInitialStyle();
-  const animate = getAnimateStyle();
-
   return (
-    <section
-      ref={ref}
-      style={{
-        ...initial,
-        opacity: isVisible ? animate.opacity : initial.opacity,
-        transform: isVisible
-          ? (animate as any).transform
-          : (initial as any).transform,
-        transition: `all ${duration}s ease-out ${delay}s`,
-        willChange: 'opacity, transform',
-      }}
+    <motion.section
+      className={className}
+      variants={getVariants(direction)}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: '-50px' }}
+      transition={{ duration, delay, ease: [0.16, 1, 0.3, 1] as const }}
     >
       {children}
-    </section>
+    </motion.section>
   );
 }

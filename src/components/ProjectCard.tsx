@@ -1,26 +1,61 @@
+import { useEffect, useState } from 'react'
+import { SiReact, SiTypescript, SiVite, SiCss, SiSupabase, SiPython, SiFastapi } from 'react-icons/si'
 import type{ Project } from "../types/ProjectType";
+
+const TECH_ICONS: Record<string, React.ComponentType<{ size?: number }>> = {
+  React: SiReact,
+  Typescript: SiTypescript,
+  TypeScript: SiTypescript,
+  Vite: SiVite,
+  CSS: SiCss,
+  Supabase: SiSupabase,
+  Python: SiPython,
+  FastAPI: SiFastapi,
+}
 
 type Props= {
   project:Project;
+  variant?: 'grande' | 'vertical' | 'compact';
 };
- 
-const ProjectCard = ({project}:Props) => {
+
+const POSITION_MAP = {
+  grande: 'center 30%',
+  vertical: 'center',
+  compact: 'center',
+} as const
+
+const ProjectCard = ({project, variant = 'compact'}:Props) => {
+  const isGrande = variant === 'grande'
+  const isVertical = variant === 'vertical'
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= 768)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
+
+  const aspectRatio = isGrande
+    ? (isMobile ? '16/9' : '3/1')
+    : (isMobile ? '4/3' : '2/1')
+  const titleSize = isGrande ? '0.75rem' : '0.6875rem'
+
   return (
     <div style={{
       display: 'flex',
       flexDirection: 'column',
-      gap: '1.25rem',
+      gap: '0.25rem',
       height: '100%'
     }}>
         {project.imagen && (
-          <div style={{
+          <div className={`project-card-image ${isGrande ? 'project-card-image--grande' : ''}`} style={{
             width: '100%',
-            aspectRatio: '16/9',
+            ...(isVertical && !isMobile ? { flex: 1, minHeight: 0 } : { aspectRatio }),
             overflow: 'hidden',
-            borderRadius: '0.75rem',
+            borderRadius: '0.375rem',
             position: 'relative',
-            marginBottom: '0.5rem',
-            backgroundColor: '#0b1326'
+            backgroundColor: project.bgColor ?? (project.objectFit === 'contain' ? 'transparent' : '#0b1326')
           }}>
             <img 
               src={project.imagen} 
@@ -28,99 +63,69 @@ const ProjectCard = ({project}:Props) => {
               style={{
                 width: '100%',
                 height: '100%',
-                objectFit: 'cover',
-                objectPosition: 'top',
-                transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
-                borderRadius: '0.75rem'
+                objectFit: project.objectFit ?? 'cover',
+                objectPosition: POSITION_MAP[variant],
+                borderRadius: '0.375rem'
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.05)'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}
             />
           </div>
         )}
-        
+
         <h3 style={{
           fontFamily: '"Plus Jakarta Sans", sans-serif',
-          fontSize: '1.5rem',
+          fontSize: titleSize,
           lineHeight: '1.3',
           fontWeight: 600,
           color: '#dae2fd',
-          marginBottom: '0.5rem'
+          marginBottom: 0
         }}>{project.titulo}</h3>
-        
-        <p style={{
+
+        {isGrande && <p style={{
           fontFamily: '"Inter", sans-serif',
-          fontSize: '0.875rem',
-          lineHeight: '1.5',
+          fontSize: '0.625rem',
+          lineHeight: '1.3',
           color: '#c7c4d7',
-          flex: '1',
-          marginBottom: '0.75rem'
-        }}>{project.descripcion}</p>
-        
+          marginBottom: 0,
+          display: '-webkit-box',
+          WebkitLineClamp: 1,
+          WebkitBoxOrient: 'vertical',
+          overflow: 'hidden',
+        }}>{project.descripcion}</p>}
+
         {project.tecnologias && project.tecnologias.length > 0 && (
           <div style={{
             display: 'flex',
             flexWrap: 'wrap',
-            gap: '0.375rem',
-            marginBottom: '0.75rem'
+            gap: '0.125rem'
           }}>
-            {project.tecnologias.map((tech, index) => (
-              <span key={index} style={{
-                display: 'inline-block',
-                fontFamily: '"JetBrains Mono", monospace',
-                fontSize: '0.6875rem',
-                backgroundColor: '#00a572',
-                color: '#003824',
-                padding: '0.25rem 0.5rem',
-                borderRadius: '9999px',
-                fontWeight: 500,
-                transition: 'all 0.2s ease',
-                cursor: 'default'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 165, 114, 0.4)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = 'none';
-              }}
-              >
-                {tech}
-              </span>
-            ))}
+            {project.tecnologias.map((tech) => {
+              const Icon = TECH_ICONS[tech]
+              return (
+                <span key={tech} className="tech-chip" style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.2rem',
+                  fontSize: '0.625rem',
+                  padding: '0.2rem 0.4rem'
+                }}>
+                  {Icon && <Icon size={10} />}
+                  {tech}
+                </span>
+              )
+            })}
           </div>
         )}
-        
+
         {project.link && (
           <a 
             href={project.link}
             target="_blank"
+            className="project-link-btn"
             style={{
-              fontFamily: '"Inter", sans-serif',
-              color: '#1000a9',
-              textDecoration: 'none',
-              fontWeight: 600,
-              fontSize: '0.875rem',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.375rem',
-              transition: 'all 0.3s ease',
-              marginTop: 'auto',
-              background: 'linear-gradient(45deg, #c0c1ff, #8083ff)',
-              padding: '0.625rem 1.25rem',
-              borderRadius: '0.75rem',
-              boxShadow: '0 0 20px rgba(192, 193, 255, 0.3)'
-            }}
-            onMouseEnter={(e) => { 
-              e.currentTarget.style.gap = '0.5rem';
-              e.currentTarget.style.transform = 'scale(1.02)';
-              e.currentTarget.style.boxShadow = '0 0 30px rgba(192, 193, 255, 0.5)';
-            }}
-            onMouseLeave={(e) => { 
-              e.currentTarget.style.gap = '0.375rem';
-              e.currentTarget.style.transform = 'scale(1)';
-              e.currentTarget.style.boxShadow = '0 0 20px rgba(192, 193, 255, 0.3)';
+              fontSize: titleSize,
+              padding: '0.1875rem 0.375rem',
+              marginTop: 0,
+              alignSelf: 'flex-start'
             }}
           >
             Explorar →
@@ -130,4 +135,4 @@ const ProjectCard = ({project}:Props) => {
   )
 }
 
-export default ProjectCard;
+export default ProjectCard

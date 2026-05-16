@@ -3,6 +3,8 @@ export type Project = {
     titulo:string;
     descripcion:string;
     imagen:string;
+    objectFit?: 'cover' | 'contain';
+    bgColor?: string;
     tecnologias?:string[]; // Para Tech Chips
     link?:string;
 }
