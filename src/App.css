@@ -27,6 +27,8 @@ section {
   text-decoration: none;
   font-weight: 700;
   letter-spacing: 0.02em;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
   background: linear-gradient(90deg, #8083ff, #c0c1ff, #8083ff, #c0c1ff, #8083ff);
   background-size: 400% auto;
   color: #1000a9;
@@ -49,6 +51,8 @@ section {
   align-items: center;
   text-decoration: none;
   font-weight: 500;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
   color: #c7c4d7;
   background: transparent;
   border: 1px solid rgba(192, 193, 255, 0.2);
@@ -321,14 +325,14 @@ section {
 /* === LARGE DESKTOP === */
 @media (min-width: 1280px) {
   .hero-cta-primary {
-    padding: 1.25rem 2.5rem;
-    font-size: 1.125rem;
+    padding: 1rem 2rem;
+    font-size: 1rem;
     border-radius: 1rem;
   }
 
   .hero-cta-secondary {
-    padding: 1.25rem 2.5rem;
-    font-size: 1.125rem;
+    padding: 1rem 2rem;
+    font-size: 1rem;
     border-radius: 1rem;
   }
 
