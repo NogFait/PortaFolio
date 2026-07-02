@@ -35,7 +35,8 @@ const Projects = () => {
   return (
     <section ref={sectionRef} id="projects" style={{
       backgroundColor: '#131b2e',
-      position: 'relative'
+      position: 'relative',
+      overflow: 'hidden'
     }}>
       <div className="light-orb" style={{ top: '-6rem', left: '-6rem' }} />
 
