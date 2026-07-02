@@ -99,7 +99,7 @@ const Hero = () => {
       background: 'linear-gradient(45deg, #0b1326 0%, #131b2e 50%, #0b1326 100%)',
       position: 'relative',
       overflow: 'hidden',
-      minHeight: '100dvh',
+      minHeight: '100lvh',
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
