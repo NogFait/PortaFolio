@@ -253,27 +253,32 @@ const Hero = () => {
       <div className="animate-float" style={{
         position: 'absolute',
         bottom: '1rem',
-        left: '50%',
-        transform: 'translateX(-50%)',
+        left: 0,
+        right: 0,
         display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: '0.5rem',
-        opacity: 0.5,
+        justifyContent: 'center',
         zIndex: 1
       }}>
-        <span style={{
-          fontFamily: '"JetBrains Mono", monospace',
-          fontSize: '0.625rem',
-          letterSpacing: '0.3em',
-          textTransform: 'uppercase',
-          color: '#c7c4d7'
-        }}>Scroll</span>
         <div style={{
-          width: '1px',
-          height: '3rem',
-          background: 'linear-gradient(to bottom, #c0c1ff, transparent)'
-        }} />
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '0.5rem'
+        }}>
+          <span style={{
+            fontFamily: '"JetBrains Mono", monospace',
+            fontSize: '0.625rem',
+            letterSpacing: '0.3em',
+            textTransform: 'uppercase',
+            color: '#c7c4d7',
+            opacity: 0.5
+          }}>Scroll</span>
+          <div style={{
+            width: '1px',
+            height: '3rem',
+            background: 'linear-gradient(to bottom, #c0c1ff, transparent)'
+          }} />
+        </div>
       </div>
     </section>
   )

@@ -253,6 +253,17 @@
 
   .navbar__inner {
     padding: 0 1rem;
+    position: relative;
+  }
+
+  .navbar__logo {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .navbar__actions {
+    margin-left: auto;
   }
 
   .navbar__links {
