@@ -24,8 +24,10 @@ export const projects: Project[] = [
 {
     id:"3",
     titulo:"El Tornillo",
-    descripcion:"Landing para ferretería con diseño moderno y enfoque en usabilidad.",
+    descripcion:"Landing page moderna y responsiva para ferretería, con catálogo visual de herramientas y materiales de construcción, diseño optimizado para conversión y navegación intuitiva.",
     imagen:"/eltornillo.png",
+    objectFit: 'cover',
+    objectPosition: 'top',
     bgColor: '#221d1d',
     tecnologias:["React", "Typescript", "Vite", "CSS"],
     link:"https://el-tornillo-landing.vercel.app/",
@@ -33,7 +35,7 @@ export const projects: Project[] = [
 {
     id:"4",
     titulo:"Studio Glam",
-    descripcion:"Sitio web premium para salón de alta gama en Mendoza.",
+    descripcion:"Sitio web premium con diseño elegante y sistema de reservas vía WhatsApp, pensado para proyectar la identidad de un salón de belleza de alta gama en Mendoza.",
     imagen:"/studioglam.png",
     bgColor: '#201815',
     tecnologias:["React", "Typescript", "Vite", "CSS"],

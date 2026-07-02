@@ -1,11 +1,20 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
+import { SiGithub } from 'react-icons/si'
+import { FaLinkedin } from 'react-icons/fa'
 import ContactForm from './ContactForm'
 
 const ContactFormSection = () => {
   const sectionRef = useRef<HTMLElement>(null)
   const [isVisible, setIsVisible] = useState(false)
-  const [isDesktop, setIsDesktop] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= 768)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
 
   useEffect(() => {
     const element = sectionRef.current
@@ -22,124 +31,138 @@ const ContactFormSection = () => {
     )
 
     observer.observe(element)
-    
-    const checkDesktop = () => setIsDesktop(window.innerWidth >= 1024)
-    checkDesktop()
-    window.addEventListener('resize', checkDesktop)
-    
-    return () => {
-      observer.disconnect()
-      window.removeEventListener('resize', checkDesktop)
-    }
+    return () => observer.disconnect()
   }, [])
 
   return (
     <section ref={sectionRef} id="contact" style={{
-      backgroundColor: '#131b2e',
+      backgroundColor: '#060e20',
     }}>
       <motion.div
-        style={{ maxWidth: '1000px', margin: '0 auto', width: '100%' }}
+        style={{ maxWidth: '1280px', width: '100%', margin: '0 auto' }}
         initial={{ opacity: 0, y: 30 }}
         animate={isVisible ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       >
-        <span style={{
-          fontFamily: '"JetBrains Mono", monospace',
-          color: '#4edea3',
-          letterSpacing: '0.1em',
-          display: 'block',
-          marginBottom: '0.5rem',
-          fontSize: '0.75rem',
-          fontWeight: 600,
-          textTransform: 'uppercase'
-        }}>TRABAJEMOS JUNTOS</span>
-        
-        <h2 style={{
-          fontFamily: '"Plus Jakarta Sans", sans-serif',
-          fontSize: isDesktop ? '2rem' : '1.75rem',
-          lineHeight: '1.2',
-          fontWeight: 600,
-          color: '#dae2fd',
-          marginBottom: '1.5rem',
-          letterSpacing: '-0.02em',
-          textShadow: '0 0 50px rgba(192, 193, 255, 0.2)'
-        }}>
-          Construyamos algo juntos.
-        </h2>
-
         <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-          gap: '2rem',
-          alignItems: 'start'
-        }}>
-          <div style={{
+          borderRadius: '1.5rem',
+          overflow: 'hidden',
+          background: 'rgba(19, 27, 46, 0.5)',
+          backdropFilter: 'blur(12px)',
+          border: '1px solid rgba(255, 255, 255, 0.05)',
+          boxShadow: '0 25px 50px rgba(0, 0, 0, 0.2)'
+        }} className="contact-panel">
+          <div className="contact-panel__info" style={{
+            padding: isMobile ? '1.25rem' : '1.75rem',
             display: 'flex',
             flexDirection: 'column',
-            gap: '1rem'
+            justifyContent: 'space-between',
+            borderRight: '1px solid rgba(70, 69, 84, 0.1)'
           }}>
-            <p style={{
-              fontFamily: '"Inter", sans-serif',
-              fontSize: '0.875rem',
-              lineHeight: '1.6',
-              color: '#c7c4d7',
-              marginBottom: 0
-            }}>
-              Abierto a oportunidades en desarrollo Full-stack. Me interesa trabajar
-              en proyectos donde pueda aportar desde la lógica, la estructura y el diseño del sistema.
-              Si tenés una idea o necesidad, podemos hablar.
-            </p>
+            <div>
+              <h2 style={{
+                fontFamily: '"Plus Jakarta Sans", sans-serif',
+                fontSize: 'clamp(1.75rem, 3vw, 3rem)',
+                fontWeight: 700,
+                color: '#dae2fd',
+                marginBottom: '1.5rem',
+                letterSpacing: '-0.02em'
+              }}>
+                ¿Tienes un proyecto en <span style={{ color: '#c0c1ff' }}>mente</span>?
+              </h2>
+              <p style={{
+                fontFamily: '"Inter", sans-serif',
+                fontSize: '1rem',
+                color: '#c7c4d7',
+                lineHeight: '1.6',
+                marginBottom: '2rem'
+              }}>
+                Estoy abierto a nuevas colaboraciones y oportunidades. Ponte en contacto y hagamos algo increíble juntos.
+              </p>
 
-            <div className="contact-info-card" style={{
-              padding: '1.25rem',
-              background: 'linear-gradient(145deg, #222a3d 0%, #2d3449 100%)',
-              borderRadius: '1rem',
-              boxShadow: '0 10px 50px rgba(218, 226, 253, 0.08), 0 0 120px rgba(192, 193, 255, 0.05)',
-              border: '1px solid rgba(192, 193, 255, 0.15)',
-            }}>
-              <div>
-                <p style={{
-                  fontFamily: '"JetBrains Mono", monospace',
-                  color: '#4edea3',
-                  fontSize: '0.75rem',
-                  fontWeight: 600,
-                  marginBottom: '0.5rem',
-                  letterSpacing: '0.05em',
-                  textTransform: 'uppercase'
-                }}>Contacto directo</p>
-                <p style={{
-                  fontFamily: '"Inter", sans-serif',
-                  color: '#dae2fd',
-                  fontSize: '0.875rem',
-                  margin: 0,
-                  lineHeight: '1.5'
-                }}>
-                  Usá el formulario de contacto para escribirme directamente.
-                  Respondo en menos de 24 horas.
-                </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                <div className="contact-panel__info-item">
+                  <div style={{
+                    width: '48px',
+                    height: '48px',
+                    borderRadius: '50%',
+                    background: '#222a3d',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'transform 0.3s ease'
+                  }}>
+                    <span className="material-symbols-outlined" style={{ color: '#4edea3' }}>location_on</span>
+                  </div>
+                  <div>
+                    <p style={{
+                      fontFamily: '"JetBrains Mono", monospace',
+                      fontSize: '0.625rem',
+                      textTransform: 'uppercase',
+                      color: '#908fa0',
+                      marginBottom: '0.125rem',
+                      letterSpacing: '0.05em'
+                    }}>Ubicación</p>
+                    <p style={{
+                      fontFamily: '"Plus Jakarta Sans", sans-serif',
+                      fontWeight: 700,
+                      color: '#dae2fd',
+                      fontSize: '0.9375rem',
+                      margin: 0
+                    }}>Mendoza, Argentina</p>
+                  </div>
+                </div>
               </div>
+            </div>
 
-              <div style={{ marginTop: '1rem' }}>
-                <p style={{
-                  fontFamily: '"JetBrains Mono", monospace',
-                  color: '#4edea3',
-                  fontSize: '0.75rem',
-                  fontWeight: 600,
-                  marginBottom: '0.25rem',
-                  letterSpacing: '0.05em',
-                  textTransform: 'uppercase'
-                }}>Ubicación</p>
-                <p style={{
-                  fontFamily: '"Inter", sans-serif',
-                  color: '#dae2fd',
-                  fontSize: '0.875rem',
-                  margin: 0
-                }}>Argentina - Mendoza</p>
-              </div>
+            <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
+              <a
+                href="https://github.com/NogFait"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '0.5rem',
+                  background: '#222a3d',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#c7c4d7',
+                  textDecoration: 'none',
+                  transition: 'all 0.3s ease'
+                }}
+                className="contact-panel__social"
+              >
+                <SiGithub size={18} />
+              </a>
+              <a
+                href="https://www.linkedin.com/in/fausto-chirino-76b7572b6"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '0.5rem',
+                  background: '#222a3d',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#c7c4d7',
+                  textDecoration: 'none',
+                  transition: 'all 0.3s ease'
+                }}
+                className="contact-panel__social"
+              >
+                <FaLinkedin size={18} />
+              </a>
             </div>
           </div>
 
-          <div>
+          <div className="contact-panel__form" style={{
+            padding: isMobile ? '1.25rem' : '1.75rem',
+            background: 'rgba(34, 42, 61, 0.3)'
+          }}>
             <ContactForm />
           </div>
         </div>

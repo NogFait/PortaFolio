@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
-import { projects } from "../data/Projects";
-import ProjectCard from "./ProjectCard";
+import { projects } from "../data/Projects"
+import ProjectCard from "./ProjectCard"
 
 const containerVariants = {
   hidden: {},
@@ -59,29 +59,29 @@ function TiltCard({ children, className }: { children: React.ReactNode; classNam
 const ProjectsSeccion = () => {
   return (
     <motion.div
-      className="bento-grid"
+      className="projects-grid"
       variants={containerVariants}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: '-40px' }}
     >
-      <TiltCard className="bento-grande">
-        <ProjectCard project={projects[0]} variant="grande" />
+      <TiltCard className="projects-grid__hero">
+        <ProjectCard project={projects[0]} layout="hero" delay={0.1} />
       </TiltCard>
 
-      <TiltCard className="bento-vertical">
-        <ProjectCard project={projects[1]} variant="vertical" />
+      <TiltCard className="projects-grid__tall">
+        <ProjectCard project={projects[1]} layout="vertical" delay={0.2} />
       </TiltCard>
 
-      <TiltCard className="bento-small">
-        <ProjectCard project={projects[2]} variant="compact" />
+      <TiltCard className="projects-grid__compact">
+        <ProjectCard project={projects[3]} layout="compact" delay={0.3} />
       </TiltCard>
 
-      <TiltCard className="bento-small">
-        <ProjectCard project={projects[3]} variant="compact" />
+      <TiltCard className="projects-grid__split">
+        <ProjectCard project={projects[2]} layout="split" delay={0.4} />
       </TiltCard>
     </motion.div>
-  );
-};
+  )
+}
 
-export default ProjectsSeccion;
+export default ProjectsSeccion

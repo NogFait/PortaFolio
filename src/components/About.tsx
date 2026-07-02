@@ -1,21 +1,18 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
-import { SiReact, SiTypescript, SiTailwindcss, SiPython, SiFastapi, SiPostgresql } from 'react-icons/si'
 import perfil from '../assets/perfil.png'
-
-const TECH_ICONS: Record<string, React.ComponentType<{ size?: number }>> = {
-  React: SiReact,
-  TypeScript: SiTypescript,
-  Tailwind: SiTailwindcss,
-  Python: SiPython,
-  FastAPI: SiFastapi,
-  SQL: SiPostgresql,
-}
 
 const About = () => {
   const sectionRef = useRef<HTMLElement>(null)
   const [isVisible, setIsVisible] = useState(false)
-  const [isDesktop, setIsDesktop] = useState(false)
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
+  const imageSize = Math.min(Math.max(250, windowWidth * 0.35), 400)
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   useEffect(() => {
     const element = sectionRef.current
@@ -32,187 +29,252 @@ const About = () => {
     )
 
     observer.observe(element)
-
-    const checkDesktop = () => setIsDesktop(window.innerWidth >= 1024)
-    checkDesktop()
-    window.addEventListener('resize', checkDesktop)
-
-    return () => {
-      observer.disconnect()
-      window.removeEventListener('resize', checkDesktop)
-    }
+    return () => observer.disconnect()
   }, [])
 
   return (
     <section ref={sectionRef} id="about" style={{
       backgroundColor: '#0b1326',
-      alignItems: 'center'
+      position: 'relative',
+      overflow: 'hidden'
     }}>
+      <div className="light-orb" style={{ bottom: 0, right: 0, opacity: 0.4 }} />
+
       <motion.div
-        style={{ maxWidth: '1100px', width: '100%', textAlign: 'center' }}
+        style={{
+          maxWidth: '1280px',
+          width: '100%',
+          margin: '0 auto',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(12, 1fr)',
+          gap: windowWidth <= 768 ? '1.5rem' : windowWidth <= 1024 ? '2.5rem' : '3rem',
+          alignItems: 'center'
+        }}
         initial={{ opacity: 0, y: 30 }}
         animate={isVisible ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       >
-        <span style={{
-          fontFamily: '"JetBrains Mono", monospace',
-          color: '#4edea3',
-          letterSpacing: '0.1em',
-          display: 'block',
-          marginBottom: '0.75rem',
-          fontSize: '0.75rem',
-          fontWeight: 600,
-          textTransform: 'uppercase'
-        }}>PERFIL PROFESIONAL</span>
-
-        <div style={{
-          width: isDesktop ? '160px' : '200px',
-          height: isDesktop ? '160px' : '200px',
-          borderRadius: '50%',
-          border: '3px solid rgba(192, 193, 255, 0.4)',
-          boxShadow: '0 0 40px rgba(192, 193, 255, 0.3)',
-          marginBottom: '1rem',
-          overflow: 'hidden',
-          display: 'inline-block',
+        <div className="about-image-col" style={{
+          gridColumn: 'span 4',
           position: 'relative'
         }}>
-          <img
-            src={perfil}
-            alt="Foto de perfil"
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              transform: 'scale(1.3)',
-              transformOrigin: '50% 0%'
-            }}
-          />
-        </div>
-
-        <h2 style={{
-            fontFamily: '"Plus Jakarta Sans", sans-serif',
-            fontSize: isDesktop ? '2rem' : '1.75rem',
-            lineHeight: '1.2',
-            fontWeight: 600,
-            color: '#dae2fd',
-            marginBottom: '1rem',
-            letterSpacing: '-0.02em',
-            textShadow: '0 0 50px rgba(192, 193, 255, 0.2)'
-        }}>
-            Sobre mi como desarrollador
-        </h2>
-
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-          gap: '1.25rem',
-          maxWidth: '1100px',
-          width: '100%',
-          textAlign: 'left'
-        }}>
-          <div>
-             <p style={{
-                 fontFamily: '"Inter", sans-serif',
-                 fontSize: '0.875rem',
-                 lineHeight: '1.6',
-                 color: '#c7c4d7',
-                 marginBottom: '0.75rem'
-             }}>
-               Soy estudiante de Programación en la UTN, enfocado en el desarrollo Full-stack. Me interesa construir aplicaciones que no solo funcionen, sino que
-               estén bien estructuradas, sean mantenibles y puedan escalar.
-             </p>
-             <p style={{
-                 fontFamily: '"Inter", sans-serif',
-                 fontSize: '0.875rem',
-                 lineHeight: '1.6',
-                 color: '#c7c4d7',
-                 marginBottom: '0.75rem'
-             }}>Disfruto trabajar en la lógica detrás de los sistemas, el manejo de datos y la
-               organización del código. Busco entender cómo funcionan las cosas en profundidad
-               para poder diseñar soluciones más eficientes y sólidas.</p>
-               <p style={{
-                 fontFamily: '"Inter", sans-serif',
-                 fontSize: '0.875rem',
-                 lineHeight: '1.6',
-                 color: '#c7c4d7',
-                 marginBottom: '0.75rem'}}> 
-               Mi enfoque está en escribir código claro, aplicar buenas prácticas y construir
-               proyectos que simulen entornos reales, donde la escalabilidad y el rendimiento
-               son importantes.
-               </p>
+          <div style={{
+            aspectRatio: '1',
+            borderRadius: '1rem',
+            overflow: 'hidden',
+            boxShadow: '0 0 40px -10px rgba(192, 193, 255, 0.15)',
+            position: 'relative',
+            maxWidth: imageSize + 'px',
+            margin: '0 auto'
+          }}>
+            <img
+              src={perfil}
+              alt="Fausto Chirino"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                transform: windowWidth <= 768 ? 'scale(1.1)' : 'scale(1.3)',
+                transformOrigin: windowWidth <= 768 ? '50% 20%' : '50% 0%'
+              }}
+            />
+            <div style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'rgba(192, 193, 255, 0.1)',
+              mixBlendMode: 'overlay',
+              pointerEvents: 'none'
+            }} />
           </div>
 
-          <div className="about-info-card" style={{ padding: '1rem' }}>
-            <ul style={{
-              listStyle: 'none',
-              padding: 0,
-              margin: 0,
+          <div className="about-badge" style={{
+            position: 'absolute',
+            bottom: '-1.5rem',
+            right: '-1.5rem',
+            background: '#222a3d',
+            padding: '1rem',
+            borderRadius: '0.75rem',
+            border: '1px solid rgba(70, 69, 84, 0.2)',
+            boxShadow: '0 25px 50px rgba(0, 0, 0, 0.4)',
+            backdropFilter: 'blur(12px)',
+            maxWidth: '200px'
+          }}>
+            <div style={{
               display: 'flex',
-              flexDirection: 'column',
-              gap: '0.625rem'
+              alignItems: 'center',
+              gap: '0.75rem',
+              marginBottom: '0.75rem'
             }}>
-              <li style={{ fontSize: '0.8125rem' }}>
+              <div style={{ display: 'flex' }}>
                 <div style={{
-                  color: '#c0c1ff',
-                  fontWeight: 600,
-                  marginBottom: '0.5rem',
-                  fontSize: '0.75rem',
-                  letterSpacing: '0.05em',
-                  textTransform: 'uppercase',
-                  fontFamily: '"JetBrains Mono", monospace'
-                }}>Stack</div>
-
-                <div className="tech-category-label">Frontend</div>
+                  width: '24px',
+                  height: '24px',
+                  borderRadius: '50%',
+                  border: '2px solid #222a3d',
+                  background: 'rgba(192, 193, 255, 0.2)',
+                  marginRight: '-0.75rem'
+                }} />
                 <div style={{
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  gap: '0.375rem',
-                  marginBottom: '0.625rem'
-                }}>
-                  {['React', 'TypeScript', 'Tailwind'].map((tech) => {
-                    const Icon = TECH_ICONS[tech]
-                    return (
-                      <span key={tech} className="about-tech-chip">
-                        {Icon && <Icon size={10} />}
-                        {tech}
-                      </span>
-                    )
-                  })}
-                </div>
-
-                <div className="tech-category-label">Backend</div>
+                  width: '24px',
+                  height: '24px',
+                  borderRadius: '50%',
+                  border: '2px solid #222a3d',
+                  background: 'rgba(78, 222, 163, 0.2)',
+                  marginRight: '-0.5rem'
+                }} />
                 <div style={{
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  gap: '0.375rem'
-                }}>
-                  {['Python', 'FastAPI', 'SQL'].map((tech) => {
-                    const Icon = TECH_ICONS[tech]
-                    return (
-                      <span key={tech} className="about-tech-chip">
-                        {Icon && <Icon size={10} />}
-                        {tech}
-                      </span>
-                    )
-                  })}
-                </div>
-              </li>
+                  width: '24px',
+                  height: '24px',
+                  borderRadius: '50%',
+                  border: '2px solid #222a3d',
+                  background: 'rgba(255, 183, 131, 0.2)'
+                }} />
+              </div>
+              <span style={{
+                fontFamily: '"JetBrains Mono", monospace',
+                fontSize: '0.625rem',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+                color: '#dae2fd'
+              }}>
+                Fullstack Stack
+              </span>
+            </div>
+            <div style={{
+              fontFamily: '"JetBrains Mono", monospace',
+              fontSize: '0.75rem',
+              color: '#4edea3',
+              lineHeight: '1.6'
+            }}>
+              REACT_CORE: <span style={{ animation: 'glow-pulse 2s ease-in-out infinite' }}>ACTIVE</span><br />
+              FASTAPI_API: LISTENING
+            </div>
+          </div>
+        </div>
 
-              <li style={{ fontSize: '0.8125rem' }}>
-                <strong style={{ color: '#c0c1ff', fontWeight: 600, marginRight: '0.5rem', display: 'block', marginBottom: '0.25rem', fontSize: '0.75rem', letterSpacing: '0.05em', textTransform: 'uppercase', fontFamily: '"JetBrains Mono", monospace' }}>Enfoque:</strong>
-                <span style={{ color: '#dae2fd' }}>Fullstack</span>
-              </li>
+        <div className="about-text-col" style={{
+          gridColumn: 'span 8'
+        }}>
+          <span id="about-label" style={{
+            fontFamily: '"JetBrains Mono", monospace',
+            color: '#c0c1ff',
+            letterSpacing: '0.1em',
+            display: 'block',
+            marginBottom: '1rem',
+            fontSize: '0.75rem',
+            fontWeight: 600,
+            textTransform: 'uppercase',
+            scrollMarginTop: '100px'
+          }}>Sobre Fausto Chirino</span>
 
-              <li style={{ fontSize: '0.8125rem' }}>
-                <strong style={{ color: '#c0c1ff', fontWeight: 600, marginRight: '0.5rem', display: 'block', marginBottom: '0.25rem', fontSize: '0.75rem', letterSpacing: '0.05em', textTransform: 'uppercase', fontFamily: '"JetBrains Mono", monospace' }}>Formación:</strong>
-                <span style={{ color: '#dae2fd' }}>Tecnicatura Universitaria en Programación (UTN)</span>
-              </li>
+          <h2 style={{
+            fontFamily: '"Plus Jakarta Sans", sans-serif',
+            fontSize: 'clamp(1.75rem, 3.5vw, 2.5rem)',
+            lineHeight: '1.1',
+            fontWeight: 700,
+            color: '#dae2fd',
+            marginBottom: '1.25rem',
+            letterSpacing: '-0.02em'
+          }}>
+            Creando soluciones que <span style={{ fontStyle: 'italic', fontWeight: 400 }}>impulsan</span> negocios.
+          </h2>
 
-              <li style={{ fontSize: '0.8125rem' }}>
-                <strong style={{ color: '#c0c1ff', fontWeight: 600, marginRight: '0.5rem', display: 'block', marginBottom: '0.25rem', fontSize: '0.75rem', letterSpacing: '0.05em', textTransform: 'uppercase', fontFamily: '"JetBrains Mono", monospace' }}>Objetivo:</strong>
-                <span style={{ color: '#dae2fd' }}>Crecer como desarrollador profesional</span>
-              </li>
-            </ul>
+          <div style={{
+            fontFamily: '"Inter", sans-serif',
+            fontSize: '0.9375rem',
+            lineHeight: '1.6',
+            color: '#c7c4d7',
+            marginBottom: '1.25rem'
+          }}>
+            <p style={{ marginBottom: '0.85rem' }}>
+              Estudiante de Programación en UTN enfocado en el desarrollo Full-stack. Me especializo en construir aplicaciones funcionales, escalables y bien estructuradas, desde la lógica del backend hasta la experiencia del usuario.
+            </p>
+            <p style={{ marginBottom: '0.85rem' }}>
+              Disfruto trabajar en la lógica detrás de los sistemas, el manejo de datos y la organización del código. Busco entender cómo funcionan las cosas en profundidad para poder diseñar soluciones más eficientes y sólidas.
+            </p>
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+            gap: '1rem'
+          }}>
+            <div style={{
+              padding: '1rem',
+              borderRadius: '0.75rem',
+              background: 'rgba(19, 27, 46, 0.5)',
+              border: '1px solid rgba(70, 69, 84, 0.1)',
+              backdropFilter: 'blur(8px)'
+            }}>
+              <h4 style={{
+                fontFamily: '"Plus Jakarta Sans", sans-serif',
+                fontWeight: 700,
+fontSize: '0.9375rem',
+                  color: '#dae2fd',
+                marginBottom: '0.75rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}>
+                <span className="material-symbols-outlined" style={{ color: '#c0c1ff', fontSize: '1.25rem' }}>code</span>
+                Especialidad
+              </h4>
+              <p style={{
+                fontFamily: '"JetBrains Mono", monospace',
+                fontSize: '0.75rem',
+                color: '#4edea3',
+                marginBottom: '0.25rem'
+              }}>$ Frontend</p>
+              <p style={{
+                fontFamily: '"Inter", sans-serif',
+                fontSize: '0.8125rem',
+                color: '#dae2fd',
+                margin: '0 0 0.75rem'
+              }}>React, TypeScript, Tailwind</p>
+              <p style={{
+                fontFamily: '"JetBrains Mono", monospace',
+                fontSize: '0.75rem',
+                color: '#c0c1ff',
+                marginBottom: '0.25rem'
+              }}>$ Backend</p>
+              <p style={{
+                fontFamily: '"Inter", sans-serif',
+                fontSize: '0.8125rem',
+                color: '#dae2fd',
+                margin: 0
+              }}>Python, FastAPI, SQL</p>
+            </div>
+
+            <div style={{
+              padding: '1rem',
+              borderRadius: '0.75rem',
+              background: 'rgba(19, 27, 46, 0.5)',
+              border: '1px solid rgba(70, 69, 84, 0.1)',
+              backdropFilter: 'blur(8px)'
+            }}>
+              <h4 style={{
+                fontFamily: '"Plus Jakarta Sans", sans-serif',
+                fontWeight: 700,
+                fontSize: '0.9375rem',
+                color: '#dae2fd',
+                marginBottom: '0.75rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}>
+                <span className="material-symbols-outlined" style={{ color: '#4edea3', fontSize: '1.25rem' }}>rocket_launch</span>
+                Visión
+              </h4>
+              <p style={{
+                fontFamily: '"Inter", sans-serif',
+                fontSize: '0.8125rem',
+                color: '#c7c4d7',
+                lineHeight: '1.5',
+                margin: 0
+              }}>
+                Escalar negocios locales mediante la implementación de tecnología de vanguardia y diseño centrado en el usuario.
+              </p>
+            </div>
           </div>
         </div>
       </motion.div>

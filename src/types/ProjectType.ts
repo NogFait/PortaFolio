@@ -4,7 +4,8 @@ export type Project = {
     descripcion:string;
     imagen:string;
     objectFit?: 'cover' | 'contain';
+    objectPosition?: string;
     bgColor?: string;
-    tecnologias?:string[]; // Para Tech Chips
+    tecnologias?:string[];
     link?:string;
 }

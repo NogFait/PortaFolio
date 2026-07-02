@@ -1,138 +1,91 @@
 const Footer = () => {
   return (
     <footer style={{
-      backgroundColor: '#171f33',
-      position: 'relative',
-      overflow: 'hidden'
+      backgroundColor: '#0b1326',
+      position: 'relative'
     }}>
       <div style={{
-        position: 'absolute',
-        bottom: '-30%',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        width: '300px',
-        height: '300px',
-        background: 'radial-gradient(circle, rgba(192, 193, 255, 0.06) 0%, transparent 70%)',
-        pointerEvents: 'none',
-        filter: 'blur(40px)'
+        height: '1px',
+        background: 'linear-gradient(to right, transparent, rgba(144, 143, 160, 0.2), transparent)'
       }} />
-      
-      <div className="footer-grid" style={{
-        maxWidth: '1100px',
+
+      <div style={{
+        maxWidth: '1280px',
         margin: '0 auto',
-        marginBottom: '1rem',
-        position: 'relative',
-        zIndex: 1
-      }}>
-        <div>
-          <h3 style={{
+        padding: '3rem 1.5rem',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: '1.5rem'
+      }} className="footer__inner">
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '0.5rem'
+        }}>
+          <span style={{
             fontFamily: '"Plus Jakarta Sans", sans-serif',
-            fontSize: '1rem',
-            lineHeight: '1.3',
-            fontWeight: 600,
-            color: '#dae2fd',
-            marginBottom: '0.25rem',
-            textShadow: '0 0 30px rgba(192, 193, 255, 0.2)'
-          }}>Fausto Chirino</h3>
+            fontSize: '1.125rem',
+            fontWeight: 800,
+            color: '#c0c1ff',
+            letterSpacing: '-0.02em'
+          }}>
+            FAUSTO CHIRINO
+          </span>
           <p style={{
-            fontFamily: '"Inter", sans-serif',
-            fontSize: '0.8125rem',
-            lineHeight: '1.5',
+            fontFamily: '"JetBrains Mono", monospace',
+            fontSize: '0.6875rem',
+            textTransform: 'uppercase',
+            letterSpacing: '0.05em',
             color: '#c7c4d7',
             margin: 0
-          }}>Desarrollador Full-Stack</p>
-        </div>      
-        
-        <nav>
-          <p style={{
-            fontFamily: '"JetBrains Mono", monospace',
-            color: '#4edea3',
-            marginBottom: '0.5rem',
-            fontWeight: 600,
-            fontSize: '0.6875rem',
-            letterSpacing: '0.05em',
-            textTransform: 'uppercase'
-          }}>Navegación</p>
-          <ul style={{
-            listStyle: 'none',
-            padding: 0,
-            margin: 0,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '0.25rem'
           }}>
-            <li><a href="#projects" className="footer-nav-link">Proyectos →</a></li>
-            <li><a href="#about" className="footer-nav-link">Sobre mí →</a></li>
-            <li><a href="#contact" className="footer-nav-link">Contacto →</a></li>
-          </ul>
-        </nav>      
-        
-        <div>
-          <p style={{
-            fontFamily: '"JetBrains Mono", monospace',
-            color: '#4edea3',
-            marginBottom: '0.5rem',
-            fontWeight: 600,
-            fontSize: '0.6875rem',
-            letterSpacing: '0.05em',
-            textTransform: 'uppercase'
-          }}>Contacto</p>
-          <a 
-            href="#contact"
-            className="footer-contact-link"
-            style={{
-              fontFamily: '"Inter", sans-serif',
-              color: '#c0c1ff',
-              textDecoration: 'none',
-              fontSize: '0.8125rem',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.375rem'
-            }}
-          >
-            Enviar mensaje →
-          </a>
-        </div>      
-        
-        <div>
-          <p style={{
-            fontFamily: '"JetBrains Mono", monospace',
-            color: '#4edea3',
-            marginBottom: '0.5rem',
-            fontWeight: 600,
-            fontSize: '0.6875rem',
-            letterSpacing: '0.05em',
-            textTransform: 'uppercase'
-          }}>Redes</p>
-          <ul style={{
-            listStyle: 'none',
-            padding: 0,
-            margin: 0,
-            display: 'flex',
-            gap: '0.75rem'
-          }}>
-            <li><a href="https://github.com/NogFait" target="_blank" className="footer-social-link">GitHub</a></li>
-            <li><a href="https://www.linkedin.com/in/fausto-chirino-76b7572b6" target="_blank" className="footer-social-link">LinkedIn</a></li>
-          </ul>
+            &copy; {new Date().getFullYear()} Fausto Chirino. Hecho con pasión y código.
+          </p>
         </div>
-      </div>      
-      
-      <div style={{
-        textAlign: 'center',
-        paddingTop: '0.75rem',
-        position: 'relative',
-        zIndex: 1
-      }}>
-        <p style={{
+
+        <div style={{
+          display: 'flex',
+          gap: '2rem',
           fontFamily: '"JetBrains Mono", monospace',
-          color: '#c7c4d7',
           fontSize: '0.6875rem',
-          letterSpacing: '0.02em',
-          margin: 0
-        }}>© {new Date().getFullYear()} Fausto Chirino. Todos los derechos reservados.</p>
+          textTransform: 'uppercase',
+          letterSpacing: '0.1em'
+        }}>
+          <a
+            href="https://github.com/NogFait"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer__social-link"
+          >
+            Github
+          </a>
+          <a
+            href="https://www.linkedin.com/in/fausto-chirino-76b7572b6"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer__social-link"
+          >
+            LinkedIn
+          </a>
+        </div>
+
+        <span style={{
+          fontFamily: '"JetBrains Mono", monospace',
+          fontSize: '0.625rem',
+          letterSpacing: '0.1em',
+          color: '#4edea3',
+          border: '1px solid rgba(78, 222, 163, 0.3)',
+          padding: '0.375rem 0.75rem',
+          borderRadius: '0.25rem',
+          textTransform: 'uppercase'
+        }}>
+          v1.2.0-PRODUCTION
+        </span>
       </div>
     </footer>
-  );
-};
+  )
+}
 
 export default Footer

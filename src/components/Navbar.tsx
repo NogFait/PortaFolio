@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import './Navbar.css'
 
 const NAV_SECTIONS = [
-  { id: 'hero', label: 'Inicio' },
   { id: 'projects', label: 'Proyectos' },
   { id: 'about', label: 'Sobre mí' },
   { id: 'contact', label: 'Contacto' },
@@ -12,11 +11,14 @@ const NAV_SECTIONS = [
 const Navbar = () => {
   const [activeSection, setActiveSection] = useState('')
   const [isMobileOpen, setIsMobileOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
     const handleRoute = () => {
       const sections = NAV_SECTIONS.map(s => document.getElementById(s.id))
       const scrollPosition = window.scrollY + 120
+
+      setScrolled(window.scrollY > 50)
 
       for (let i = sections.length - 1; i >= 0; i--) {
         const section = sections[i]
@@ -34,7 +36,8 @@ const Navbar = () => {
   }, [])
 
   const scrollTo = (id: string) => {
-    const el = document.getElementById(id)
+    const targetId = id === 'about' ? 'about-label' : id === 'projects' ? 'projects-label' : id
+    const el = document.getElementById(targetId)
     if (el) {
       el.scrollIntoView({ behavior: 'smooth' })
     }
@@ -43,8 +46,15 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="navbar">
+      <nav className={`navbar${scrolled ? ' navbar--scrolled' : ''}`}>
         <div className="navbar__inner">
+          <button
+            className="navbar__logo"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          >
+            FAUSTO CHIRINO
+          </button>
+
           <ul className="navbar__links">
             {NAV_SECTIONS.map(s => (
               <li key={s.id} className="navbar__link-item">
@@ -65,22 +75,29 @@ const Navbar = () => {
             ))}
           </ul>
 
-          <button
-            className={`navbar__hamburger ${isMobileOpen ? 'navbar__hamburger--open' : ''}`}
-            onClick={() => setIsMobileOpen(prev => !prev)}
-            aria-label="Toggle menu"
-          >
-            <span className="navbar__hamburger-line" />
-            <span className="navbar__hamburger-line" />
-            <span className="navbar__hamburger-line" />
-          </button>
+          <div className="navbar__actions">
+            <a className="navbar__cv-btn" href="/Fausto%20Chirino%20Calderon.pdf" download>
+              <span className="material-symbols-outlined navbar__cv-icon">terminal</span>
+              <span className="navbar__cv-text">CV</span>
+            </a>
+
+            <button
+              className={`navbar__hamburger ${isMobileOpen ? 'navbar__hamburger--open' : ''}`}
+              onClick={() => setIsMobileOpen(prev => !prev)}
+              aria-label="Toggle menu"
+            >
+              <span className="navbar__hamburger-line" />
+              <span className="navbar__hamburger-line" />
+              <span className="navbar__hamburger-line" />
+            </button>
+          </div>
         </div>
       </nav>
 
       <AnimatePresence>
         {isMobileOpen && (
           <motion.div
-            className="navbar__mobile-overlay navbar__mobile-overlay--open"
+            className="navbar__mobile-overlay"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -95,6 +112,10 @@ const Navbar = () => {
                 {s.label}
               </button>
             ))}
+            <a className="navbar__mobile-cv-btn" href="/Fausto%20Chirino%20Calderon.pdf" download>
+              <span className="material-symbols-outlined">terminal</span>
+              CV
+            </a>
           </motion.div>
         )}
       </AnimatePresence>
