@@ -66,19 +66,19 @@ const ProjectsSeccion = () => {
       viewport={{ once: true, margin: '-40px' }}
     >
       <TiltCard className="projects-grid__hero">
-        <ProjectCard project={projects[0]} layout="hero" delay={0.1} />
+        <ProjectCard project={projects[0]} layout="hero" />
       </TiltCard>
 
       <TiltCard className="projects-grid__tall">
-        <ProjectCard project={projects[1]} layout="vertical" delay={0.2} />
+        <ProjectCard project={projects[1]} layout="vertical" />
       </TiltCard>
 
       <TiltCard className="projects-grid__compact">
-        <ProjectCard project={projects[3]} layout="compact" delay={0.3} />
+        <ProjectCard project={projects[3]} layout="compact" />
       </TiltCard>
 
       <TiltCard className="projects-grid__split">
-        <ProjectCard project={projects[2]} layout="split" delay={0.4} />
+        <ProjectCard project={projects[2]} layout="split" />
       </TiltCard>
     </motion.div>
   )

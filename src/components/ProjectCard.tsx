@@ -1,17 +1,5 @@
 import { useEffect, useState } from 'react'
-import { SiReact, SiTypescript, SiVite, SiCss, SiSupabase, SiPython, SiFastapi } from 'react-icons/si'
 import type { Project } from "../types/ProjectType"
-
-const TECH_ICONS: Record<string, React.ComponentType<{ size?: number }>> = {
-  React: SiReact,
-  Typescript: SiTypescript,
-  TypeScript: SiTypescript,
-  Vite: SiVite,
-  CSS: SiCss,
-  Supabase: SiSupabase,
-  Python: SiPython,
-  FastAPI: SiFastapi,
-}
 
 type Layout = 'hero' | 'vertical' | 'compact' | 'split'
 
