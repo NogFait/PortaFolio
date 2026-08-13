@@ -1,7 +1,7 @@
 const Footer = () => {
   return (
     <footer style={{
-      backgroundColor: '#0b1326',
+      backgroundColor: 'var(--surface)',
       position: 'relative'
     }}>
       <div style={{
@@ -25,20 +25,20 @@ const Footer = () => {
           gap: '0.5rem'
         }}>
           <span style={{
-            fontFamily: '"Plus Jakarta Sans", sans-serif',
+            fontFamily: 'var(--font-display)',
             fontSize: '1.125rem',
             fontWeight: 800,
-            color: '#c0c1ff',
+            color: 'var(--primary)',
             letterSpacing: '-0.02em'
           }}>
             FAUSTO CHIRINO
           </span>
           <p style={{
-            fontFamily: '"JetBrains Mono", monospace',
+            fontFamily: 'var(--font-mono)',
             fontSize: '0.6875rem',
             textTransform: 'uppercase',
             letterSpacing: '0.05em',
-            color: '#c7c4d7',
+            color: 'var(--on-surface-variant)',
             margin: 0
           }}>
             &copy; {new Date().getFullYear()} Fausto Chirino. Hecho con pasión y código.
@@ -48,7 +48,7 @@ const Footer = () => {
         <div style={{
           display: 'flex',
           gap: '2rem',
-          fontFamily: '"JetBrains Mono", monospace',
+          fontFamily: 'var(--font-mono)',
           fontSize: '0.6875rem',
           textTransform: 'uppercase',
           letterSpacing: '0.1em'
@@ -72,11 +72,11 @@ const Footer = () => {
         </div>
 
         <span style={{
-          fontFamily: '"JetBrains Mono", monospace',
+          fontFamily: 'var(--font-mono)',
           fontSize: '0.625rem',
           letterSpacing: '0.1em',
-          color: '#4edea3',
-          border: '1px solid rgba(78, 222, 163, 0.3)',
+          color: 'var(--secondary)',
+          border: '1px solid rgba(var(--secondary-rgb), 0.3)',
           padding: '0.375rem 0.75rem',
           borderRadius: '0.25rem',
           textTransform: 'uppercase'

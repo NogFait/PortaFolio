@@ -1,42 +1,17 @@
-import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { SiGithub } from 'react-icons/si'
 import { FaLinkedin } from 'react-icons/fa'
 import ContactForm from './ContactForm'
+import { useBreakpoint } from '../hooks/useMediaQuery'
+import { useScrollAnimation } from '../hooks/useScrollAnimation'
 
 const ContactFormSection = () => {
-  const sectionRef = useRef<HTMLElement>(null)
-  const [isVisible, setIsVisible] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
-
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth <= 768)
-    check()
-    window.addEventListener('resize', check)
-    return () => window.removeEventListener('resize', check)
-  }, [])
-
-  useEffect(() => {
-    const element = sectionRef.current
-    if (!element) return
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true)
-          observer.unobserve(element)
-        }
-      },
-      { threshold: 0.1 }
-    )
-
-    observer.observe(element)
-    return () => observer.disconnect()
-  }, [])
+  const { ref: sectionRef, isVisible } = useScrollAnimation<HTMLElement>()
+  const { isMobile } = useBreakpoint()
 
   return (
     <section ref={sectionRef} id="contact" style={{
-      backgroundColor: '#060e20',
+      backgroundColor: 'var(--surface-container-lowest)',
     }}>
       <motion.div
         style={{ maxWidth: '1280px', width: '100%', margin: '0 auto' }}
@@ -61,19 +36,19 @@ const ContactFormSection = () => {
           }}>
             <div>
               <h2 style={{
-                fontFamily: '"Plus Jakarta Sans", sans-serif',
+                fontFamily: 'var(--font-display)',
                 fontSize: 'clamp(1.75rem, 3vw, 3rem)',
                 fontWeight: 700,
-                color: '#dae2fd',
+                color: 'var(--on-surface)',
                 marginBottom: '1.5rem',
                 letterSpacing: '-0.02em'
               }}>
-                ¿Tienes un proyecto en <span style={{ color: '#c0c1ff' }}>mente</span>?
+                ¿Tienes un proyecto en <span style={{ color: 'var(--primary)' }}>mente</span>?
               </h2>
               <p style={{
-                fontFamily: '"Inter", sans-serif',
+                fontFamily: 'var(--font-body)',
                 fontSize: '1rem',
-                color: '#c7c4d7',
+                color: 'var(--on-surface-variant)',
                 lineHeight: '1.6',
                 marginBottom: '2rem'
               }}>
@@ -86,27 +61,27 @@ const ContactFormSection = () => {
                     width: '48px',
                     height: '48px',
                     borderRadius: '50%',
-                    background: '#222a3d',
+                    background: 'var(--surface-container-high)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     transition: 'transform 0.3s ease'
                   }}>
-                    <span className="material-symbols-outlined" style={{ color: '#4edea3' }}>location_on</span>
+                    <span className="material-symbols-outlined" style={{ color: 'var(--secondary)' }}>location_on</span>
                   </div>
                   <div>
                     <p style={{
-                      fontFamily: '"JetBrains Mono", monospace',
+                      fontFamily: 'var(--font-mono)',
                       fontSize: '0.625rem',
                       textTransform: 'uppercase',
-                      color: '#908fa0',
+                      color: 'var(--outline)',
                       marginBottom: '0.125rem',
                       letterSpacing: '0.05em'
                     }}>Ubicación</p>
                     <p style={{
-                      fontFamily: '"Plus Jakarta Sans", sans-serif',
+                      fontFamily: 'var(--font-display)',
                       fontWeight: 700,
-                      color: '#dae2fd',
+                      color: 'var(--on-surface)',
                       fontSize: '0.9375rem',
                       margin: 0
                     }}>Mendoza, Argentina</p>
@@ -120,15 +95,16 @@ const ContactFormSection = () => {
                 href="https://github.com/NogFait"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="GitHub"
                 style={{
                   width: '40px',
                   height: '40px',
                   borderRadius: '0.5rem',
-                  background: '#222a3d',
+                  background: 'var(--surface-container-high)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: '#c7c4d7',
+                  color: 'var(--on-surface-variant)',
                   textDecoration: 'none',
                   transition: 'all 0.3s ease'
                 }}
@@ -140,15 +116,16 @@ const ContactFormSection = () => {
                 href="https://www.linkedin.com/in/fausto-chirino-76b7572b6"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="LinkedIn"
                 style={{
                   width: '40px',
                   height: '40px',
                   borderRadius: '0.5rem',
-                  background: '#222a3d',
+                  background: 'var(--surface-container-high)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: '#c7c4d7',
+                  color: 'var(--on-surface-variant)',
                   textDecoration: 'none',
                   transition: 'all 0.3s ease'
                 }}

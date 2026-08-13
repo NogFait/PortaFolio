@@ -1,40 +1,15 @@
-import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import ProjectsSeccion from "./ProjectsSeccion"
+import { useBreakpoint } from '../hooks/useMediaQuery'
+import { useScrollAnimation } from '../hooks/useScrollAnimation'
 
 const Projects = () => {
-  const sectionRef = useRef<HTMLElement>(null)
-  const [isVisible, setIsVisible] = useState(false)
-  const [isTablet, setIsTablet] = useState(false)
-
-  useEffect(() => {
-    const check = () => setIsTablet(window.innerWidth <= 1024)
-    check()
-    window.addEventListener('resize', check)
-    return () => window.removeEventListener('resize', check)
-  }, [])
-
-  useEffect(() => {
-    const element = sectionRef.current
-    if (!element) return
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true)
-          observer.unobserve(element)
-        }
-      },
-      { threshold: 0.1 }
-    )
-
-    observer.observe(element)
-    return () => observer.disconnect()
-  }, [])
+  const { ref: sectionRef, isVisible } = useScrollAnimation<HTMLElement>()
+  const { isTablet } = useBreakpoint()
 
   return (
     <section ref={sectionRef} id="projects" style={{
-      backgroundColor: '#131b2e',
+      backgroundColor: 'var(--surface-container-low)',
       position: 'relative',
       overflow: 'hidden'
     }}>
@@ -57,8 +32,8 @@ const Projects = () => {
         }}>
           <div style={{ maxWidth: '600px' }}>
             <span id="projects-label" style={{
-              fontFamily: '"JetBrains Mono", monospace',
-              color: '#4edea3',
+              fontFamily: 'var(--font-mono)',
+              color: 'var(--secondary)',
               letterSpacing: '0.1em',
               display: 'block',
               marginBottom: '1rem',
@@ -69,11 +44,11 @@ const Projects = () => {
             }}>Portafolio</span>
 
             <h2 style={{
-              fontFamily: '"Plus Jakarta Sans", sans-serif',
+              fontFamily: 'var(--font-display)',
               fontSize: 'clamp(2rem, 4vw, 3rem)',
               lineHeight: '1.1',
               fontWeight: 700,
-              color: '#dae2fd',
+              color: 'var(--on-surface)',
               marginBottom: '1rem',
               letterSpacing: '-0.02em'
             }}>
@@ -81,10 +56,10 @@ const Projects = () => {
             </h2>
 
             <p style={{
-              fontFamily: '"Inter", sans-serif',
+              fontFamily: 'var(--font-body)',
               fontSize: '0.9375rem',
               lineHeight: '1.6',
-              color: '#c7c4d7',
+              color: 'var(--on-surface-variant)',
               margin: 0
             }}>
               Proyectos Full-stack con enfoque en estructura, escalabilidad y buenas prácticas.

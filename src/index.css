@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+/* Fuentes cargadas via <link> en index.html (evita el bloqueo de render de @import) */
 
 /* === KEYFRAMES === */
 @keyframes float {
@@ -44,58 +43,76 @@ html {
 }
 
 body {
-  font-family: "Inter", sans-serif;
-  background-color: #0b1326 !important;
-  color: #dae2fd !important;
+  font-family: var(--font-body);
+  background-color: var(--surface) !important;
+  color: var(--on-surface) !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  min-height: 100vh;
+  min-height: 100lvh;
   line-height: 1.6;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
 }
 
 /* === CSS VARIABLES === */
 :root {
   --surface: #0b1326;
+  --surface-rgb: 11, 19, 38;
   --surface-container-lowest: #060e20;
   --surface-container-low: #131b2e;
   --surface-container: #171f33;
   --surface-container-high: #222a3d;
   --surface-container-highest: #2d3449;
-  
+
   --primary: #c0c1ff;
+  --primary-rgb: 192, 193, 255;
   --primary-container: #8083ff;
-  
+
   --secondary: #4edea3;
+  --secondary-rgb: 78, 222, 163;
   --secondary-container: #00a572;
-  
+
   --on-surface: #dae2fd;
+  --on-surface-rgb: 218, 226, 253;
   --on-surface-variant: #c7c4d7;
   --outline: #908fa0;
   --outline-variant: #464554;
   --ghost-border: rgba(70, 69, 84, 0.2);
-  
+
   --font-display: "Plus Jakarta Sans", sans-serif;
   --font-body: "Inter", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
-  
+
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
   --spacing-4: 1rem;
+  --spacing-5: 1.25rem;
   --spacing-6: 1.5rem;
   --spacing-8: 2rem;
+  --spacing-10: 2.5rem;
+  --spacing-12: 3rem;
   --spacing-16: 4rem;
-  
+
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
   --radius-full: 0.75rem;
-  
-  --shadow-ghost: 0 8px 32px rgba(218, 226, 253, 0.04);
-  --shadow-ambient: 0 0 40px -10px rgba(192, 193, 255, 0.15);
+
+  --shadow-ghost: 0 8px 32px rgba(var(--on-surface-rgb), 0.04);
+  --shadow-ambient: 0 0 40px -10px rgba(var(--primary-rgb), 0.15);
 }
 
 /* === TYPOGRAPHY RESET === */
 h1, h2, h3, h4, h5, h6 {
-  font-family: "Plus Jakarta Sans", sans-serif;
+  font-family: var(--font-display);
   letter-spacing: -0.02em;
-  color: #dae2fd;
+  color: var(--on-surface);
   margin-bottom: 1rem;
 }
 
@@ -103,13 +120,13 @@ h1 { font-size: 3.5rem; font-weight: 700; line-height: 1.1; }
 h2 { font-size: 2rem; font-weight: 600; line-height: 1.3; }
 
 p {
-  color: #c7c4d7;
+  color: var(--on-surface-variant);
   margin-bottom: 1rem;
 }
 
 /* === BUTTONS === */
 button {
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-body);
   cursor: pointer;
   border: none;
   border-radius: 0.75rem;
@@ -124,8 +141,8 @@ button {
 }
 
 .gradient-glow-primary {
-  background: linear-gradient(45deg, #c0c1ff, #8083ff);
-  box-shadow: 0 0 20px rgba(192, 193, 255, 0.3);
+  background: linear-gradient(45deg, var(--primary), var(--primary-container));
+  box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.3);
 }
 
 .gradient-text {
@@ -135,7 +152,7 @@ button {
 }
 
 .tech-glow {
-  box-shadow: 0 0 40px -10px rgba(192, 193, 255, 0.15);
+  box-shadow: 0 0 40px -10px rgba(var(--primary-rgb), 0.15);
 }
 
 .reveal {
@@ -160,7 +177,7 @@ button {
 
 .hero-btn:hover {
   transform: scale(1.05) !important;
-  box-shadow: 0 0 30px -4px rgba(192, 193, 255, 0.5);
+  box-shadow: 0 0 30px -4px rgba(var(--primary-rgb), 0.5);
 }
 
 .glass {
@@ -179,7 +196,7 @@ button {
   width: 600px;
   height: 600px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(192, 193, 255, 0.08) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(var(--primary-rgb), 0.08) 0%, transparent 70%);
   filter: blur(80px);
   pointer-events: none;
   z-index: -1;
@@ -195,26 +212,26 @@ section {
 }
 
 section:nth-child(odd) {
-  background-color: #0b1326;
+  background-color: var(--surface);
 }
 
 section:nth-child(even) {
-  background-color: #131b2e;
+  background-color: var(--surface-container-low);
 }
 
 footer {
-  background-color: #0b1326;
+  background-color: var(--surface);
   border-top: none;
 }
 
 /* === INPUT FIELDS === */
 input, textarea, select {
-  background-color: #060e20;
-  color: #dae2fd;
+  background-color: var(--surface-container-lowest);
+  color: var(--on-surface);
   padding: 1rem;
   border-radius: 0.75rem;
   border: 1px solid rgba(255, 255, 255, 0.05);
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-body);
   font-size: 0.875rem;
   width: 100%;
   transition: all 0.3s ease;
@@ -223,8 +240,8 @@ input, textarea, select {
 
 input:focus, textarea:focus, select:focus {
   outline: none;
-  border-color: #c0c1ff;
-  box-shadow: 0 0 15px rgba(192, 193, 255, 0.4);
+  border-color: var(--primary);
+  box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.4);
 }
 
 select {

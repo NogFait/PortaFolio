@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { motion, useMotionValue, useSpring, useScroll, useTransform } from 'framer-motion'
+import { useMediaQuery } from '../hooks/useMediaQuery'
 
 class Particle {
   x: number
@@ -30,7 +31,7 @@ class Particle {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    ctx.fillStyle = '#c0c1ff'
+    ctx.fillStyle = 'var(--primary)'
     ctx.beginPath()
     ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2)
     ctx.fill()
@@ -44,6 +45,7 @@ const Hero = () => {
 
   const { scrollY } = useScroll()
   const glowY = useTransform(scrollY, [0, 400], [-50, -20])
+  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)')
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -58,6 +60,10 @@ const Hero = () => {
     const resize = () => {
       canvas.width = window.innerWidth
       canvas.height = window.innerHeight
+      particles.forEach(p => {
+        p.canvasW = canvas.width
+        p.canvasH = canvas.height
+      })
     }
 
     const init = () => {
@@ -78,7 +84,12 @@ const Hero = () => {
 
     resize()
     init()
-    animate()
+
+    if (prefersReducedMotion) {
+      particles.forEach(p => p.draw(ctx))
+    } else {
+      animate()
+    }
 
     window.addEventListener('resize', resize)
 
@@ -86,7 +97,7 @@ const Hero = () => {
       cancelAnimationFrame(animId)
       window.removeEventListener('resize', resize)
     }
-  }, [])
+  }, [prefersReducedMotion])
 
   const handleMouseMove = (e: React.MouseEvent) => {
     const rect = e.currentTarget.getBoundingClientRect()
@@ -96,7 +107,7 @@ const Hero = () => {
 
   return (
     <section id="hero" onMouseMove={handleMouseMove} style={{
-      background: 'linear-gradient(45deg, #0b1326 0%, #131b2e 50%, #0b1326 100%)',
+      background: 'linear-gradient(45deg, var(--surface) 0%, var(--surface-container-low) 50%, var(--surface) 100%)',
       position: 'relative',
       overflow: 'hidden',
       minHeight: '100lvh',
@@ -124,7 +135,7 @@ const Hero = () => {
           top: glowY,
           width: '600px',
           height: '600px',
-          background: 'radial-gradient(circle, rgba(192, 193, 255, 0.12) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(var(--primary-rgb), 0.12) 0%, transparent 70%)',
           filter: 'blur(80px)',
           pointerEvents: 'none',
           transform: 'translate(-50%, -50%)',
@@ -149,15 +160,15 @@ const Hero = () => {
               width: '8px',
               height: '8px',
               borderRadius: '50%',
-              background: '#4edea3',
+              background: 'var(--secondary)',
               display: 'inline-block',
               animation: 'glow-pulse 2s ease-in-out infinite'
             }} />
             <span style={{
-              fontFamily: '"JetBrains Mono", monospace',
+              fontFamily: 'var(--font-mono)',
               fontSize: '0.625rem',
               letterSpacing: '0.1em',
-              color: '#c7c4d7',
+              color: 'var(--on-surface-variant)',
               textTransform: 'uppercase'
             }}>
               Disponible para nuevos proyectos
@@ -168,11 +179,11 @@ const Hero = () => {
         <motion.h1
           className="fade-in-up"
           style={{
-            fontFamily: '"Plus Jakarta Sans", sans-serif',
+            fontFamily: 'var(--font-display)',
             fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
             lineHeight: '1.1',
             fontWeight: 800,
-            color: '#dae2fd',
+            color: 'var(--on-surface)',
             marginBottom: '1.5rem',
             letterSpacing: '-0.03em',
             animationDelay: '0.2s'
@@ -180,7 +191,7 @@ const Hero = () => {
         >
           Construyendo sistemas reales,{' '}
           <span style={{
-            background: 'linear-gradient(135deg, #c0c1ff, #8083ff)',
+            background: 'linear-gradient(135deg, var(--primary), var(--primary-container))',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent'
           }}>
@@ -191,10 +202,10 @@ const Hero = () => {
         <motion.p
           className="fade-in-up"
           style={{
-            fontFamily: '"Inter", sans-serif',
+            fontFamily: 'var(--font-body)',
             fontSize: 'clamp(1rem, 2vw, 1.25rem)',
             lineHeight: '1.6',
-            color: '#c7c4d7',
+            color: 'var(--on-surface-variant)',
             maxWidth: '640px',
             margin: '0 auto 2.5rem',
             animationDelay: '0.3s'
@@ -218,7 +229,7 @@ const Hero = () => {
             alignItems: 'center',
             gap: '0.5rem',
             padding: '1rem 2rem',
-            background: 'linear-gradient(135deg, #c0c1ff, #8083ff)',
+            background: 'linear-gradient(135deg, var(--primary), var(--primary-container))',
             color: '#1000a9',
             fontWeight: 700,
             fontSize: '0.9375rem',
@@ -237,7 +248,7 @@ const Hero = () => {
             padding: '1rem 2rem',
             background: 'rgba(34, 42, 61, 0.8)',
             backdropFilter: 'blur(12px)',
-            color: '#dae2fd',
+            color: 'var(--on-surface)',
             fontWeight: 600,
             fontSize: '0.9375rem',
             borderRadius: '0.75rem',
@@ -266,17 +277,17 @@ const Hero = () => {
           gap: '0.5rem'
         }}>
           <span style={{
-            fontFamily: '"JetBrains Mono", monospace',
+            fontFamily: 'var(--font-mono)',
             fontSize: '0.625rem',
             letterSpacing: '0.3em',
             textTransform: 'uppercase',
-            color: '#c7c4d7',
+            color: 'var(--on-surface-variant)',
             opacity: 0.5
           }}>Scroll</span>
           <div style={{
             width: '1px',
             height: '3rem',
-            background: 'linear-gradient(to bottom, #c0c1ff, transparent)'
+            background: 'linear-gradient(to bottom, var(--primary), transparent)'
           }} />
         </div>
       </div>

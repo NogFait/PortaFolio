@@ -8,4 +8,7 @@ export type Project = {
     bgColor?: string;
     tecnologias?:string[];
     link?:string;
+    problema?: string;
+    solucion?: string;
+    resultados?: { label: string; value: string }[];
 }

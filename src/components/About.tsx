@@ -1,40 +1,15 @@
-import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import perfil from '../assets/perfil.png'
+import { useBreakpoint } from '../hooks/useMediaQuery'
+import { useScrollAnimation } from '../hooks/useScrollAnimation'
 
 const About = () => {
-  const sectionRef = useRef<HTMLElement>(null)
-  const [isVisible, setIsVisible] = useState(false)
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
-  const imageSize = Math.min(Math.max(250, windowWidth * 0.35), 400)
-
-  useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth)
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
-  useEffect(() => {
-    const element = sectionRef.current
-    if (!element) return
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true)
-          observer.unobserve(element)
-        }
-      },
-      { threshold: 0.1 }
-    )
-
-    observer.observe(element)
-    return () => observer.disconnect()
-  }, [])
+  const { ref: sectionRef, isVisible } = useScrollAnimation<HTMLElement>()
+  const { isMobile, isTablet } = useBreakpoint()
 
   return (
     <section ref={sectionRef} id="about" style={{
-      backgroundColor: '#0b1326',
+      backgroundColor: 'var(--surface)',
       position: 'relative',
       overflow: 'hidden'
     }}>
@@ -47,7 +22,7 @@ const About = () => {
           margin: '0 auto',
           display: 'grid',
           gridTemplateColumns: 'repeat(12, 1fr)',
-          gap: windowWidth <= 768 ? '1.5rem' : windowWidth <= 1024 ? '2.5rem' : '3rem',
+          gap: isMobile ? '1.5rem' : isTablet ? '2.5rem' : '3rem',
           alignItems: 'center'
         }}
         initial={{ opacity: 0, y: 30 }}
@@ -62,26 +37,28 @@ const About = () => {
             aspectRatio: '1',
             borderRadius: '1rem',
             overflow: 'hidden',
-            boxShadow: '0 0 40px -10px rgba(192, 193, 255, 0.15)',
+            boxShadow: '0 0 40px -10px rgba(var(--primary-rgb), 0.15)',
             position: 'relative',
-            maxWidth: imageSize + 'px',
+            maxWidth: 'clamp(250px, 35vw, 400px)',
             margin: '0 auto'
           }}>
             <img
               src={perfil}
               alt="Fausto Chirino"
+              loading="lazy"
+              decoding="async"
               style={{
                 width: '100%',
                 height: '100%',
                 objectFit: 'cover',
-                transform: windowWidth <= 768 ? 'scale(1.1)' : 'scale(1.3)',
-                transformOrigin: windowWidth <= 768 ? '50% 20%' : '50% 0%'
+                transform: isMobile ? 'scale(1.1)' : 'scale(1.3)',
+                transformOrigin: isMobile ? '50% 20%' : '50% 0%'
               }}
             />
             <div style={{
               position: 'absolute',
               inset: 0,
-              background: 'rgba(192, 193, 255, 0.1)',
+              background: 'rgba(var(--primary-rgb), 0.1)',
               mixBlendMode: 'overlay',
               pointerEvents: 'none'
             }} />
@@ -91,7 +68,7 @@ const About = () => {
             position: 'absolute',
             bottom: '-1.5rem',
             right: '-1.5rem',
-            background: '#222a3d',
+            background: 'var(--surface-container-high)',
             padding: '1rem',
             borderRadius: '0.75rem',
             border: '1px solid rgba(70, 69, 84, 0.2)',
@@ -110,40 +87,40 @@ const About = () => {
                   width: '24px',
                   height: '24px',
                   borderRadius: '50%',
-                  border: '2px solid #222a3d',
-                  background: 'rgba(192, 193, 255, 0.2)',
+                  border: '2px solid var(--surface-container-high)',
+                  background: 'rgba(var(--primary-rgb), 0.2)',
                   marginRight: '-0.75rem'
                 }} />
                 <div style={{
                   width: '24px',
                   height: '24px',
                   borderRadius: '50%',
-                  border: '2px solid #222a3d',
-                  background: 'rgba(78, 222, 163, 0.2)',
+                  border: '2px solid var(--surface-container-high)',
+                  background: 'rgba(var(--secondary-rgb), 0.2)',
                   marginRight: '-0.5rem'
                 }} />
                 <div style={{
                   width: '24px',
                   height: '24px',
                   borderRadius: '50%',
-                  border: '2px solid #222a3d',
+                  border: '2px solid var(--surface-container-high)',
                   background: 'rgba(255, 183, 131, 0.2)'
                 }} />
               </div>
               <span style={{
-                fontFamily: '"JetBrains Mono", monospace',
+                fontFamily: 'var(--font-mono)',
                 fontSize: '0.625rem',
                 textTransform: 'uppercase',
                 letterSpacing: '0.05em',
-                color: '#dae2fd'
+                color: 'var(--on-surface)'
               }}>
                 Fullstack Stack
               </span>
             </div>
             <div style={{
-              fontFamily: '"JetBrains Mono", monospace',
+              fontFamily: 'var(--font-mono)',
               fontSize: '0.75rem',
-              color: '#4edea3',
+              color: 'var(--secondary)',
               lineHeight: '1.6'
             }}>
               REACT_CORE: <span style={{ animation: 'glow-pulse 2s ease-in-out infinite' }}>ACTIVE</span><br />
@@ -156,8 +133,8 @@ const About = () => {
           gridColumn: 'span 8'
         }}>
           <span id="about-label" style={{
-            fontFamily: '"JetBrains Mono", monospace',
-            color: '#c0c1ff',
+            fontFamily: 'var(--font-mono)',
+            color: 'var(--primary)',
             letterSpacing: '0.1em',
             display: 'block',
             marginBottom: '1rem',
@@ -168,11 +145,11 @@ const About = () => {
           }}>Sobre Fausto Chirino</span>
 
           <h2 style={{
-            fontFamily: '"Plus Jakarta Sans", sans-serif',
+            fontFamily: 'var(--font-display)',
             fontSize: 'clamp(1.75rem, 3.5vw, 2.5rem)',
             lineHeight: '1.1',
             fontWeight: 700,
-            color: '#dae2fd',
+            color: 'var(--on-surface)',
             marginBottom: '1.25rem',
             letterSpacing: '-0.02em'
           }}>
@@ -180,10 +157,10 @@ const About = () => {
           </h2>
 
           <div style={{
-            fontFamily: '"Inter", sans-serif',
+            fontFamily: 'var(--font-body)',
             fontSize: '0.9375rem',
             lineHeight: '1.6',
-            color: '#c7c4d7',
+            color: 'var(--on-surface-variant)',
             marginBottom: '1.25rem'
           }}>
             <p style={{ marginBottom: '0.85rem' }}>
@@ -207,40 +184,40 @@ const About = () => {
               backdropFilter: 'blur(8px)'
             }}>
               <h4 style={{
-                fontFamily: '"Plus Jakarta Sans", sans-serif',
+                fontFamily: 'var(--font-display)',
                 fontWeight: 700,
 fontSize: '0.9375rem',
-                  color: '#dae2fd',
+                  color: 'var(--on-surface)',
                 marginBottom: '0.75rem',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.5rem'
               }}>
-                <span className="material-symbols-outlined" style={{ color: '#c0c1ff', fontSize: '1.25rem' }}>code</span>
+                <span className="material-symbols-outlined" style={{ color: 'var(--primary)', fontSize: '1.25rem' }}>code</span>
                 Especialidad
               </h4>
               <p style={{
-                fontFamily: '"JetBrains Mono", monospace',
+                fontFamily: 'var(--font-mono)',
                 fontSize: '0.75rem',
-                color: '#4edea3',
+                color: 'var(--secondary)',
                 marginBottom: '0.25rem'
               }}>$ Frontend</p>
               <p style={{
-                fontFamily: '"Inter", sans-serif',
+                fontFamily: 'var(--font-body)',
                 fontSize: '0.8125rem',
-                color: '#dae2fd',
+                color: 'var(--on-surface)',
                 margin: '0 0 0.75rem'
               }}>React, TypeScript, Tailwind</p>
               <p style={{
-                fontFamily: '"JetBrains Mono", monospace',
+                fontFamily: 'var(--font-mono)',
                 fontSize: '0.75rem',
-                color: '#c0c1ff',
+                color: 'var(--primary)',
                 marginBottom: '0.25rem'
               }}>$ Backend</p>
               <p style={{
-                fontFamily: '"Inter", sans-serif',
+                fontFamily: 'var(--font-body)',
                 fontSize: '0.8125rem',
-                color: '#dae2fd',
+                color: 'var(--on-surface)',
                 margin: 0
               }}>Python, FastAPI, SQL</p>
             </div>
@@ -253,22 +230,22 @@ fontSize: '0.9375rem',
               backdropFilter: 'blur(8px)'
             }}>
               <h4 style={{
-                fontFamily: '"Plus Jakarta Sans", sans-serif',
+                fontFamily: 'var(--font-display)',
                 fontWeight: 700,
                 fontSize: '0.9375rem',
-                color: '#dae2fd',
+                color: 'var(--on-surface)',
                 marginBottom: '0.75rem',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.5rem'
               }}>
-                <span className="material-symbols-outlined" style={{ color: '#4edea3', fontSize: '1.25rem' }}>rocket_launch</span>
+                <span className="material-symbols-outlined" style={{ color: 'var(--secondary)', fontSize: '1.25rem' }}>rocket_launch</span>
                 Visión
               </h4>
               <p style={{
-                fontFamily: '"Inter", sans-serif',
+                fontFamily: 'var(--font-body)',
                 fontSize: '0.8125rem',
-                color: '#c7c4d7',
+                color: 'var(--on-surface-variant)',
                 lineHeight: '1.5',
                 margin: 0
               }}>

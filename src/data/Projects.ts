@@ -8,8 +8,10 @@ export const projects: Project[] = [
         imagen:"/ClientFlow.png",
         objectFit: 'contain',
         bgColor: '#ffffff',
-        tecnologias:["React", "Typescript", "Vite", "CSS", "Supabase"],
+        tecnologias:["React", "TypeScript", "Vite", "CSS", "Supabase"],
         link:"https://client-flow-xi.vercel.app/",
+        problema:"Los autónomos suelen gestionar clientes y proyectos con planillas sueltas o herramientas genéricas que no se adaptan a su flujo de trabajo diario.",
+        solucion:"Un sistema web a medida con autenticación de usuarios donde cada autónomo centraliza sus clientes, proyectos y su estado de avance en un solo lugar.",
     },
     {
     id:"2",
@@ -29,8 +31,10 @@ export const projects: Project[] = [
     objectFit: 'cover',
     objectPosition: 'top',
     bgColor: '#221d1d',
-    tecnologias:["React", "Typescript", "Vite", "CSS"],
+    tecnologias:["React", "TypeScript", "Vite", "CSS"],
     link:"https://el-tornillo-landing.vercel.app/",
+    problema:"Ferretería sin presencia digital, dependiente del boca en boca y sin forma de mostrar su catálogo a clientes potenciales antes de visitar el local.",
+    solucion:"Landing page con catálogo visual navegable por categorías, pensada para conversión, que le da presencia online al negocio.",
 },
 {
     id:"4",
@@ -38,7 +42,7 @@ export const projects: Project[] = [
     descripcion:"Sitio web premium con diseño elegante y sistema de reservas vía WhatsApp, pensado para proyectar la identidad de un salón de belleza de alta gama en Mendoza.",
     imagen:"/studioglam.png",
     bgColor: '#201815',
-    tecnologias:["React", "Typescript", "Vite", "CSS"],
+    tecnologias:["React", "TypeScript", "Vite", "CSS"],
     link:"https://studio-glam-landing.vercel.app",
 },
 

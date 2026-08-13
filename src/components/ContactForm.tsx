@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import emailjs from "@emailjs/browser"
 import Swal from "sweetalert2"
+import { useBreakpoint } from "../hooks/useMediaQuery"
 
 type FormData = {
   nombre: string
@@ -11,14 +11,7 @@ type FormData = {
 }
 
 const ContactForm = () => {
-  const [isMobile, setIsMobile] = useState(false)
-
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth <= 768)
-    check()
-    window.addEventListener('resize', check)
-    return () => window.removeEventListener('resize', check)
-  }, [])
+  const { isMobile } = useBreakpoint()
 
   const {
     register,
@@ -45,10 +38,10 @@ const ContactForm = () => {
         icon: 'success',
         title: 'Mensaje enviado',
         text: 'Gracias por contactarme. Te responderé a la brevedad.',
-        confirmButtonColor: '#c0c1ff',
-        background: '#131b2e',
-        color: '#dae2fd',
-        iconColor: '#4edea3',
+        confirmButtonColor: 'var(--primary)',
+        background: 'var(--surface-container-low)',
+        color: 'var(--on-surface)',
+        iconColor: 'var(--secondary)',
       })
     } catch (error) {
       console.error("Error al enviar", error)
@@ -56,9 +49,9 @@ const ContactForm = () => {
         icon: 'error',
         title: 'Error al enviar',
         text: 'Hubo un problema. Intentá de nuevo.',
-        confirmButtonColor: '#c0c1ff',
-        background: '#131b2e',
-        color: '#dae2fd',
+        confirmButtonColor: 'var(--primary)',
+        background: 'var(--surface-container-low)',
+        color: 'var(--on-surface)',
         iconColor: '#ff6b6b',
       })
     }
@@ -76,17 +69,18 @@ const ContactForm = () => {
         gap: isMobile ? '1rem' : '1.5rem'
       }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-          <label style={{
-            fontFamily: '"JetBrains Mono", monospace',
+          <label htmlFor="nombre" style={{
+            fontFamily: 'var(--font-mono)',
             fontSize: '0.625rem',
             textTransform: 'uppercase',
             letterSpacing: '0.1em',
-            color: '#908fa0',
+            color: 'var(--outline)',
             paddingLeft: '0.25rem'
           }}>
             Nombre
           </label>
           <input
+            id="nombre"
             type="text"
             {...register("nombre", { required: true })}
             placeholder="Tu Nombre"
@@ -96,8 +90,8 @@ const ContactForm = () => {
               background: 'rgba(6, 14, 32, 0.5)',
               border: '1px solid rgba(255, 255, 255, 0.05)',
               borderRadius: '0.75rem',
-              color: '#dae2fd',
-              fontFamily: '"Inter", sans-serif',
+              color: 'var(--on-surface)',
+              fontFamily: 'var(--font-body)',
               fontSize: '0.875rem',
               transition: 'all 0.3s ease',
               boxSizing: 'border-box'
@@ -107,17 +101,18 @@ const ContactForm = () => {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-          <label style={{
-            fontFamily: '"JetBrains Mono", monospace',
+          <label htmlFor="mail" style={{
+            fontFamily: 'var(--font-mono)',
             fontSize: '0.625rem',
             textTransform: 'uppercase',
             letterSpacing: '0.1em',
-            color: '#908fa0',
+            color: 'var(--outline)',
             paddingLeft: '0.25rem'
           }}>
             Email
           </label>
           <input
+            id="mail"
             type="email"
             {...register("mail", { required: true })}
             placeholder="email@ejemplo.com"
@@ -127,8 +122,8 @@ const ContactForm = () => {
               background: 'rgba(6, 14, 32, 0.5)',
               border: '1px solid rgba(255, 255, 255, 0.05)',
               borderRadius: '0.75rem',
-              color: '#dae2fd',
-              fontFamily: '"Inter", sans-serif',
+              color: 'var(--on-surface)',
+              fontFamily: 'var(--font-body)',
               fontSize: '0.875rem',
               transition: 'all 0.3s ease',
               boxSizing: 'border-box'
@@ -139,17 +134,18 @@ const ContactForm = () => {
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-        <label style={{
-          fontFamily: '"JetBrains Mono", monospace',
+        <label htmlFor="asunto" style={{
+          fontFamily: 'var(--font-mono)',
           fontSize: '0.625rem',
           textTransform: 'uppercase',
           letterSpacing: '0.1em',
-          color: '#908fa0',
+          color: 'var(--outline)',
           paddingLeft: '0.25rem'
         }}>
           Asunto
         </label>
         <select
+          id="asunto"
           {...register("asunto")}
           style={{
             width: '100%',
@@ -157,8 +153,8 @@ const ContactForm = () => {
             background: 'rgba(6, 14, 32, 0.5)',
             border: '1px solid rgba(255, 255, 255, 0.05)',
             borderRadius: '0.75rem',
-            color: '#dae2fd',
-            fontFamily: '"Inter", sans-serif',
+            color: 'var(--on-surface)',
+            fontFamily: 'var(--font-body)',
             fontSize: '0.875rem',
             transition: 'all 0.3s ease',
             boxSizing: 'border-box',
@@ -179,17 +175,18 @@ const ContactForm = () => {
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-        <label style={{
-          fontFamily: '"JetBrains Mono", monospace',
+        <label htmlFor="mensaje" style={{
+          fontFamily: 'var(--font-mono)',
           fontSize: '0.625rem',
           textTransform: 'uppercase',
           letterSpacing: '0.1em',
-          color: '#908fa0',
+          color: 'var(--outline)',
           paddingLeft: '0.25rem'
         }}>
           Mensaje
         </label>
         <textarea
+          id="mensaje"
           {...register("mensaje", { required: true })}
           placeholder="Contame sobre tu proyecto..."
           rows={5}
@@ -199,8 +196,8 @@ const ContactForm = () => {
             background: 'rgba(6, 14, 32, 0.5)',
             border: '1px solid rgba(255, 255, 255, 0.05)',
             borderRadius: '0.75rem',
-            color: '#dae2fd',
-            fontFamily: '"Inter", sans-serif',
+            color: 'var(--on-surface)',
+            fontFamily: 'var(--font-body)',
             fontSize: '0.875rem',
             transition: 'all 0.3s ease',
             boxSizing: 'border-box',
@@ -218,7 +215,7 @@ const ContactForm = () => {
         style={{
           width: '100%',
           padding: '1rem',
-          background: 'linear-gradient(135deg, #c0c1ff, #8083ff)',
+          background: 'linear-gradient(135deg, var(--primary), var(--primary-container))',
           color: '#1000a9',
           fontWeight: 700,
           fontSize: '0.9375rem',
@@ -230,7 +227,7 @@ const ContactForm = () => {
           justifyContent: 'center',
           gap: '0.5rem',
           transition: 'all 0.3s ease',
-          boxShadow: '0 0 20px rgba(192, 193, 255, 0.3)',
+          boxShadow: '0 0 20px rgba(var(--primary-rgb), 0.3)',
           opacity: isSubmitting ? 0.7 : 1
         }}
       >

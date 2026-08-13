@@ -46,14 +46,14 @@ a:hover .project-card-img {
 .project-card-border {
   position: absolute;
   inset: 0;
-  border: 1px solid rgba(192, 193, 255, 0);
+  border: 1px solid rgba(var(--primary-rgb), 0);
   border-radius: 0.75rem;
   pointer-events: none;
   transition: border-color 0.4s ease;
 }
 
 a:hover .project-card-border {
-  border-color: rgba(192, 193, 255, 0.2);
+  border-color: rgba(var(--primary-rgb), 0.2);
 }
 
 .project-card-link {
@@ -158,7 +158,7 @@ a:hover .project-card-link {
 }
 
 .contact-panel__social:hover {
-  background: #c0c1ff !important;
+  background: var(--primary) !important;
   color: #1000a9 !important;
   transform: scale(1.1);
 }
@@ -166,8 +166,8 @@ a:hover .project-card-link {
 /* === FORM INPUTS === */
 .form-input-new:focus {
   outline: none;
-  border-color: #c0c1ff !important;
-  box-shadow: 0 0 0 3px rgba(192, 193, 255, 0.3), 0 0 20px rgba(192, 193, 255, 0.2);
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.3), 0 0 20px rgba(var(--primary-rgb), 0.2);
   background: rgba(6, 14, 32, 0.8) !important;
 }
 
@@ -178,17 +178,17 @@ a:hover .project-card-link {
 }
 
 .footer__social-link {
-  color: #c7c4d7;
+  color: var(--on-surface-variant);
   text-decoration: underline;
   transition: color 0.3s ease;
   text-underline-offset: 3px;
   text-decoration-thickness: 1px;
-  text-decoration-color: rgba(192, 193, 255, 0.3);
+  text-decoration-color: rgba(var(--primary-rgb), 0.3);
 }
 
 .footer__social-link:hover {
-  color: #c0c1ff;
-  text-decoration-color: #c0c1ff;
+  color: var(--primary);
+  text-decoration-color: var(--primary);
 }
 
 @media (max-width: 768px) {
@@ -201,7 +201,7 @@ a:hover .project-card-link {
 /* === DESKTOP REFINEMENTS === */
 @media (min-width: 1025px) {
   #about, #contact {
-    min-height: 100vh;
+    min-height: 100lvh;
   }
 
   .hero-cta-primary,

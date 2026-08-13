@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
 import { projects } from "../data/Projects"
 import ProjectCard from "./ProjectCard"
+import { useMediaQuery } from "../hooks/useMediaQuery"
 
 const containerVariants = {
   hidden: {},
@@ -22,7 +23,7 @@ const itemVariants = {
 }
 
 function TiltCard({ children, className }: { children: React.ReactNode; className?: string }) {
-  const isDesktop = window.innerWidth >= 1024
+  const isDesktop = useMediaQuery('(min-width: 1024px)')
 
   const rotateX = useMotionValue(0)
   const rotateY = useMotionValue(0)
