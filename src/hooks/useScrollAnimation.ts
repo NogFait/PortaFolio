@@ -5,6 +5,7 @@ interface UseScrollAnimationOptions {
   rootMargin?: string;
   easing?: string;
   staggerDelay?: number;
+  once?: boolean;
 }
 
 export function useScrollAnimation<T extends HTMLElement>(options: UseScrollAnimationOptions = {}) {
@@ -13,6 +14,7 @@ export function useScrollAnimation<T extends HTMLElement>(options: UseScrollAnim
     rootMargin = '0px',
     easing = 'cubic-bezier(0.16, 1, 0.3, 1)',
     staggerDelay = 0,
+    once = true,
   } = options;
 
   const ref = useRef<T>(null!);
@@ -37,7 +39,9 @@ export function useScrollAnimation<T extends HTMLElement>(options: UseScrollAnim
           } else {
             setIsVisible(true);
           }
-          observer.unobserve(element);
+          if (once) observer.unobserve(element);
+        } else if (!once) {
+          setIsVisible(false);
         }
       },
       { threshold, rootMargin }
@@ -48,7 +52,7 @@ export function useScrollAnimation<T extends HTMLElement>(options: UseScrollAnim
     return () => {
       observer.disconnect();
     };
-  }, [threshold, rootMargin, staggerDelay, prefersReducedMotion]);
+  }, [threshold, rootMargin, staggerDelay, prefersReducedMotion, once]);
 
   const getTransformStyle = (direction: 'up' | 'down' | 'left' | 'right' | 'fade' | 'scale') => {
     if (prefersReducedMotion || isVisible) {

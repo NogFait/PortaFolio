@@ -1,5 +1,7 @@
 import type { Project } from "../types/ProjectType"
-import { useBreakpoint } from "../hooks/useMediaQuery"
+import { motion } from "framer-motion"
+import { useBreakpoint, useMediaQuery } from "../hooks/useMediaQuery"
+import { useTilt } from "../hooks/useTilt"
 import { TECH_ICONS } from "../data/techIcons"
 
 type Layout = 'hero' | 'vertical' | 'compact' | 'split'
@@ -45,16 +47,22 @@ const TechStack = ({ tecnologias, iconOnly = false }: { tecnologias?: string[]; 
 }
 
 const ProjectCard = ({ project, layout = 'compact' }: Props) => {
-  const { isMobile, isTablet } = useBreakpoint()
+  const { isMobile, isTablet, isDesktop } = useBreakpoint()
+  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)')
+  const { rotateX, rotateY, glareBackground, handleMouseMove, handleMouseLeave } = useTilt({
+    disabled: !isDesktop || prefersReducedMotion
+  })
 
   const tags = getTagsForProject(project.titulo)
 
   if (layout === 'hero') {
     return (
-      <a
+      <motion.a
         href={project.link}
         target="_blank"
         rel="noopener noreferrer"
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
         style={{
           display: 'block',
           position: 'relative',
@@ -63,7 +71,10 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
           background: 'var(--surface-container-high)',
           height: isMobile ? '400px' : isTablet ? '380px' : '380px',
           textDecoration: 'none',
-          cursor: 'pointer'
+          cursor: 'pointer',
+          rotateX,
+          rotateY,
+          transformPerspective: 800
         }}
       >
         <img
@@ -149,17 +160,20 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
             <span className="material-symbols-outlined" style={{ fontSize: '0.875rem' }}>north_east</span>
           </span>
         </div>
+        <motion.div style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', background: glareBackground, pointerEvents: 'none' }} />
         <div className="project-card-border" />
-      </a>
+      </motion.a>
     )
   }
 
   if (layout === 'vertical') {
     return (
-      <a
+      <motion.a
         href={project.link}
         target="_blank"
         rel="noopener noreferrer"
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
         style={{
           display: 'flex',
           flexDirection: 'column',
@@ -169,7 +183,10 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
           height: isMobile ? '450px' : isTablet ? '380px' : '380px',
           textDecoration: 'none',
           cursor: 'pointer',
-          position: 'relative'
+          position: 'relative',
+          rotateX,
+          rotateY,
+          transformPerspective: 800
         }}
       >
         <div style={{
@@ -243,17 +260,20 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
             }}>arrow_forward</span>
           </div>
         </div>
+        <motion.div style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', background: glareBackground, pointerEvents: 'none' }} />
         <div className="project-card-border" style={{ borderColor: 'rgba(var(--secondary-rgb), 0)' }} />
-      </a>
+      </motion.a>
     )
   }
 
   if (layout === 'split') {
     return (
-      <a
+      <motion.a
         href={project.link}
         target="_blank"
         rel="noopener noreferrer"
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
         style={{
           display: 'flex',
           flexDirection: isTablet ? 'column' : 'row',
@@ -263,7 +283,10 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
           height: isMobile ? '500px' : isTablet ? '420px' : '320px',
           textDecoration: 'none',
           cursor: 'pointer',
-          position: 'relative'
+          position: 'relative',
+          rotateX,
+          rotateY,
+          transformPerspective: 800
         }}
       >
         <div style={{
@@ -355,16 +378,19 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
             className="project-card-img"
           />
         </div>
+        <motion.div style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', background: glareBackground, pointerEvents: 'none' }} />
         <div className="project-card-border" />
-      </a>
+      </motion.a>
     )
   }
 
   return (
-      <a
+      <motion.a
       href={project.link}
       target="_blank"
       rel="noopener noreferrer"
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -374,7 +400,10 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
         height: isMobile ? '400px' : isTablet ? '380px' : '320px',
         textDecoration: 'none',
         cursor: 'pointer',
-        position: 'relative'
+        position: 'relative',
+        rotateX,
+        rotateY,
+        transformPerspective: 800
       }}
     >
       <div style={{
@@ -444,8 +473,9 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
           <TechStack tecnologias={project.tecnologias} iconOnly />
         </div>
       </div>
-      <div className="project-card-border" style={{ borderColor: 'rgba(70, 69, 84, 0)' }} />
-    </a>
+      <motion.div style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', background: glareBackground, pointerEvents: 'none' }} />
+    <div className="project-card-border" style={{ borderColor: 'rgba(70, 69, 84, 0)' }} />
+    </motion.a>
   )
 }
 

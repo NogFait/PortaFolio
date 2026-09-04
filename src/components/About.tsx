@@ -2,9 +2,10 @@ import { motion } from 'framer-motion'
 import perfil from '../assets/perfil.png'
 import { useBreakpoint } from '../hooks/useMediaQuery'
 import { useScrollAnimation } from '../hooks/useScrollAnimation'
+import SplitText from './SplitText'
 
 const About = () => {
-  const { ref: sectionRef, isVisible } = useScrollAnimation<HTMLElement>()
+  const { ref: sectionRef, isVisible, prefersReducedMotion } = useScrollAnimation<HTMLElement>({ once: false })
   const { isMobile, isTablet } = useBreakpoint()
 
   return (
@@ -26,7 +27,7 @@ const About = () => {
           alignItems: 'center'
         }}
         initial={{ opacity: 0, y: 30 }}
-        animate={isVisible ? { opacity: 1, y: 0 } : {}}
+        animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       >
         <div className="about-image-col" style={{
@@ -153,7 +154,15 @@ const About = () => {
             marginBottom: '1.25rem',
             letterSpacing: '-0.02em'
           }}>
-            Creando soluciones que <span style={{ fontStyle: 'italic', fontWeight: 400 }}>impulsan</span> negocios.
+            <SplitText
+              isVisible={isVisible}
+              reduceMotion={prefersReducedMotion}
+              segments={[
+                { text: 'Creando soluciones que' },
+                { text: 'impulsan', style: { fontStyle: 'italic', fontWeight: 400 } },
+                { text: 'negocios.' }
+              ]}
+            />
           </h2>
 
           <div style={{

@@ -1,4 +1,12 @@
+import { motion } from 'framer-motion'
+import { useMediaQuery } from '../hooks/useMediaQuery'
+import { useMagnetic } from '../hooks/useMagnetic'
+
 const Footer = () => {
+  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)')
+  const github = useMagnetic({ disabled: prefersReducedMotion })
+  const linkedin = useMagnetic({ disabled: prefersReducedMotion })
+
   return (
     <footer style={{
       backgroundColor: 'var(--surface)',
@@ -53,22 +61,28 @@ const Footer = () => {
           textTransform: 'uppercase',
           letterSpacing: '0.1em'
         }}>
-          <a
+          <motion.a
             href="https://github.com/NogFait"
             target="_blank"
             rel="noopener noreferrer"
             className="footer__social-link"
+            onMouseMove={github.handleMouseMove}
+            onMouseLeave={github.handleMouseLeave}
+            style={{ x: github.x, y: github.y, display: 'inline-block' }}
           >
             Github
-          </a>
-          <a
+          </motion.a>
+          <motion.a
             href="https://www.linkedin.com/in/fausto-chirino-76b7572b6"
             target="_blank"
             rel="noopener noreferrer"
             className="footer__social-link"
+            onMouseMove={linkedin.handleMouseMove}
+            onMouseLeave={linkedin.handleMouseLeave}
+            style={{ x: linkedin.x, y: linkedin.y, display: 'inline-block' }}
           >
             LinkedIn
-          </a>
+          </motion.a>
         </div>
 
         <span style={{
