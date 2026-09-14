@@ -211,7 +211,7 @@ const Hero = () => {
             animationDelay: '0.3s'
           }}
         >
-          Técnico Universitario en Programación (UTN) enfocado en Frontend y en el desarrollo Full-stack. Me especializo en construir aplicaciones funcionales, escalables y bien estructuradas.
+          Técnico Universitario en Programación (UTN) enfocado en el desarrollo Full-stack. Me especializo en construir aplicaciones funcionales, escalables y bien estructuradas.
         </motion.p>
 
         <div
