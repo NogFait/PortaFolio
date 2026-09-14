@@ -173,7 +173,7 @@ const About = () => {
             marginBottom: '1.25rem'
           }}>
             <p style={{ marginBottom: '0.85rem' }}>
-              Estudiante de Programación en UTN enfocado en el desarrollo Full-stack. Me especializo en construir aplicaciones funcionales, escalables y bien estructuradas, desde la lógica del backend hasta la experiencia del usuario.
+              Técnico Universitario en Programación egresado de la UTN, enfocado en el desarrollo Full-stack. Me especializo en construir aplicaciones funcionales, escalables y bien estructuradas, desde la lógica del backend hasta la experiencia del usuario.
             </p>
             <p style={{ marginBottom: '0.85rem' }}>
               Disfruto trabajar en la lógica detrás de los sistemas, el manejo de datos y la organización del código. Busco entender cómo funcionan las cosas en profundidad para poder diseñar soluciones más eficientes y sólidas.
