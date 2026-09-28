@@ -412,7 +412,7 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
         overflow: 'hidden',
         borderRadius: '0.75rem',
         background: 'var(--surface-container-high)',
-        height: isMobile ? '420px' : isTablet ? '400px' : '340px',
+        height: isMobile ? '420px' : '400px',
         textDecoration: 'none',
         cursor: 'pointer',
         position: 'relative',
