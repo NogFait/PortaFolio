@@ -201,8 +201,11 @@ button:active {
   z-index: -1;
 }
 
-/* === SECTION TRANSITIONS === */
-section {
+/* === SECTION TRANSITIONS ===
+   Scoped to main > section: an unscoped `section` selector also styles the
+   empty aria-live landmark Sonner/react-aria renders after the footer,
+   padding and coloring it into a visible phantom band it should never have. */
+main > section {
   padding: 1.75rem;
   display: flex;
   flex-direction: column;
@@ -210,11 +213,11 @@ section {
   position: relative;
 }
 
-section:nth-child(odd) {
+main > section:nth-child(odd) {
   background-color: var(--surface);
 }
 
-section:nth-child(even) {
+main > section:nth-child(even) {
   background-color: var(--surface-container-low);
 }
 
@@ -256,30 +259,30 @@ select {
 @media (max-width: 768px) {
   h1 { font-size: 2.5rem; }
   h2 { font-size: 2rem; }
-  section { padding: 1.5rem 1rem !important; }
+  main > section { padding: 1.5rem 1rem !important; }
   button, .btn-primary, .btn-secondary { width: 100%; text-align: center; }
 }
 
 @media (max-width: 480px) {
   h1 { font-size: 2rem; }
   h2 { font-size: 1.75rem; }
-  section { padding: 1rem 0.75rem !important; }
+  main > section { padding: 1rem 0.75rem !important; }
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
-  section { padding: 2rem; }
+  main > section { padding: 2rem; }
   h1 { font-size: 3rem; }
   h2 { font-size: 2.25rem; }
 }
 
 @media (min-width: 1025px) {
-  section { padding: 2rem 4rem; }
+  main > section { padding: 2rem 4rem; }
   h1 { font-size: 4rem; }
   h2 { font-size: 2.5rem; }
 }
 
 @media (min-width: 1440px) {
-  section { padding: 3rem 6rem; }
+  main > section { padding: 3rem 6rem; }
   h1 { font-size: 4.5rem; }
   h2 { font-size: 3rem; }
 }
