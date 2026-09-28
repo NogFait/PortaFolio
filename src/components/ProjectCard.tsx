@@ -1,5 +1,6 @@
 import type { Project } from "../types/ProjectType"
 import { motion } from "framer-motion"
+import { SiGithub } from "react-icons/si"
 import { useBreakpoint, useMediaQuery } from "../hooks/useMediaQuery"
 import { useTilt } from "../hooks/useTilt"
 import { TECH_ICONS } from "../data/techIcons"
@@ -70,6 +71,65 @@ const TagList = ({ tags, marginBottom = '1rem' }: { tags: string[]; marginBottom
   )
 }
 
+// Renders the problema/solucion pair when the data exists; falls back to the
+// plain descripcion otherwise, since not every project has that evidence yet.
+const ProjectEvidence = ({ project, compact = false }: { project: Project; compact?: boolean }) => {
+  const textStyle = {
+    fontFamily: 'var(--font-body)',
+    fontSize: compact ? '0.8125rem' : '0.875rem',
+    color: 'var(--on-surface-variant)',
+    lineHeight: '1.5',
+    margin: 0,
+  }
+  const labelStyle = {
+    fontFamily: 'var(--font-mono)',
+    fontSize: '0.625rem',
+    textTransform: 'uppercase' as const,
+    letterSpacing: '0.1em',
+    color: 'var(--secondary)',
+  }
+
+  if (!project.problema || !project.solucion) {
+    return <p style={{ ...textStyle, marginBottom: compact ? '1rem' : '1.5rem' }}>{project.descripcion}</p>
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem', marginBottom: compact ? '1rem' : '1.5rem' }}>
+      <div>
+        <span style={labelStyle}>Problema</span>
+        <p style={{ ...textStyle, marginTop: '0.25rem' }}>{project.problema}</p>
+      </div>
+      <div>
+        <span style={labelStyle}>Solución</span>
+        <p style={{ ...textStyle, marginTop: '0.25rem' }}>{project.solucion}</p>
+      </div>
+    </div>
+  )
+}
+
+// Names what clicking the card actually does: GitHub links read "Ver código",
+// live sites read "Ver Proyecto" - a recruiter shouldn't have to guess.
+const ProjectLinkIndicator = ({ link }: { link?: string }) => {
+  const isGitHub = link?.includes('github.com')
+  return (
+    <span style={{
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '0.375rem',
+      fontFamily: 'var(--font-mono)',
+      fontSize: '0.625rem',
+      textTransform: 'uppercase',
+      letterSpacing: '0.1em',
+      color: 'var(--primary)',
+    }} className="project-card-link">
+      {isGitHub ? 'Ver código' : 'Ver Proyecto'}
+      {isGitHub
+        ? <SiGithub size={11} />
+        : <span className="material-symbols-outlined" style={{ fontSize: '0.875rem' }}>north_east</span>}
+    </span>
+  )
+}
+
 const ProjectCard = ({ project, layout = 'compact' }: Props) => {
   const { isMobile, isTablet, isDesktop } = useBreakpoint()
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)')
@@ -88,12 +148,13 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         style={{
-          display: 'block',
+          display: 'flex',
+          flexDirection: 'column',
           position: 'relative',
           overflow: 'hidden',
           borderRadius: '0.75rem',
           background: 'var(--surface-container-high)',
-          height: isMobile ? '400px' : isTablet ? '380px' : '380px',
+          height: isMobile ? '640px' : isTablet ? '480px' : '480px',
           textDecoration: 'none',
           cursor: 'pointer',
           rotateX,
@@ -101,69 +162,41 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
           transformPerspective: 800
         }}
       >
-        <img
-          src={project.imagen}
-          alt={project.titulo}
-          loading="eager"
-          fetchPriority="high"
-          style={{
-            position: 'absolute',
-            inset: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: project.objectFit ?? 'cover',
-            objectPosition: project.objectFit === 'contain' ? 'center' : 'center 30%',
-            opacity: project.objectFit === 'contain' ? 0.85 : 0.6,
-            transition: 'transform 0.7s ease'
-          }}
-          className="project-card-img"
-        />
         <div style={{
-          position: 'absolute',
-          inset: 0,
-          background: project.objectFit === 'contain'
-            ? 'linear-gradient(to top, var(--surface) 0%, rgba(var(--surface-rgb), 0.6) 40%, transparent 100%)'
-            : 'linear-gradient(to top, var(--surface) 0%, rgba(var(--surface-rgb), 0.4) 50%, transparent 100%)'
-        }} />
-        <div style={{
-          position: 'absolute',
-          bottom: 0,
-          padding: '2rem',
-          width: '100%'
+          flex: `0 0 ${isMobile ? '260px' : '220px'}`,
+          position: 'relative',
+          overflow: 'hidden',
+          background: project.bgColor ?? 'var(--surface-container-highest)'
         }}>
-          <TagList tags={tags} />
+          <img
+            src={project.imagen}
+            alt={`Captura de pantalla del proyecto ${project.titulo}`}
+            loading="eager"
+            fetchPriority="high"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: project.objectFit ?? 'cover',
+              objectPosition: project.objectFit === 'contain' ? 'center' : 'center 30%',
+              transition: 'transform 0.7s ease'
+            }}
+            className="project-card-img"
+          />
+        </div>
+        <div style={{ flex: 1, padding: isMobile ? '1.5rem' : '1.75rem 2rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          <TagList tags={tags} marginBottom="0.75rem" />
           <h3 style={{
             fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(1.5rem, 3vw, 2rem)',
+            fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)',
             fontWeight: 700,
             color: 'var(--on-surface)',
-            marginBottom: '0.5rem'
+            marginBottom: '0.75rem'
           }}>{project.titulo}</h3>
-          <p style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: '0.875rem',
-            color: 'var(--on-surface-variant)',
-            maxWidth: '400px',
-            lineHeight: '1.5',
-            marginBottom: '1rem'
-          }}>{project.descripcion}</p>
-          <div style={{ marginBottom: '1rem' }}>
+          <ProjectEvidence project={project} />
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
             <TechStack tecnologias={project.tecnologias} />
+            <ProjectLinkIndicator link={project.link} />
           </div>
-          <span style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.375rem',
-            fontFamily: 'var(--font-mono)',
-            fontSize: '0.625rem',
-            textTransform: 'uppercase',
-            letterSpacing: '0.1em',
-            color: 'var(--primary)',
-            transition: 'transform 0.3s ease'
-          }} className="project-card-link">
-            Ver Proyecto
-            <span className="material-symbols-outlined" style={{ fontSize: '0.875rem' }}>north_east</span>
-          </span>
         </div>
         <motion.div style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', background: glareBackground, pointerEvents: 'none' }} />
         <div className="project-card-border" />
@@ -185,7 +218,7 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
           overflow: 'hidden',
           borderRadius: '0.75rem',
           background: 'var(--surface-container-high)',
-          height: isMobile ? '450px' : isTablet ? '380px' : '380px',
+          height: isMobile ? '470px' : isTablet ? '480px' : '480px',
           textDecoration: 'none',
           cursor: 'pointer',
           position: 'relative',
@@ -195,14 +228,14 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
         }}
       >
         <div style={{
-          flex: 1,
+          flex: isMobile ? '0 0 220px' : 1,
           position: 'relative',
           overflow: 'hidden',
           background: project.bgColor ?? 'var(--surface-container-highest)'
         }}>
           <img
             src={project.imagen}
-            alt={project.titulo}
+            alt={`Captura de pantalla del proyecto ${project.titulo}`}
             loading="lazy"
             decoding="async"
             style={{
@@ -221,7 +254,7 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
             background: 'linear-gradient(to top, var(--surface-container-high) 0%, transparent 60%)'
           }} />
         </div>
-        <div style={{ padding: '1.5rem', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+        <div style={{ padding: '1.5rem', flex: '0 0 auto', display: 'flex', flexDirection: 'column' }}>
           <TagList tags={tags} marginBottom="0.75rem" />
           <h3 style={{
             fontFamily: 'var(--font-display)',
@@ -235,16 +268,12 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
             fontSize: '0.8125rem',
             color: 'var(--on-surface-variant)',
             lineHeight: '1.5',
-            marginBottom: '1rem'
+            marginBottom: '0.75rem'
           }}>{project.descripcion}</p>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem' }}>
-            <TechStack tecnologias={project.tecnologias} iconOnly />
-            <span className="material-symbols-outlined" style={{
-              color: 'var(--primary)',
-              fontSize: '1.25rem',
-              transition: 'transform 0.3s ease'
-            }}>arrow_forward</span>
+          <div style={{ marginBottom: '0.75rem' }}>
+            <TechStack tecnologias={project.tecnologias} />
           </div>
+          <ProjectLinkIndicator link={project.link} />
         </div>
         <motion.div style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', background: glareBackground, pointerEvents: 'none' }} />
         <div className="project-card-border" style={{ borderColor: 'rgba(var(--secondary-rgb), 0)' }} />
@@ -266,7 +295,7 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
           overflow: 'hidden',
           borderRadius: '0.75rem',
           background: 'var(--surface-container-high)',
-          height: isMobile ? '500px' : isTablet ? '420px' : '320px',
+          height: isMobile ? '560px' : isTablet ? '480px' : '360px',
           textDecoration: 'none',
           cursor: 'pointer',
           position: 'relative',
@@ -290,15 +319,9 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
             color: 'var(--on-surface)',
             marginBottom: '1rem'
           }}>{project.titulo}</h3>
-          <p style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: '0.8125rem',
-            color: 'var(--on-surface-variant)',
-            lineHeight: '1.5',
-            marginBottom: '2rem'
-          }}>{project.descripcion}</p>
+          <ProjectEvidence project={project} />
           {project.resultados && project.resultados.length > 0 ? (
-            <div style={{ display: 'flex', gap: '1.5rem' }}>
+            <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '1rem' }}>
               {project.resultados.map(r => (
                 <div key={r.label}>
                   <span style={{
@@ -318,8 +341,11 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
               ))}
             </div>
           ) : (
-            <TechStack tecnologias={project.tecnologias} />
+            <div style={{ marginBottom: '1rem' }}>
+              <TechStack tecnologias={project.tecnologias} />
+            </div>
           )}
+          <ProjectLinkIndicator link={project.link} />
         </div>
         <div style={{
           width: isTablet ? '100%' : '50%',
@@ -331,7 +357,7 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
         }}>
           <img
             src={project.imagen}
-            alt={project.titulo}
+            alt={`Captura de pantalla del proyecto ${project.titulo}`}
             loading="lazy"
             decoding="async"
             style={{
@@ -364,7 +390,7 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
         overflow: 'hidden',
         borderRadius: '0.75rem',
         background: 'var(--surface-container-high)',
-        height: isMobile ? '400px' : isTablet ? '380px' : '320px',
+        height: isMobile ? '420px' : isTablet ? '400px' : '340px',
         textDecoration: 'none',
         cursor: 'pointer',
         position: 'relative',
@@ -381,7 +407,7 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
       }}>
         <img
           src={project.imagen}
-          alt={project.titulo}
+          alt={`Captura de pantalla del proyecto ${project.titulo}`}
           loading="lazy"
           decoding="async"
           style={{
@@ -416,10 +442,11 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
           marginBottom: '0.75rem',
           flex: 1
         }}>{project.descripcion}</p>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
           <TagList tags={tags} marginBottom="0" />
           <TechStack tecnologias={project.tecnologias} iconOnly />
         </div>
+        <ProjectLinkIndicator link={project.link} />
       </div>
       <motion.div style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', background: glareBackground, pointerEvents: 'none' }} />
     <div className="project-card-border" style={{ borderColor: 'rgba(70, 69, 84, 0)' }} />

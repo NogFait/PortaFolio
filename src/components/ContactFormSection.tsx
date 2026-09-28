@@ -67,6 +67,42 @@ const ContactFormSection = () => {
                     justifyContent: 'center',
                     transition: 'transform 0.3s ease'
                   }}>
+                    <span className="material-symbols-outlined" style={{ color: 'var(--secondary)' }}>mail</span>
+                  </div>
+                  <div>
+                    <p style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: '0.625rem',
+                      textTransform: 'uppercase',
+                      color: 'var(--outline)',
+                      marginBottom: '0.125rem',
+                      letterSpacing: '0.05em'
+                    }}>Email</p>
+                    <a
+                      href="mailto:chirinocalderonfausto@gmail.com"
+                      style={{
+                        fontFamily: 'var(--font-display)',
+                        fontWeight: 700,
+                        color: 'var(--on-surface)',
+                        fontSize: '0.9375rem',
+                        margin: 0,
+                        textDecoration: 'none'
+                      }}
+                    >chirinocalderonfausto@gmail.com</a>
+                  </div>
+                </div>
+
+                <div className="contact-panel__info-item">
+                  <div style={{
+                    width: '48px',
+                    height: '48px',
+                    borderRadius: '50%',
+                    background: 'var(--surface-container-high)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'transform 0.3s ease'
+                  }}>
                     <span className="material-symbols-outlined" style={{ color: 'var(--secondary)' }}>location_on</span>
                   </div>
                   <div>
