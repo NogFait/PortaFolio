@@ -13,12 +13,7 @@ type FormData = {
 const FieldError = ({ id, message }: { id: string; message?: string }) => {
   if (!message) return null
   return (
-    <span id={id} role="alert" style={{
-      fontFamily: 'var(--font-body)',
-      fontSize: '0.75rem',
-      color: 'var(--danger)',
-      paddingLeft: '0.25rem'
-    }}>
+    <span id={id} role="alert" className="field-error">
       {message}
     </span>
   )

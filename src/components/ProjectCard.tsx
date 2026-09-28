@@ -1,3 +1,4 @@
+import { useState } from "react"
 import type { Project } from "../types/ProjectType"
 import { motion } from "framer-motion"
 import { SiGithub } from "react-icons/si"
@@ -107,6 +108,48 @@ const ProjectEvidence = ({ project, compact = false }: { project: Project; compa
   )
 }
 
+// Lazy-loaded screenshots were popping in the instant they finished
+// downloading. Fades opacity only (transform stays with the hover-zoom
+// transition), so it also does the right thing under reduced motion.
+const ProjectImage = ({
+  project,
+  alt,
+  loading,
+  decoding,
+  fetchPriority,
+  objectPosition,
+  targetOpacity = 1,
+}: {
+  project: Project
+  alt: string
+  loading: 'lazy' | 'eager'
+  decoding?: 'async'
+  fetchPriority?: 'high'
+  objectPosition?: string
+  targetOpacity?: number
+}) => {
+  const [loaded, setLoaded] = useState(false)
+  return (
+    <img
+      src={project.imagen}
+      alt={alt}
+      loading={loading}
+      decoding={decoding}
+      fetchPriority={fetchPriority}
+      onLoad={() => setLoaded(true)}
+      style={{
+        width: '100%',
+        height: '100%',
+        objectFit: project.objectFit ?? 'cover',
+        objectPosition: objectPosition ?? 'center',
+        opacity: loaded ? targetOpacity : 0,
+        transition: 'transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), opacity 250ms var(--ease-out)',
+      }}
+      className="project-card-img"
+    />
+  )
+}
+
 // Names what clicking the card actually does: GitHub links read "Ver código",
 // live sites read "Ver Proyecto" - a recruiter shouldn't have to guess.
 const ProjectLinkIndicator = ({ link }: { link?: string }) => {
@@ -168,19 +211,12 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
           overflow: 'hidden',
           background: project.bgColor ?? 'var(--surface-container-highest)'
         }}>
-          <img
-            src={project.imagen}
+          <ProjectImage
+            project={project}
             alt={`Captura de pantalla del proyecto ${project.titulo}`}
             loading="eager"
             fetchPriority="high"
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: project.objectFit ?? 'cover',
-              objectPosition: project.objectFit === 'contain' ? 'center' : 'center 30%',
-              transition: 'transform 0.7s ease'
-            }}
-            className="project-card-img"
+            objectPosition={project.objectFit === 'contain' ? 'center' : 'center 30%'}
           />
         </div>
         <div style={{ flex: 1, padding: isMobile ? '1.5rem' : '1.75rem 2rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
@@ -233,20 +269,13 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
           overflow: 'hidden',
           background: project.bgColor ?? 'var(--surface-container-highest)'
         }}>
-          <img
-            src={project.imagen}
+          <ProjectImage
+            project={project}
             alt={`Captura de pantalla del proyecto ${project.titulo}`}
             loading="lazy"
             decoding="async"
-            style={{
-            width: '100%',
-            height: '100%',
-            objectFit: project.objectFit ?? 'cover',
-            objectPosition: project.objectPosition ?? 'center',
-            opacity: project.objectFit === 'contain' ? 0.8 : 0.7,
-              transition: 'transform 0.7s ease'
-            }}
-            className="project-card-img"
+            objectPosition={project.objectPosition}
+            targetOpacity={project.objectFit === 'contain' ? 0.8 : 0.7}
           />
           <div style={{
             position: 'absolute',
@@ -355,20 +384,13 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
           background: project.bgColor ?? 'var(--surface-container-highest)',
           order: isTablet ? -1 : 1
         }}>
-          <img
-            src={project.imagen}
+          <ProjectImage
+            project={project}
             alt={`Captura de pantalla del proyecto ${project.titulo}`}
             loading="lazy"
             decoding="async"
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: project.objectFit ?? 'cover',
-              objectPosition: project.objectPosition ?? 'center',
-              opacity: 0.7,
-              transition: 'transform 0.7s ease'
-            }}
-            className="project-card-img"
+            objectPosition={project.objectPosition}
+            targetOpacity={0.7}
           />
         </div>
         <motion.div style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', background: glareBackground, pointerEvents: 'none' }} />
@@ -405,20 +427,13 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
         overflow: 'hidden',
         background: project.bgColor ?? 'var(--surface-container-highest)'
       }}>
-        <img
-          src={project.imagen}
+        <ProjectImage
+          project={project}
           alt={`Captura de pantalla del proyecto ${project.titulo}`}
           loading="lazy"
           decoding="async"
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: project.objectFit ?? 'cover',
-            objectPosition: project.objectPosition ?? 'center',
-            opacity: 0.8,
-            transition: 'transform 0.7s ease'
-          }}
-          className="project-card-img"
+          objectPosition={project.objectPosition}
+          targetOpacity={0.8}
         />
         <div style={{
           position: 'absolute',

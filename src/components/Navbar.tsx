@@ -8,6 +8,19 @@ const NAV_SECTIONS = [
   { id: 'contact', label: 'Contacto' },
 ] as const
 
+const mobileOverlayVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] as const, staggerChildren: 0.04, delayChildren: 0.05 },
+  },
+}
+
+const mobileItemVariants = {
+  hidden: { opacity: 0, y: 8 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.2, ease: [0.16, 1, 0.3, 1] as const } },
+}
+
 const Navbar = () => {
   const [activeSection, setActiveSection] = useState('')
   const [isMobileOpen, setIsMobileOpen] = useState(false)
@@ -140,24 +153,30 @@ const Navbar = () => {
             aria-modal="true"
             aria-label="Menú de navegación"
             className="navbar__mobile-overlay"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] as const }}
+            variants={mobileOverlayVariants}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
           >
             {NAV_SECTIONS.map(s => (
-              <button
+              <motion.button
                 key={s.id}
                 className="navbar__mobile-link"
+                variants={mobileItemVariants}
                 onClick={() => scrollTo(s.id)}
               >
                 {s.label}
-              </button>
+              </motion.button>
             ))}
-            <a className="navbar__mobile-cv-btn" href="/Fausto%20Chirino%20Calderon.pdf" download>
+            <motion.a
+              className="navbar__mobile-cv-btn"
+              variants={mobileItemVariants}
+              href="/Fausto%20Chirino%20Calderon.pdf"
+              download
+            >
               <span className="material-symbols-outlined">terminal</span>
               CV
-            </a>
+            </motion.a>
           </motion.div>
         )}
       </AnimatePresence>

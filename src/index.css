@@ -143,6 +143,22 @@ button:active {
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 
+.field-error {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: var(--danger);
+  padding-left: 0.25rem;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 160ms var(--ease-out), transform 160ms var(--ease-out);
+
+  @starting-style {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
 .fade-in-up {
   animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   opacity: 0;
