@@ -197,7 +197,7 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
           overflow: 'hidden',
           borderRadius: '0.75rem',
           background: 'var(--surface-container-high)',
-          height: isMobile ? '640px' : isTablet ? '480px' : '480px',
+          height: isMobile ? 'auto' : '480px',
           textDecoration: 'none',
           cursor: 'pointer',
           rotateX,
@@ -206,7 +206,7 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
         }}
       >
         <div style={{
-          flex: `0 0 ${isMobile ? '260px' : '220px'}`,
+          flex: `0 0 ${isMobile ? '190px' : '220px'}`,
           position: 'relative',
           overflow: 'hidden',
           background: project.bgColor ?? 'var(--surface-container-highest)'
@@ -219,7 +219,7 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
             objectPosition={project.objectFit === 'contain' ? 'center' : 'center 30%'}
           />
         </div>
-        <div style={{ flex: 1, padding: isMobile ? '1.5rem' : '1.75rem 2rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+        <div style={{ flex: 1, padding: isMobile ? '1.25rem' : '1.75rem 2rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
           <TagList tags={tags} marginBottom="0.75rem" />
           <h3 style={{
             fontFamily: 'var(--font-display)',
@@ -228,7 +228,7 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
             color: 'var(--on-surface)',
             marginBottom: '0.75rem'
           }}>{project.titulo}</h3>
-          <ProjectEvidence project={project} />
+          <ProjectEvidence project={project} compact={isMobile} />
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
             <TechStack tecnologias={project.tecnologias} />
             <ProjectLinkIndicator link={project.link} />
@@ -254,7 +254,7 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
           overflow: 'hidden',
           borderRadius: '0.75rem',
           background: 'var(--surface-container-high)',
-          height: isMobile ? '470px' : isTablet ? '480px' : '480px',
+          height: isMobile ? 'auto' : '480px',
           textDecoration: 'none',
           cursor: 'pointer',
           position: 'relative',
@@ -264,7 +264,7 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
         }}
       >
         <div style={{
-          flex: isMobile ? '0 0 220px' : 1,
+          flex: isMobile ? '0 0 170px' : 1,
           position: 'relative',
           overflow: 'hidden',
           background: project.bgColor ?? 'var(--surface-container-highest)'
@@ -283,7 +283,7 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
             background: 'linear-gradient(to top, var(--surface-container-high) 0%, transparent 60%)'
           }} />
         </div>
-        <div style={{ padding: '1.5rem', flex: '0 0 auto', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ padding: isMobile ? '1.25rem' : '1.5rem', flex: '0 0 auto', display: 'flex', flexDirection: 'column' }}>
           <TagList tags={tags} marginBottom="0.75rem" />
           <h3 style={{
             fontFamily: 'var(--font-display)',
@@ -324,7 +324,7 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
           overflow: 'hidden',
           borderRadius: '0.75rem',
           background: 'var(--surface-container-high)',
-          height: isMobile ? '560px' : isTablet ? '480px' : '400px',
+          height: isMobile ? 'auto' : isTablet ? '480px' : '400px',
           textDecoration: 'none',
           cursor: 'pointer',
           position: 'relative',
@@ -335,7 +335,7 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
       >
         <div style={{
           flex: 1,
-          padding: '1.75rem 2rem',
+          padding: isMobile ? '1.25rem' : '1.75rem 2rem',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center'
@@ -378,7 +378,7 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
         </div>
         <div style={{
           width: isTablet ? '100%' : '50%',
-          height: isTablet ? '200px' : '100%',
+          height: isMobile ? '160px' : isTablet ? '200px' : '100%',
           position: 'relative',
           overflow: 'hidden',
           background: project.bgColor ?? 'var(--surface-container-highest)',
@@ -412,7 +412,7 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
         overflow: 'hidden',
         borderRadius: '0.75rem',
         background: 'var(--surface-container-high)',
-        height: isMobile ? '420px' : '400px',
+        height: isMobile ? 'auto' : '400px',
         textDecoration: 'none',
         cursor: 'pointer',
         position: 'relative',
@@ -422,7 +422,7 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
       }}
     >
       <div style={{
-        height: '50%',
+        height: isMobile ? '170px' : '50%',
         position: 'relative',
         overflow: 'hidden',
         background: project.bgColor ?? 'var(--surface-container-highest)'
@@ -441,7 +441,7 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
           background: 'linear-gradient(to top, var(--surface-container-high) 0%, transparent 50%)'
         }} />
       </div>
-      <div style={{ padding: '1.5rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ padding: isMobile ? '1.25rem' : '1.5rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
         <h3 style={{
           fontFamily: 'var(--font-display)',
           fontSize: '1.25rem',
