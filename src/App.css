@@ -216,10 +216,6 @@
 
 /* === DESKTOP REFINEMENTS === */
 @media (min-width: 1025px) {
-  #about, #contact {
-    min-height: 100lvh;
-  }
-
   .hero-cta-primary,
   .hero-cta-secondary {
     padding: 1.125rem 2.5rem;

@@ -43,7 +43,7 @@ const ContactFormSection = () => {
                 marginBottom: '1.5rem',
                 letterSpacing: '-0.02em'
               }}>
-                ¿Tienes un proyecto en <span style={{ color: 'var(--primary)' }}>mente</span>?
+                ¿Tenés un proyecto en <span style={{ color: 'var(--primary)' }}>mente</span>?
               </h2>
               <p style={{
                 fontFamily: 'var(--font-body)',
@@ -52,7 +52,7 @@ const ContactFormSection = () => {
                 lineHeight: '1.6',
                 marginBottom: '2rem'
               }}>
-                Estoy abierto a nuevas colaboraciones y oportunidades. Ponte en contacto y hagamos algo increíble juntos.
+                Estoy abierto a nuevas colaboraciones y oportunidades. Ponete en contacto y hagamos algo increíble juntos.
               </p>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>

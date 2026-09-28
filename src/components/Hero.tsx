@@ -30,8 +30,8 @@ class Particle {
     if (this.y < 0) this.y = this.canvasH
   }
 
-  draw(ctx: CanvasRenderingContext2D) {
-    ctx.fillStyle = 'var(--primary)'
+  draw(ctx: CanvasRenderingContext2D, color: string) {
+    ctx.fillStyle = color
     ctx.beginPath()
     ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2)
     ctx.fill()
@@ -54,8 +54,13 @@ const Hero = () => {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
+    // Canvas fillStyle can't resolve CSS custom properties - read the real
+    // computed color once instead of handing it an invalid 'var(--primary)'
+    // string (which silently falls back to black).
+    const particleColor = getComputedStyle(canvas).getPropertyValue('--primary').trim() || '#c0c1ff'
+
     let particles: Particle[] = []
-    let animId: number
+    let animId = 0
 
     const resize = () => {
       canvas.width = window.innerWidth
@@ -77,24 +82,41 @@ const Hero = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       particles.forEach(p => {
         p.update()
-        p.draw(ctx)
+        p.draw(ctx, particleColor)
       })
       animId = requestAnimationFrame(animate)
+    }
+
+    const stop = () => {
+      if (animId) cancelAnimationFrame(animId)
     }
 
     resize()
     init()
 
     if (prefersReducedMotion) {
-      particles.forEach(p => p.draw(ctx))
+      particles.forEach(p => p.draw(ctx, particleColor))
     } else {
       animate()
     }
 
     window.addEventListener('resize', resize)
 
+    // Scrolling past the hero shouldn't keep 50 particles animating for nothing.
+    const observer = new IntersectionObserver(([entry]) => {
+      if (prefersReducedMotion) return
+      if (entry.isIntersecting) {
+        if (!animId) animate()
+      } else {
+        stop()
+        animId = 0
+      }
+    })
+    observer.observe(canvas)
+
     return () => {
-      cancelAnimationFrame(animId)
+      stop()
+      observer.disconnect()
       window.removeEventListener('resize', resize)
     }
   }, [prefersReducedMotion])
