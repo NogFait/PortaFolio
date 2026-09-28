@@ -4,7 +4,7 @@ import { useBreakpoint } from '../hooks/useMediaQuery'
 import { useScrollAnimation } from '../hooks/useScrollAnimation'
 
 const Projects = () => {
-  const { ref: sectionRef, isVisible } = useScrollAnimation<HTMLElement>()
+  const { ref: sectionRef, isVisible } = useScrollAnimation<HTMLElement>({ once: false })
   const { isTablet } = useBreakpoint()
 
   return (

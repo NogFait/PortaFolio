@@ -324,7 +324,7 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
           overflow: 'hidden',
           borderRadius: '0.75rem',
           background: 'var(--surface-container-high)',
-          height: isMobile ? '560px' : isTablet ? '480px' : '360px',
+          height: isMobile ? '560px' : isTablet ? '480px' : '400px',
           textDecoration: 'none',
           cursor: 'pointer',
           position: 'relative',
@@ -335,22 +335,22 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
       >
         <div style={{
           flex: 1,
-          padding: '2rem',
+          padding: '1.75rem 2rem',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center'
         }}>
-          <TagList tags={tags} />
+          <TagList tags={tags} marginBottom="0.75rem" />
           <h3 style={{
             fontFamily: 'var(--font-display)',
-            fontSize: '1.5rem',
+            fontSize: '1.375rem',
             fontWeight: 700,
             color: 'var(--on-surface)',
-            marginBottom: '1rem'
+            marginBottom: '0.75rem'
           }}>{project.titulo}</h3>
-          <ProjectEvidence project={project} />
+          <ProjectEvidence project={project} compact />
           {project.resultados && project.resultados.length > 0 ? (
-            <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '1rem' }}>
+            <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '0.75rem' }}>
               {project.resultados.map(r => (
                 <div key={r.label}>
                   <span style={{
@@ -370,7 +370,7 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
               ))}
             </div>
           ) : (
-            <div style={{ marginBottom: '1rem' }}>
+            <div style={{ marginBottom: '0.75rem' }}>
               <TechStack tecnologias={project.tecnologias} />
             </div>
           )}

@@ -38,7 +38,7 @@ const ProjectsSeccion = () => {
       variants={containerVariants}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: '-40px' }}
+      viewport={{ once: false, margin: '-40px' }}
     >
       <GridItem className="projects-grid__hero">
         <ProjectCard project={projects[0]} layout="hero" />

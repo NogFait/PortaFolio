@@ -6,7 +6,7 @@ import { useBreakpoint } from '../hooks/useMediaQuery'
 import { useScrollAnimation } from '../hooks/useScrollAnimation'
 
 const ContactFormSection = () => {
-  const { ref: sectionRef, isVisible } = useScrollAnimation<HTMLElement>()
+  const { ref: sectionRef, isVisible } = useScrollAnimation<HTMLElement>({ once: false })
   const { isMobile } = useBreakpoint()
 
   return (
