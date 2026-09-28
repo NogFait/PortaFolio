@@ -11,11 +11,6 @@
   50% { opacity: 1; }
 }
 
-@keyframes shimmer {
-  0% { background-position: 0% center; }
-  100% { background-position: 100% center; }
-}
-
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(30px); }
   to { opacity: 1; transform: translateY(0); }
@@ -104,9 +99,6 @@ select:focus-visible {
   --radius-lg: 0.75rem;
   --radius-full: 0.75rem;
 
-  --shadow-ghost: 0 8px 32px rgba(var(--on-surface-rgb), 0.04);
-  --shadow-ambient: 0 0 40px -10px rgba(var(--primary-rgb), 0.15);
-
   /* Motion tokens: strong custom easing, not the weak CSS built-ins */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
@@ -146,32 +138,6 @@ button:active {
 /* === UTILITY CLASSES === */
 .material-symbols-outlined {
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-}
-
-.gradient-glow-primary {
-  background: linear-gradient(45deg, var(--primary), var(--primary-container));
-  box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.3);
-}
-
-.gradient-text {
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.tech-glow {
-  box-shadow: 0 0 40px -10px rgba(var(--primary-rgb), 0.15);
-}
-
-.reveal {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
-}
-
-.reveal.active {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 .fade-in-up {

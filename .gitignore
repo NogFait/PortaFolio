@@ -40,3 +40,16 @@ openspec/
 
 # System files
 Thumbs.db
+
+# Impeccable (design skill) ephemeral/local state — PRODUCT.md, DESIGN.md and
+# .impeccable/surfaces/*.md stay tracked; everything below is per-machine.
+.impeccable/live/
+.impeccable/history/
+.impeccable/config.local.json
+.impeccable/provider-smoke/
+.impeccable/critique/*
+!.impeccable/critique/ignore.md
+**/.impeccable/hook.cache.json
+**/.impeccable/hook.pending.json
+.impeccable-live.json
+.impeccable-live/
