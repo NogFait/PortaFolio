@@ -69,7 +69,7 @@
   text-decoration: none;
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: color 0.3s var(--ease-out), background-color 0.3s var(--ease-out), transform 0.16s var(--ease-out);
   cursor: pointer;
   background: none;
   border: none;
@@ -78,6 +78,10 @@
 .navbar__link:hover {
   color: var(--on-surface);
   background: rgba(192, 193, 255, 0.08);
+}
+
+.navbar__link:active {
+  transform: scale(0.96);
 }
 
 .navbar__link--active {
@@ -115,14 +119,20 @@
   color: var(--on-surface-variant);
   border: none;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: background-color 0.3s var(--ease-out), transform 0.16s var(--ease-out);
   font-size: 0.8125rem;
   text-decoration: none;
 }
 
-.navbar__cv-btn:hover {
-  background: var(--surface-container-highest);
-  transform: scale(1.05);
+@media (hover: hover) and (pointer: fine) {
+  .navbar__cv-btn:hover {
+    background: var(--surface-container-highest);
+    transform: scale(1.05);
+  }
+}
+
+.navbar__cv-btn:active {
+  transform: scale(0.95);
 }
 
 .navbar__cv-icon {
@@ -163,7 +173,7 @@
   height: 2px;
   background: var(--on-surface);
   border-radius: 2px;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.3s var(--ease-out), opacity 0.3s var(--ease-out);
   transform-origin: center;
 }
 
@@ -206,7 +216,7 @@
   text-decoration: none;
   padding: 1rem clamp(1.5rem, 0.5rem + 3vw, 4.5rem);
   border-radius: 0.75rem;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.16s var(--ease-out);
   background: none;
   border: 1px solid rgba(255, 255, 255, 0.05);
   cursor: pointer;
@@ -220,6 +230,10 @@
   background: rgba(192, 193, 255, 0.12);
   color: var(--primary);
   border-color: rgba(192, 193, 255, 0.15);
+}
+
+.navbar__mobile-link:active {
+  transform: scale(0.97);
 }
 
 .navbar__mobile-cv-btn {
@@ -237,13 +251,17 @@
   text-transform: uppercase;
   letter-spacing: 0.1em;
   margin-top: 1rem;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.16s var(--ease-out);
   text-decoration: none;
 }
 
 .navbar__mobile-cv-btn:hover {
   background: var(--surface-container-highest);
   transform: scale(1.05);
+}
+
+.navbar__mobile-cv-btn:active {
+  transform: scale(0.95);
 }
 
 @media (max-width: 1024px) {

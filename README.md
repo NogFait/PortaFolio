@@ -3,7 +3,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/React-20232a?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
   <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
-  <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind" />
+  <img src="https://img.shields.io/badge/Framer_Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white" alt="Framer Motion" />
   <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
   <img src="https://img.shields.io/badge/EmailJS-FF6B6B?style=for-the-badge&logo=mail-dot-ru&logoColor=white" alt="EmailJS" />
 </p>
@@ -25,6 +25,9 @@ Este portfolio implementa un design system premium inspirado en la precisión t�
 - ✅ **Bento Grid Asimétrico**: Layout que rompe la sensación de template
 - ✅ **No-Line Rule**: Sin bordes de 1px sólidos para seccionado - usamos shifts de background
 - ✅ **Gradientes Signature Glow**: 45° linear-gradient para CTAs
+- ✅ **Motion con criterio**: easing y duraciones tokenizadas, feedback de presión en botones/links, hover gestual solo en dispositivos con puntero fino, y `prefers-reduced-motion` respetado en toda la app
+
+> El sistema visual se implementa con CSS puro (variables + módulos por componente), no con Tailwind CSS.
 
 ---
 
@@ -35,7 +38,10 @@ Este portfolio implementa un design system premium inspirado en la precisión t�
 | **React 19** | Biblioteca principal para UI |
 | **TypeScript** | Tipado estático para mayor seguridad |
 | **Vite 8** | Build tool ultrarrápido |
-| **Tailwind CSS v4** | Framework de utilidades y design tokens |
+| **CSS puro (variables + módulos)** | Design tokens y estilos, sin framework de utilidades |
+| **Framer Motion** | Animaciones, springs y scroll-linked motion |
+| **Lenis** | Smooth scroll |
+| **Sonner** | Notificaciones (toasts) del formulario de contacto |
 | **EmailJS** | Envío de emails desde el cliente |
 | **React Hook Form** | Manejo de formularios con validación |
 

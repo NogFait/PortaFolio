@@ -46,6 +46,30 @@ const TechStack = ({ tecnologias, iconOnly = false }: { tecnologias?: string[]; 
   )
 }
 
+const TagList = ({ tags, marginBottom = '1rem' }: { tags: string[]; marginBottom?: string }) => {
+  if (tags.length === 0) return null
+  return (
+    <div style={{ display: 'flex', gap: '0.5rem', marginBottom, flexWrap: 'wrap' }}>
+      {tags.map(tag => (
+        <span key={tag} style={{
+          fontFamily: 'var(--font-mono)',
+          fontSize: '0.625rem',
+          padding: '0.25rem 0.5rem',
+          borderRadius: '9999px',
+          background: TAG_COLORS[tag]?.bg ?? 'rgba(var(--primary-rgb), 0.1)',
+          color: TAG_COLORS[tag]?.text ?? 'var(--primary)',
+          border: `1px solid ${TAG_COLORS[tag]?.border ?? 'rgba(var(--primary-rgb), 0.1)'}`,
+          textTransform: 'uppercase',
+          letterSpacing: '0.05em',
+          fontWeight: 600
+        }}>
+          {tag}
+        </span>
+      ))}
+    </div>
+  )
+}
+
 const ProjectCard = ({ project, layout = 'compact' }: Props) => {
   const { isMobile, isTablet, isDesktop } = useBreakpoint()
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)')
@@ -107,26 +131,7 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
           padding: '2rem',
           width: '100%'
         }}>
-          {tags.length > 0 && (
-            <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
-              {tags.map(tag => (
-                <span key={tag} style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '0.625rem',
-                  padding: '0.25rem 0.5rem',
-                  borderRadius: '9999px',
-                  background: TAG_COLORS[tag]?.bg ?? 'rgba(var(--primary-rgb), 0.1)',
-                  color: TAG_COLORS[tag]?.text ?? 'var(--primary)',
-                  border: `1px solid ${TAG_COLORS[tag]?.border ?? 'rgba(var(--primary-rgb), 0.1)'}`,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.05em',
-                  fontWeight: 600
-                }}>
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
+          <TagList tags={tags} />
           <h3 style={{
             fontFamily: 'var(--font-display)',
             fontSize: 'clamp(1.5rem, 3vw, 2rem)',
@@ -217,26 +222,7 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
           }} />
         </div>
         <div style={{ padding: '1.5rem', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
-          {tags.length > 0 && (
-            <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
-              {tags.map(tag => (
-                <span key={tag} style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '0.625rem',
-                  padding: '0.25rem 0.5rem',
-                  borderRadius: '9999px',
-                  background: TAG_COLORS[tag]?.bg ?? 'rgba(var(--primary-rgb), 0.1)',
-                  color: TAG_COLORS[tag]?.text ?? 'var(--primary)',
-                  border: `1px solid ${TAG_COLORS[tag]?.border ?? 'rgba(var(--primary-rgb), 0.1)'}`,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.05em',
-                  fontWeight: 600
-                }}>
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
+          <TagList tags={tags} marginBottom="0.75rem" />
           <h3 style={{
             fontFamily: 'var(--font-display)',
             fontSize: '1.375rem',
@@ -296,26 +282,7 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
           flexDirection: 'column',
           justifyContent: 'center'
         }}>
-          {tags.length > 0 && (
-            <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
-              {tags.map(tag => (
-                <span key={tag} style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '0.625rem',
-                  padding: '0.25rem 0.5rem',
-                  borderRadius: '9999px',
-                  background: TAG_COLORS[tag]?.bg ?? 'rgba(var(--primary-rgb), 0.1)',
-                  color: TAG_COLORS[tag]?.text ?? 'var(--primary)',
-                  border: `1px solid ${TAG_COLORS[tag]?.border ?? 'rgba(var(--primary-rgb), 0.1)'}`,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.05em',
-                  fontWeight: 600
-                }}>
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
+          <TagList tags={tags} />
           <h3 style={{
             fontFamily: 'var(--font-display)',
             fontSize: '1.5rem',
@@ -450,26 +417,7 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
           flex: 1
         }}>{project.descripcion}</p>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', flexWrap: 'wrap' }}>
-          {tags.length > 0 && (
-            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-              {tags.map(tag => (
-                <span key={tag} style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '0.625rem',
-                  padding: '0.25rem 0.5rem',
-                  borderRadius: '9999px',
-                  background: TAG_COLORS[tag]?.bg ?? 'rgba(var(--primary-rgb), 0.1)',
-                  color: TAG_COLORS[tag]?.text ?? 'var(--primary)',
-                  border: `1px solid ${TAG_COLORS[tag]?.border ?? 'rgba(var(--primary-rgb), 0.1)'}`,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.05em',
-                  fontWeight: 600
-                }}>
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
+          <TagList tags={tags} marginBottom="0" />
           <TechStack tecnologias={project.tecnologias} iconOnly />
         </div>
       </div>

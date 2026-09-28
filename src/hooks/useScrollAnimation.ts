@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react';
 interface UseScrollAnimationOptions {
   threshold?: number;
   rootMargin?: string;
-  easing?: string;
   staggerDelay?: number;
   once?: boolean;
 }
@@ -12,7 +11,6 @@ export function useScrollAnimation<T extends HTMLElement>(options: UseScrollAnim
   const {
     threshold = 0.1,
     rootMargin = '0px',
-    easing = 'cubic-bezier(0.16, 1, 0.3, 1)',
     staggerDelay = 0,
     once = true,
   } = options;
@@ -54,30 +52,5 @@ export function useScrollAnimation<T extends HTMLElement>(options: UseScrollAnim
     };
   }, [threshold, rootMargin, staggerDelay, prefersReducedMotion, once]);
 
-  const getTransformStyle = (direction: 'up' | 'down' | 'left' | 'right' | 'fade' | 'scale') => {
-    if (prefersReducedMotion || isVisible) {
-      return { opacity: 1, transform: 'translateY(0) translateX(0) scale(1)' };
-    }
-
-    switch (direction) {
-      case 'up':
-        return { opacity: 0, transform: 'translateY(40px) scale(1)' };
-      case 'down':
-        return { opacity: 0, transform: 'translateY(-40px) scale(1)' };
-      case 'left':
-        return { opacity: 0, transform: 'translateX(40px) scale(1)' };
-      case 'right':
-        return { opacity: 0, transform: 'translateX(-40px) scale(1)' };
-      case 'scale':
-        return { opacity: 0, transform: 'translateY(0) scale(0.95)' };
-      case 'fade':
-      default:
-        return { opacity: 0, transform: 'translateY(0) scale(1)' };
-    }
-  };
-
-  const getTransition = (duration = 0.8) =>
-    prefersReducedMotion ? 'none' : `all ${duration}s ${easing}`;
-
-  return { ref, isVisible, getTransformStyle, getTransition, prefersReducedMotion };
+  return { ref, isVisible, prefersReducedMotion };
 }

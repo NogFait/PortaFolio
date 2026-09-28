@@ -106,7 +106,7 @@ const ContactFormSection = () => {
                   justifyContent: 'center',
                   color: 'var(--on-surface-variant)',
                   textDecoration: 'none',
-                  transition: 'all 0.3s ease'
+                  transition: 'background-color 0.3s ease, color 0.3s ease, transform 0.3s ease'
                 }}
                 className="contact-panel__social"
               >
@@ -127,7 +127,7 @@ const ContactFormSection = () => {
                   justifyContent: 'center',
                   color: 'var(--on-surface-variant)',
                   textDecoration: 'none',
-                  transition: 'all 0.3s ease'
+                  transition: 'background-color 0.3s ease, color 0.3s ease, transform 0.3s ease'
                 }}
                 className="contact-panel__social"
               >

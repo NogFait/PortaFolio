@@ -254,7 +254,7 @@ const Hero = () => {
             borderRadius: '0.75rem',
             textDecoration: 'none',
             border: '1px solid rgba(70, 69, 84, 0.2)',
-            transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
+            transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease, box-shadow 0.3s ease'
           }}>
             Hablemos
           </a>

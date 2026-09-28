@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form"
 import emailjs from "@emailjs/browser"
-import Swal from "sweetalert2"
+import { toast } from "sonner"
 import { useBreakpoint } from "../hooks/useMediaQuery"
 
 type FormData = {
@@ -34,25 +34,13 @@ const ContactForm = () => {
         import.meta.env.VITE_EMAILJS_PUBLIC_KEY
       )
       reset()
-      Swal.fire({
-        icon: 'success',
-        title: 'Mensaje enviado',
-        text: 'Gracias por contactarme. Te responderé a la brevedad.',
-        confirmButtonColor: 'var(--primary)',
-        background: 'var(--surface-container-low)',
-        color: 'var(--on-surface)',
-        iconColor: 'var(--secondary)',
+      toast.success('Mensaje enviado', {
+        description: 'Gracias por contactarme. Te responderé a la brevedad.',
       })
     } catch (error) {
       console.error("Error al enviar", error)
-      Swal.fire({
-        icon: 'error',
-        title: 'Error al enviar',
-        text: 'Hubo un problema. Intentá de nuevo.',
-        confirmButtonColor: 'var(--primary)',
-        background: 'var(--surface-container-low)',
-        color: 'var(--on-surface)',
-        iconColor: '#ff6b6b',
+      toast.error('Error al enviar', {
+        description: 'Hubo un problema. Intentá de nuevo.',
       })
     }
   }
@@ -93,7 +81,7 @@ const ContactForm = () => {
               color: 'var(--on-surface)',
               fontFamily: 'var(--font-body)',
               fontSize: '0.875rem',
-              transition: 'all 0.3s ease',
+              transition: 'border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease',
               boxSizing: 'border-box'
             }}
             className="form-input-new"
@@ -125,7 +113,7 @@ const ContactForm = () => {
               color: 'var(--on-surface)',
               fontFamily: 'var(--font-body)',
               fontSize: '0.875rem',
-              transition: 'all 0.3s ease',
+              transition: 'border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease',
               boxSizing: 'border-box'
             }}
             className="form-input-new"
@@ -156,7 +144,7 @@ const ContactForm = () => {
             color: 'var(--on-surface)',
             fontFamily: 'var(--font-body)',
             fontSize: '0.875rem',
-            transition: 'all 0.3s ease',
+            transition: 'border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease',
             boxSizing: 'border-box',
             appearance: 'none',
             backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23c7c4d7' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
@@ -199,7 +187,7 @@ const ContactForm = () => {
             color: 'var(--on-surface)',
             fontFamily: 'var(--font-body)',
             fontSize: '0.875rem',
-            transition: 'all 0.3s ease',
+            transition: 'border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease',
             boxSizing: 'border-box',
             resize: 'vertical',
             minHeight: '100px'
@@ -226,7 +214,7 @@ const ContactForm = () => {
           alignItems: 'center',
           justifyContent: 'center',
           gap: '0.5rem',
-          transition: 'all 0.3s ease',
+          transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, opacity 0.2s ease',
           boxShadow: '0 0 20px rgba(var(--primary-rgb), 0.3)',
           opacity: isSubmitting ? 0.7 : 1
         }}

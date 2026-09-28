@@ -106,6 +106,10 @@ select:focus-visible {
 
   --shadow-ghost: 0 8px 32px rgba(var(--on-surface-rgb), 0.04);
   --shadow-ambient: 0 0 40px -10px rgba(var(--primary-rgb), 0.15);
+
+  /* Motion tokens: strong custom easing, not the weak CSS built-ins */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
 }
 
 /* === TYPOGRAPHY RESET === */
@@ -132,7 +136,11 @@ button {
   border-radius: 0.75rem;
   padding: 1rem 1.5rem;
   font-weight: 600;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.16s var(--ease-out), box-shadow 0.2s ease;
+}
+
+button:active {
+  transform: scale(0.97);
 }
 
 /* === UTILITY CLASSES === */
@@ -158,7 +166,7 @@ button {
 .reveal {
   opacity: 0;
   transform: translateY(20px);
-  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
 }
 
 .reveal.active {
@@ -175,9 +183,15 @@ button {
   animation: float 3s ease-in-out infinite;
 }
 
-.hero-btn:hover {
-  transform: scale(1.05) !important;
-  box-shadow: 0 0 30px -4px rgba(var(--primary-rgb), 0.5);
+@media (hover: hover) and (pointer: fine) {
+  .hero-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 30px -4px rgba(var(--primary-rgb), 0.5);
+  }
+}
+
+.hero-btn:active {
+  transform: scale(0.97);
 }
 
 .glass {
@@ -234,7 +248,7 @@ input, textarea, select {
   font-family: var(--font-body);
   font-size: 0.875rem;
   width: 100%;
-  transition: all 0.3s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
   box-sizing: border-box;
 }
 

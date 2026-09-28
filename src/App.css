@@ -39,10 +39,6 @@
   transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-a:hover .project-card-img {
-  transform: scale(1.05);
-}
-
 .project-card-border {
   position: absolute;
   inset: 0;
@@ -52,16 +48,28 @@ a:hover .project-card-img {
   transition: border-color 0.4s ease;
 }
 
-a:hover .project-card-border {
-  border-color: rgba(var(--primary-rgb), 0.2);
-}
-
 .project-card-link {
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-a:hover .project-card-link {
-  transform: translateX(4px);
+@media (hover: hover) and (pointer: fine) {
+  a:hover .project-card-img {
+    transform: scale(1.05);
+  }
+
+  a:hover .project-card-border {
+    border-color: rgba(var(--primary-rgb), 0.2);
+  }
+
+  a:hover .project-card-link {
+    transform: translateX(4px);
+  }
+}
+
+/* Touch devices get press feedback instead of a hover zoom */
+.projects-grid a:active .project-card-img {
+  transform: scale(1.02);
+  transition-duration: 150ms;
 }
 
 /* === ABOUT === */
@@ -101,8 +109,10 @@ a:hover .project-card-link {
   transition: transform 0.3s ease;
 }
 
-.about-badge:hover {
-  transform: translateY(-4px);
+@media (hover: hover) and (pointer: fine) {
+  .about-badge:hover {
+    transform: translateY(-4px);
+  }
 }
 
 /* === CONTACT PANEL === */
@@ -153,14 +163,20 @@ a:hover .project-card-link {
   gap: 1rem;
 }
 
-.contact-panel__info-item:hover > div:first-child {
-  transform: scale(1.1);
+@media (hover: hover) and (pointer: fine) {
+  .contact-panel__info-item:hover > div:first-child {
+    transform: scale(1.1);
+  }
+
+  .contact-panel__social:hover {
+    background: var(--primary) !important;
+    color: #1000a9 !important;
+    transform: scale(1.1);
+  }
 }
 
-.contact-panel__social:hover {
-  background: var(--primary) !important;
-  color: #1000a9 !important;
-  transform: scale(1.1);
+.contact-panel__social:active {
+  transform: scale(0.95);
 }
 
 /* === FORM INPUTS === */
