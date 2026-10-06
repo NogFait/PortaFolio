@@ -1,112 +1,19 @@
 import { useState } from "react"
+import type { MouseEvent } from "react"
 import type { Project } from "../types/ProjectType"
 import { motion } from "framer-motion"
-import { SiGithub } from "react-icons/si"
 import { useBreakpoint, useMediaQuery } from "../hooks/useMediaQuery"
 import { useTilt } from "../hooks/useTilt"
 import { springs } from "../motion/physics"
-import { TECH_ICONS } from "../data/techIcons"
+import { TagList, TechStack, ProjectEvidence } from "./ProjectParts"
+import { getTagsForProject } from "../data/projectTags"
 
 type Layout = 'hero' | 'vertical' | 'compact' | 'split'
 
 type Props = {
   project: Project
   layout?: Layout
-}
-
-const TAG_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-  SaaS: { bg: 'rgba(var(--secondary-rgb), 0.3)', text: '#8ef7cd', border: 'rgba(var(--secondary-rgb), 0.5)' },
-  Fullstack: { bg: 'rgba(var(--primary-rgb), 0.3)', text: '#ececff', border: 'rgba(var(--primary-rgb), 0.5)' },
-  'E-commerce': { bg: 'rgba(255, 183, 131, 0.15)', text: '#ffb783', border: 'rgba(255, 183, 131, 0.2)' },
-  'Desarrollo Web': { bg: 'rgba(var(--primary-rgb), 0.25)', text: '#e1e0ff', border: 'rgba(var(--primary-rgb), 0.35)' },
-}
-
-const TechStack = ({ tecnologias, iconOnly = false }: { tecnologias?: string[]; iconOnly?: boolean }) => {
-  if (!tecnologias || tecnologias.length === 0) return null
-  return (
-    <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-      {tecnologias.map(tech => {
-        const Icon = TECH_ICONS[tech]
-        return (
-          <span key={tech} title={tech} style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.375rem',
-            fontFamily: 'var(--font-mono)',
-            fontSize: '0.625rem',
-            padding: iconOnly ? '0.3125rem' : '0.25rem 0.5rem',
-            borderRadius: '9999px',
-            background: 'var(--surface-container-lowest)',
-            color: 'var(--on-surface-variant)',
-            border: '1px solid var(--outline-variant)'
-          }}>
-            {Icon && <Icon size={12} />}
-            {!iconOnly && tech}
-          </span>
-        )
-      })}
-    </div>
-  )
-}
-
-const TagList = ({ tags, marginBottom = '1rem' }: { tags: string[]; marginBottom?: string }) => {
-  if (tags.length === 0) return null
-  return (
-    <div style={{ display: 'flex', gap: '0.5rem', marginBottom, flexWrap: 'wrap' }}>
-      {tags.map(tag => (
-        <span key={tag} style={{
-          fontFamily: 'var(--font-mono)',
-          fontSize: '0.625rem',
-          padding: '0.25rem 0.5rem',
-          borderRadius: '9999px',
-          background: TAG_COLORS[tag]?.bg ?? 'rgba(var(--primary-rgb), 0.1)',
-          color: TAG_COLORS[tag]?.text ?? 'var(--primary)',
-          border: `1px solid ${TAG_COLORS[tag]?.border ?? 'rgba(var(--primary-rgb), 0.1)'}`,
-          textTransform: 'uppercase',
-          letterSpacing: '0.05em',
-          fontWeight: 600
-        }}>
-          {tag}
-        </span>
-      ))}
-    </div>
-  )
-}
-
-// Renders the problema/solucion pair when the data exists; falls back to the
-// plain descripcion otherwise, since not every project has that evidence yet.
-const ProjectEvidence = ({ project, compact = false }: { project: Project; compact?: boolean }) => {
-  const textStyle = {
-    fontFamily: 'var(--font-body)',
-    fontSize: compact ? '0.8125rem' : '0.875rem',
-    color: 'var(--on-surface-variant)',
-    lineHeight: '1.5',
-    margin: 0,
-  }
-  const labelStyle = {
-    fontFamily: 'var(--font-mono)',
-    fontSize: '0.625rem',
-    textTransform: 'uppercase' as const,
-    letterSpacing: '0.1em',
-    color: 'var(--secondary)',
-  }
-
-  if (!project.problema || !project.solucion) {
-    return <p style={{ ...textStyle, marginBottom: compact ? '1rem' : '1.5rem' }}>{project.descripcion}</p>
-  }
-
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem', marginBottom: compact ? '1rem' : '1.5rem' }}>
-      <div>
-        <span style={labelStyle}>Problema</span>
-        <p style={{ ...textStyle, marginTop: '0.25rem' }}>{project.problema}</p>
-      </div>
-      <div>
-        <span style={labelStyle}>Solución</span>
-        <p style={{ ...textStyle, marginTop: '0.25rem' }}>{project.solucion}</p>
-      </div>
-    </div>
-  )
+  onOpen?: (id: string, trigger: HTMLElement) => void
 }
 
 // Lazy-loaded screenshots were popping in the instant they finished
@@ -151,30 +58,25 @@ const ProjectImage = ({
   )
 }
 
-// Names what clicking the card actually does: GitHub links read "Ver código",
-// live sites read "Ver Proyecto" - a recruiter shouldn't have to guess.
-const ProjectLinkIndicator = ({ link }: { link?: string }) => {
-  const isGitHub = link?.includes('github.com')
-  return (
-    <span style={{
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: '0.375rem',
-      fontFamily: 'var(--font-mono)',
-      fontSize: '0.625rem',
-      textTransform: 'uppercase',
-      letterSpacing: '0.1em',
-      color: 'var(--primary)',
-    }} className="project-card-link">
-      {isGitHub ? 'Ver código' : 'Ver Proyecto'}
-      {isGitHub
-        ? <SiGithub size={11} />
-        : <span className="material-symbols-outlined" style={{ fontSize: '0.875rem' }}>north_east</span>}
-    </span>
-  )
-}
+// Names what clicking the card actually does: it opens the detail panel (the
+// external link lives inside it, where GitHub vs live site is spelled out).
+const ProjectLinkIndicator = () => (
+  <span style={{
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '0.375rem',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '0.625rem',
+    textTransform: 'uppercase',
+    letterSpacing: '0.1em',
+    color: 'var(--primary)',
+  }} className="project-card-link">
+    Ver detalle
+    <span className="material-symbols-outlined" style={{ fontSize: '0.875rem' }}>open_in_full</span>
+  </span>
+)
 
-const ProjectCard = ({ project, layout = 'compact' }: Props) => {
+const ProjectCard = ({ project, layout = 'compact', onOpen }: Props) => {
   const { isMobile, isTablet, isDesktop } = useBreakpoint()
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)')
   const { rotateX, rotateY, glareBackground, handleMouseMove, handleMouseLeave } = useTilt({
@@ -183,16 +85,35 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
 
   const tags = getTagsForProject(project.titulo)
 
+  // The card is a link (so middle/cmd-click and keyboard still work) that, on a
+  // plain click, becomes the detail panel instead of leaving the page.
+  const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
+    if (!onOpen || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
+    e.preventDefault()
+    handleMouseLeave() // flatten the tilt so the layout morph starts from a flat card
+    onOpen(project.id, e.currentTarget)
+  }
+
+  const interactive = {
+    href: project.link,
+    target: '_blank',
+    rel: 'noopener noreferrer',
+    className: 'project-card',
+    layoutId: `project-${project.id}`,
+    onClick: handleClick,
+    onMouseMove: handleMouseMove,
+    onMouseLeave: handleMouseLeave,
+    // Lifts toward the pointer, sinks under the press; the layout morph into the
+    // detail panel gets its own, softer spring.
+    whileHover: { y: -4 },
+    whileTap: { scale: 0.985 },
+    transition: { default: springs.snappy, scale: springs.press, layout: springs.settle },
+  }
+
   if (layout === 'hero') {
     return (
       <motion.a
-        href={project.link}
-        target="_blank"
-        rel="noopener noreferrer"
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        whileTap={{ scale: 0.985 }}
-        transition={springs.press}
+        {...interactive}
         style={{
           display: 'flex',
           flexDirection: 'column',
@@ -234,7 +155,7 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
           <ProjectEvidence project={project} compact={isMobile} />
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
             <TechStack tecnologias={project.tecnologias} />
-            <ProjectLinkIndicator link={project.link} />
+            <ProjectLinkIndicator />
           </div>
         </div>
         <motion.div style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', background: glareBackground, pointerEvents: 'none' }} />
@@ -246,13 +167,7 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
   if (layout === 'vertical') {
     return (
       <motion.a
-        href={project.link}
-        target="_blank"
-        rel="noopener noreferrer"
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        whileTap={{ scale: 0.985 }}
-        transition={springs.press}
+        {...interactive}
         style={{
           display: 'flex',
           flexDirection: 'column',
@@ -307,7 +222,7 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
           <div style={{ marginBottom: '0.75rem' }}>
             <TechStack tecnologias={project.tecnologias} />
           </div>
-          <ProjectLinkIndicator link={project.link} />
+          <ProjectLinkIndicator />
         </div>
         <motion.div style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', background: glareBackground, pointerEvents: 'none' }} />
         <div className="project-card-border" style={{ borderColor: 'rgba(var(--secondary-rgb), 0)' }} />
@@ -318,13 +233,7 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
   if (layout === 'split') {
     return (
       <motion.a
-        href={project.link}
-        target="_blank"
-        rel="noopener noreferrer"
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        whileTap={{ scale: 0.985 }}
-        transition={springs.press}
+        {...interactive}
         style={{
           display: 'flex',
           flexDirection: isTablet ? 'column' : 'row',
@@ -381,7 +290,7 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
               <TechStack tecnologias={project.tecnologias} />
             </div>
           )}
-          <ProjectLinkIndicator link={project.link} />
+          <ProjectLinkIndicator />
         </div>
         <div style={{
           width: isTablet ? '100%' : '50%',
@@ -408,13 +317,7 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
 
   return (
       <motion.a
-      href={project.link}
-      target="_blank"
-      rel="noopener noreferrer"
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      whileTap={{ scale: 0.985 }}
-      transition={springs.press}
+      {...interactive}
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -470,22 +373,12 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
           <TagList tags={tags} marginBottom="0" />
           <TechStack tecnologias={project.tecnologias} iconOnly />
         </div>
-        <ProjectLinkIndicator link={project.link} />
+        <ProjectLinkIndicator />
       </div>
       <motion.div style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', background: glareBackground, pointerEvents: 'none' }} />
     <div className="project-card-border" style={{ borderColor: 'rgba(70, 69, 84, 0)' }} />
     </motion.a>
   )
-}
-
-function getTagsForProject(title: string): string[] {
-  const map: Record<string, string[]> = {
-    'Client Flow': ['SaaS', 'Fullstack'],
-    'FoodStore': ['E-commerce'],
-    'El Tornillo': ['Desarrollo Web'],
-    'Studio Glam': ['Desarrollo Web'],
-  }
-  return map[title] ?? []
 }
 
 export default ProjectCard

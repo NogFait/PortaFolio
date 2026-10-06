@@ -50,6 +50,13 @@ const Hero = () => {
   const glowY = useTransform(scrollY, [0, 400], [-50, -20])
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)')
 
+  // The hero recedes as the next section arrives: it drifts up slower than the
+  // page, shrinks slightly and fades. Bound 1:1 to scroll (no animation of its own),
+  // so reversing the scroll reverses it exactly.
+  const recedeY = useTransform(scrollY, [0, 600], [0, -80])
+  const recedeScale = useTransform(scrollY, [0, 600], [1, 0.95])
+  const recedeOpacity = useTransform(scrollY, [0, 420], [1, 0.1])
+
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -170,7 +177,16 @@ const Hero = () => {
       />
 
       <motion.div
-        style={{ maxWidth: '900px', position: 'relative', zIndex: 1 }}
+        style={{
+          maxWidth: '900px',
+          position: 'relative',
+          zIndex: 1,
+          y: prefersReducedMotion ? 0 : recedeY,
+          scale: prefersReducedMotion ? 1 : recedeScale,
+          opacity: prefersReducedMotion ? 1 : recedeOpacity,
+        }}
+      >
+      <motion.div
         variants={stagger(0.09, 0.1)}
         initial="hidden"
         animate="visible"
@@ -284,6 +300,7 @@ const Hero = () => {
             Hablemos
           </a>
         </motion.div>
+      </motion.div>
       </motion.div>
 
       <div className="animate-float" style={{

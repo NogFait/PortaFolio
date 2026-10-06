@@ -99,7 +99,7 @@ const y = useMotionValue(0)
 2. **Haz visible la diferencia al usuario:** graba un clip antes/después con Playwright (`browser.newContext({ recordVideo: { dir, size } })`, mismas acciones en `main` y en la rama) o pasa capturas de frames intermedios (p. ej. a 80/160/320 ms). Los números no sustituyen verlo.
 3. Corre `lint` + `build` y `prefers-reduced-motion` (todo visible, `transform: none`).
 
-Verificaciones que deben cumplirse (ejemplos en `scripts/verify-motion.example.mjs`):
+Verificaciones que deben cumplirse (ejemplos en `scripts/verify-motion.example.mjs` y `scripts/verify-shared-element.example.mjs`):
 
 | Prueba | Esperado |
 |---|---|
@@ -109,6 +109,10 @@ Verificaciones que deben cumplirse (ejemplos en `scripts/verify-motion.example.m
 | Flick | continúa en la misma dirección tras soltar |
 | Interrumpir a mitad (doble tap/clic) | sin salto: parte de la posición actual |
 | Rueda durante scroll programático | toma el control |
+| Elemento compartido: primer rect del panel | **igual al rect de la card**; al cerrar, la última posición vuelve a él (sin deriva tras 3 ciclos) |
+| Panel: scroll de fondo y foco | scroll bloqueado al abrir, desbloqueado y foco devuelto al cerrar |
+| Barra direccional | se esconde bajando, vuelve subiendo; fija en escritorio |
+| Scroll ligado (hero/progreso) | valor a scroll N y vuelta a 0 → **mismo valor** (reversible 1:1) |
 | Teclado (Esc/flechas) | cada gesto tiene equivalente |
 | Consola | sin errores |
 
@@ -123,6 +127,20 @@ Verificaciones que deben cumplirse (ejemplos en `scripts/verify-motion.example.m
 - **`once:false` + `hidden`/`visible`:** úsalo igual en todas las secciones.
 - **Un drag dispara el click del link al soltar:** `onClickCapture` que lo cancele si hubo movimiento; `draggable={false}` en imágenes.
 - **`layoutId` + `border-radius`/`box-shadow` en clases:** se deforman al escalar; ponlos en `style`.
+- **Panel de un card compartido: renderízalo con `createPortal(…, document.body)`.** Un `position: fixed` dentro de un ancestro con `transform` u `overflow:hidden` (una sección con reveal) se recorta o se ancla mal.
+- **El `transition` de un elemento con `layoutId` es también su transición de layout.** Si le das `springs.press` para `whileTap`, el morph usará ese spring (rápido y seco). Usa `transition={{ default: springs.snappy, scale: springs.press, layout: springs.settle }}`.
+- **Un morph card→panel cambia el comportamiento del click** (antes abría un link). Dilo explícitamente al usuario y conserva el comportamiento nativo con `Cmd/Ctrl/Shift/middle-click` (deja pasar el `<a href>`); el enlace externo pasa al panel.
+- **Acción principal siempre visible:** en un panel con scroll interno, fija el CTA como pie (`flex: 0 0 auto`) y deja que solo el cuerpo haga scroll; la imagen cede altura (`clamp(…, 27vh, …)`). Revísalo en 1440×900, **1280×720** y 390×844: en la primera pasada el botón quedaba cortado.
+- **Scroll bajo un modal:** `lenis.stop()` + clase en `html` con `overflow:hidden`, y `html { scrollbar-gutter: stable }` para que no salte el layout. Devuelve el foco al disparador al cerrar.
+- **Barra que se esconde al bajar:** solo en anchos táctiles/tablet; en escritorio la píldora de sección activa es parte de la orientación. Umbral de ±4px para ignorar el jitter del scroll inercial, y fuerza visible con foco/menú abierto.
+
+## Cómo probar sin engañarte (entornos headless)
+
+- **Pocos fps ≠ saltos.** En headless por software los frames llegan cada 100-170 ms. Un "salto de 130px por frame" suele ser un hueco de muestreo: mira los **timestamps** y que la serie sea continua/monótona, no el delta por frame.
+- **Un arrastre "lento" tiene que serlo de verdad.** 10px cada 16ms son ~600px/s (un flick: se descartará, correctamente). Para probar "soltar sin comprometer" usa ~70ms por paso y una pausa antes de soltar.
+- **`page.clock` (reloj simulado, 16ms/frame)** sirve para capturar la *forma* de una transición de manera determinista, pero los `delay`/timers de contenido pueden no avanzar: un cuerpo "vacío" ahí puede ser artefacto. Confirma siempre con una captura en tiempo real.
+- **Reduced-motion:** espera ≥ 1 s antes de afirmar que algo no cerró (el scrim aún hace fade de opacidad).
+- Captura el estado final en **3 viewports** (1440×900, 1280×720, 390×844): ahí aparecen los recortes que ninguna métrica de movimiento detecta.
 
 ## Accesibilidad
 

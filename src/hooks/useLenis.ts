@@ -44,3 +44,16 @@ export function scrollToTarget(target: string | number | HTMLElement) {
   else if (typeof target === 'string') document.querySelector(target)?.scrollIntoView({ behavior: 'smooth' })
   else target.scrollIntoView({ behavior: 'smooth' })
 }
+
+// A modal surface owns the scroll while it is open: Lenis stops listening to the
+// wheel and the page itself stops scrolling (scrollbar-gutter keeps the layout from
+// shifting when the scrollbar disappears).
+export function lockScroll() {
+  instance?.stop()
+  document.documentElement.classList.add('scroll-locked')
+}
+
+export function unlockScroll() {
+  instance?.start()
+  document.documentElement.classList.remove('scroll-locked')
+}

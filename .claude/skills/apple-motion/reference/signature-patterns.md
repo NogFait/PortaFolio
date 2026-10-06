@@ -42,34 +42,51 @@ Trampas: `draggable={false}` en imágenes/links; `user-select: none`; sin `onCli
 
 ## B. Elemento compartido: card → detalle (continuidad espacial)
 
-Se siente: la card **se convierte** en el panel; no se abre un modal aparte. Es el gesto que más "dice Apple".
+Se siente: la card **se convierte** en el panel (en móvil, una hoja inferior); no se abre un modal aparte. Verificado en producción de este repo: el panel nace exactamente en el rect de la card y al cerrar vuelve a él; interrumpir a mitad revierte desde la posición actual.
 
 ```tsx
+// Card: un <a href> que en click normal abre el panel (Cmd/Ctrl/middle-click siguen al link)
+const interactive = {
+  href, target: '_blank', rel: 'noopener noreferrer',
+  layoutId: `project-${id}`,
+  onClick: (e) => { if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
+                    e.preventDefault(); resetTilt(); onOpen(id, e.currentTarget) },
+  whileHover: { y: -4 }, whileTap: { scale: 0.985 },
+  transition: { default: springs.snappy, scale: springs.press, layout: springs.settle }, // 'layout' = el morph
+}
+
+// Padre: LayoutGroup + AnimatePresence; al cerrar, foco de vuelta a la card
 <LayoutGroup>
-  {items.map(it => (
-    <motion.article key={it.id} layoutId={`card-${it.id}`} onClick={() => setOpen(it.id)}
-      style={{ borderRadius: 12 }} transition={springs.settle}>   {/* radius en style, no en clase */}
-      <motion.img layoutId={`img-${it.id}`} />
-      <motion.h3 layoutId={`title-${it.id}`}>{it.title}</motion.h3>
-    </motion.article>
-  ))}
-  <AnimatePresence>
-    {open && <>
-      <motion.div className="scrim" onClick={close}
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
-      <motion.div className="detail" layoutId={`card-${open}`} style={{ borderRadius: 24 }}
-        transition={springs.settle} role="dialog" aria-modal="true">
-        <motion.img layoutId={`img-${open}`} />
-        <motion.h3 layoutId={`title-${open}`}>{title}</motion.h3>
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { delay: .12 } }}
-          exit={{ opacity: 0, transition: { duration: .1 } }}>{body}</motion.div>  {/* contenido nuevo entra tras el movimiento */}
-      </motion.div>
-    </>}
-  </AnimatePresence>
+  <Grid>{cards.map(c => <Card {...c} onOpen={open} />)}</Grid>
+  <AnimatePresence>{openItem && <Detail key={openItem.id} item={openItem} onClose={close} />}</AnimatePresence>
 </LayoutGroup>
+
+// Detail: PORTAL (evita ancestros con transform/overflow), scrim, y el panel con el mismo layoutId
+createPortal(<>
+  <motion.div onClick={onClose} initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} style={{position:'fixed',inset:0,zIndex:1100}}>
+    <motion.div style={{ position:'absolute', inset:0, opacity: dim /* = useTransform(y,[0,360],[1,.2]) */, background:'rgba(6,14,32,.72)', backdropFilter:'blur(10px)' }} />
+  </motion.div>
+  <div style={{ position:'fixed', inset:0, zIndex:1101, display:'flex', alignItems: isMobile?'flex-end':'center', justifyContent:'center', pointerEvents:'none' }}>
+    <motion.div layoutId={`project-${id}`} role="dialog" aria-modal="true" aria-labelledby={titleId}
+      transition={{ default: springs.settle, layout: springs.settle }}
+      drag={isMobile ? 'y' : false} dragListener={false} dragControls={controls} dragMomentum={false}
+      dragConstraints={{ top: 0, bottom: 0 }} dragElastic={{ top: 0.12, bottom: 1 }}  // hacia abajo libre, hacia arriba rubber-band
+      onDragEnd={(_, i) => {
+        const projected = i.offset.y + project(i.velocity.y)
+        if (projected > Math.max(140, height * 0.25)) { onClose(); animate(y, 0, { ...springs.settle, velocity: i.velocity.y }) } // vuela de vuelta a su card
+        else animate(y, 0, { ...springs.momentum, velocity: i.velocity.y })
+      }}
+      style={{ y, scale /* useTransform(y,[0,400],[1,.94]) */, borderRadius, pointerEvents:'auto', /* radius/sombra en style */ }}>
+      <div onPointerDown={isMobile ? e => controls.start(e) : undefined} style={{ touchAction: isMobile ? 'none' : 'auto' }}>{/* cabecera = zona de agarre */}</div>
+      <motion.div initial={{opacity:0,y:12}} animate={{opacity:1,y:0,transition:{...springs.settle,delay:.1}}} exit={{opacity:0,transition:{duration:.08}}}>
+        {/* cuerpo con scroll (data-lenis-prevent) + CTA fijo como pie */}
+      </motion.div>
+    </motion.div>
+  </div>
+</>, document.body)
 ```
 
-Trampas: `borderRadius`/`boxShadow` en `style` (si no, Framer los deforma al escalar); el contenido nuevo aparece *después* de que la forma llega; bloquea el scroll del fondo (`lenis.stop()`/`overflow:hidden`) y devuélvelo al cerrar; Esc cierra, foco al abrir y restituido al cerrar; deja la card original con `visibility` controlada para que no "salte" al volver. Es interrumpible: cerrar a media apertura revierte desde la posición actual.
+Trampas: portal obligatorio; `transition.layout` explícito; radius/sombra en `style`; el contenido nuevo entra *después* de la forma; bloquear scroll (`lockScroll`) y devolver foco al cerrar; Esc + trampa de Tab; el CTA como pie fijo (no dentro del scroll); `scrollbar-gutter: stable`; sin `onOpen` la card sigue siendo un link normal. El fondo se atenúa ligado a `y`, y la hoja se encoge a 0.94 mientras se arrastra: cada píxel del gesto tiene respuesta visible.
 
 ## C. Scroll con dirección/velocidad (el chrome responde al scroll)
 
