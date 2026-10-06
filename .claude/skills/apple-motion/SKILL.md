@@ -100,7 +100,7 @@ const y = useMotionValue(0)
 2. **Haz visible la diferencia al usuario:** graba un clip antes/después con Playwright (`browser.newContext({ recordVideo: { dir, size } })`, mismas acciones en `main` y en la rama) o pasa capturas de frames intermedios (p. ej. a 80/160/320 ms). Los números no sustituyen verlo.
 3. Corre `lint` + `build` y `prefers-reduced-motion` (todo visible, `transform: none`).
 4. **Fase 4b — rendimiento** (ver *Presupuesto de rendimiento*): mide línea base vs nueva en móvil ×4 y escritorio; si algo cuesta, A/B para aislar y arreglar o eliminar. Sin esta tabla el trabajo no está terminado.
-5. **Recorre cada vista y cada navegación** en 1440×900, 1280×720, 1024×768, 768×1024, 390×844 y 360×640: ningún contenido atenuado u oculto mientras se ve, nada tapado por la barra fija, cada enlace/CTA aterriza donde debe, y el contenido que salió de una card sigue alcanzable en su panel.
+5. **Recorre cada vista y cada navegación** en 1440×900, 1280×720, 1024×768, 768×1024, 390×844, 360×640 **y 1536×744 a dpr 1.25** (una pantalla de 1920×1080 con zoom 125 %, lo que usa gente real): ningún contenido atenuado u oculto mientras se ve, nada tapado por la barra fija, **el texto no solo existe en el DOM: se VE** (mídelo con `scripts/verify-visible-content.example.mjs`: cuánto del panel ocupa la imagen y si los párrafos caen dentro del área visible sin scroll), cada enlace/CTA aterriza donde debe, y el contenido que salió de una card sigue alcanzable en su panel.
 
 Verificaciones que deben cumplirse (ejemplos en `scripts/verify-motion.example.mjs` y `scripts/verify-shared-element.example.mjs`):
 
@@ -169,6 +169,7 @@ Reporta por escenario (reposo, scroll, hover, menú, panel): p50/p95/máx de fra
 - **`@keyframes` + `animation-delay`** no se interrumpen ni heredan velocidad; usa variantes con spring.
 - **`once:false` + `hidden`/`visible`:** úsalo igual en todas las secciones, y que el re-ocultado ocurra **solo cuando el elemento queda por debajo del viewport**, nunca al salir por arriba ni con un umbral (`threshold`) que apague el final de una sección alta mientras aún se ve (medido en móvil de 360×640: un CTA al 10 % de opacidad a la vista).
 - **Un drag dispara el click del link al soltar:** `onClickCapture` que lo cancele si hubo movimiento; `draggable={false}` en imágenes.
+- **Una imagen dentro de un flex nunca debe dimensionar su caja.** Con `height:100%` en un hijo de un ítem flex de alto indefinido, la imagen manda su altura natural y empuja el layout (aquí: la captura ocupó 68 % del panel y dejó 120 px al texto que necesitaba 324 px). Caja de alto fijo + `overflow:hidden` + `img` en `position:absolute; inset:0`. Una vista previa pesa ≲ 35 % del panel; el texto es el contenido.
 - **`layoutId` + `border-radius`/`box-shadow` en clases:** se deforman al escalar; ponlos en `style`.
 - **Panel de un card compartido: renderízalo con `createPortal(…, document.body)`.** Un `position: fixed` dentro de un ancestro con `transform` u `overflow:hidden` (una sección con reveal) se recorta o se ancla mal.
 - **El `transition` de un elemento con `layoutId` es también su transición de layout.** Si le das `springs.press` para `whileTap`, el morph usará ese spring (rápido y seco). Usa `transition={{ default: springs.snappy, scale: springs.press, layout: springs.settle }}`.
@@ -193,6 +194,7 @@ Reporta por escenario (reposo, scroll, hover, menú, panel): p50/p95/máx de fra
 ## Anti-patrones
 
 - Presentar un barrido de curvas como "la mejora" cuando no se nota.
+- Dar por bueno un contenido porque "está en el DOM" o porque "tiene scroll": si el texto principal queda recortado en una pantalla común (1080p con zoom), no está.
 - `cubic-bezier` + duración fija en algo que el usuario toca.
 - Animar el destino en vez del valor actual; bloquear input mientras anima.
 - Aparecer/desaparecer sin origen; entrar por un lado y salir por otro.
