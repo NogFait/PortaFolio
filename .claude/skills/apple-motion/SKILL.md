@@ -1,147 +1,143 @@
 ---
 name: apple-motion
-description: Diseña y aplica el comportamiento de movimiento de una interfaz web al estilo Apple — springs, física, interrumpibilidad, gestos con inercia, continuidad espacial y coherencia global — en vez de agregar "animaciones" sueltas. Úsalo cuando pidan "animaciones estilo Apple", "que se sienta fluido/físico/natural", "springs", "drag/swipe con momentum", "rubber-band", "interrumpible", unificar el movimiento de una web, o auditar y reemplazar easings/duraciones fijas por física. English: apply Apple-style motion behavior (springs, velocity handoff, interruptibility, spatial continuity) to a web UI as one coherent physical system. Para la teoría de fondo (WWDC) usa `apple-design`; para una animación puntual usa `animate`.
+description: Aplica a una web un movimiento estilo Apple que SE NOTA — springs, física, interrumpibilidad, gestos con inercia, elementos compartidos y continuidad espacial, con una sola física coherente — midiendo antes/después en vez de solo cambiar curvas. Úsalo cuando pidan "animaciones estilo Apple", "que se sienta fluido/físico/natural/premium", "springs", "drag/swipe con momentum", "rubber-band", "card que se expande", "interrumpible", unificar o auditar el movimiento de una web. English: apply Apple-style motion behavior that is actually perceptible (springs, velocity handoff, shared-element transitions, interruptibility), proven with before/after motion traces. Teoría de fondo: `apple-design`; una animación puntual: `animate`.
 ---
 
-# Apple Motion — diseña el comportamiento, no las animaciones
+# Apple Motion — diseña el comportamiento, y comprueba que se note
 
 > No diseñes "animaciones"; diseña el comportamiento de los elementos.
-> Cada acción del usuario produce una respuesta **inmediata, predecible y natural**, regida por **una sola física** en toda la app.
+> Cada acción produce una respuesta inmediata, predecible y natural, regida por **una sola física**.
 
-Este skill es el procedimiento para **aplicar** eso a un código real. La teoría detallada (damping/response, proyección, materiales, tipografía) está en `apple-design`; aquí está el *cómo ejecutarlo* y las trampas que aparecen al hacerlo.
+## Lección que da forma a este skill
 
-## Las 8 reglas (checklist de diseño)
+La primera versión de este trabajo cambió ~15 archivos y el usuario casi no notó diferencia. Medido: en entradas pasivas (fades/reveals) un `cubic-bezier(0.16,1,0.3,1)` y un spring crítico dibujan **casi la misma curva** (t90 300ms→400ms en una sección, mismo perfil). Sustituir curvas es higiene y consistencia, **no un cambio perceptible**.
 
-1. **Comportamiento antes que duración.** Lo que el usuario toca va con springs. Un `duration: 0.8` fijo no puede reaccionar a nada.
-2. **Respuesta inmediata.** El feedback ocurre en *pointer-down*, no al soltar. Durante un gesto, el UI sigue al dedo 1:1.
-3. **Interrumpible siempre.** Nunca bloquear input durante una transición. Toda animación parte del valor **actual en pantalla**, no del destino, y hereda su velocidad al cambiar de dirección.
-4. **Continuidad espacial.** Un elemento se *transforma* o *viaja*, no desaparece y reaparece. Entra y sale por el **mismo camino**, anclado a su origen (el botón que lo abrió).
-5. **Gestos = movimiento ligado.** En drag/swipe/scroll el movimiento *es* el gesto. Al soltar: proyecta el momentum (`project(v)`), decide por la proyección y continúa a la **velocidad del dedo** hasta asentarse.
-6. **Límites elásticos.** Más allá de un borde, resistencia progresiva (`rubberband`), nunca un corte seco.
-7. **Sutil y coordinado.** Desplazamiento + escala + opacidad (+ blur *solo* en elementos pequeños), con jerarquía: se entiende de dónde viene y a dónde va. Sin rebotes exagerados, sin loops decorativos.
-8. **Una sola física.** Mismos springs, mismas curvas, mismas reglas en JS y en CSS. Si dos cosas "se sienten distintas", es un bug.
+La física se siente en cuatro situaciones: **(1) input continuo** (drag, puntero, scroll), **(2) velocidad** (flick, soltar), **(3) interrupción** (cambiar de idea a media animación), **(4) continuidad espacial** (algo se *convierte* en otra cosa). Todo el trabajo se mide contra eso.
+
+## Reglas de diseño (el prompt, ordenado)
+
+1. **Comportamiento antes que duración.** Lo que se toca va con springs.
+2. **Respuesta inmediata:** feedback en pointer-down; durante un gesto, el UI sigue al dedo/ratón 1:1.
+3. **Interrumpible siempre.** Se anima desde el valor *actual* en pantalla y se hereda su velocidad.
+4. **Continuidad espacial.** Un elemento se transforma o viaja; entra y sale por el mismo camino, anclado a su origen.
+5. **Gestos ligados.** Al soltar: proyecta el momentum (`project(v)`), decide por la proyección y continúa a la velocidad del gesto.
+6. **Límites elásticos** (`rubberband`), nunca cortes secos.
+7. **Sutil y coordinado:** desplazamiento + escala + opacidad (+ blur solo en elementos pequeños). Sin rebotes gratuitos ni loops decorativos.
+8. **Una sola física** en JS y CSS.
 
 ## Procedimiento
 
-### 1. Inventario (read-only)
-Busca todo el movimiento existente antes de tocar nada:
+### Fase 0 — Define qué se va a *sentir* (antes de tocar código)
+
+1. **Mapea las interacciones reales** de la web: qué agarra, toca, hoverea, scrollea o navega el usuario. Anota cuáles ocurren en **escritorio** (ratón/teclado/rueda) y cuáles en **táctil**. *Ninguna interacción puede ser solo-táctil*; en escritorio, hover, drag con ratón y scroll son las superficies.
+2. **Elige de 3 a 5 "momentos firma"** de `reference/signature-patterns.md` (A carrusel arrastrable, B card→detalle compartido, C scroll direccional, D profundidad hover/press, E expandir interrumpible, F parallax ligado, G píldora viajera). Requisito mínimo: **uno de manipulación directa o continuidad (A/B)** y **uno ligado al scroll o al puntero (C/D/F)**. Si la web es muy estática, no inventes más de los que el contenido pide.
+3. **Escribe el delta esperado de cada uno** en una frase: *"Antes: la card abre un link externo. Después: la card se expande en el sitio y se puede cerrar arrastrando."* Si no puedes escribir esa frase con algo que un usuario notaría, ese cambio no es un momento firma.
+
+### Fase 1 — Inventario y línea base
 
 ```bash
 grep -rnE "cubic-bezier|transition:|animation:|@keyframes|duration:|ease:|stiffness|damping|scrollIntoView|scroll-behavior|setTimeout" src
 ```
 
-Clasifica cada hallazgo en una de tres cajas:
+Clasifica cada hallazgo: **gesto** (springs + MotionValues + velocidad), **estado/entrada** (springs declarativos, exit espejo), **micro-feedback** (spring CSS `linear()` o `whileTap`). Lo decorativo sin significado (pulsos infinitos, flotados) se elimina.
 
-| Tipo | Ejemplos | Herramienta |
-|---|---|---|
-| **Responde a un gesto** (drag, swipe, pointer-follow, scroll) | menú arrastrable, tilt, magnetic, scroll suave | springs + MotionValues + velocidad |
-| **Cambio de estado/entrada** (abrir, mostrar, revelar) | menú, secciones, listas, toasts | springs declarativos, `exit` espejo |
-| **Micro-feedback** (hover, press, foco) | botones, cards, links | spring CSS (`linear()`) o `whileTap`; color/opacidad pueden seguir con `ease-out` |
+Captura la **línea base** antes de cambiar nada (una rama/worktree de `main` servida aparte) con `scripts/trace-motion.mjs`:
 
-Lo que no encaja en ninguna caja y no comunica nada (pulsos infinitos, flotados decorativos) **se elimina**. Lo que sí tiene significado (un punto de "disponible", una pista de scroll) se queda.
+```bash
+node scripts/trace-motion.mjs --url http://127.0.0.1:5174/ --selector "#projects > div" --trigger scroll:700 --label before
+```
 
-### 2. Define la física en UN archivo
-Copia `templates/physics.ts` a `src/motion/physics.ts`. Describe cada spring como Apple: **damping ratio** + **response (s)**, y `spring(ζ, r)` lo convierte a `stiffness/damping/mass` (`ω=2π/r, k=ω², c=2ζω`) para Framer Motion, `useSpring` y la liberación de drags.
+Imprime t10/t50/t90, asentamiento, overshoot y una curva ASCII del movimiento real del elemento.
 
-Tokens base (ajústalos, pero mantén pocos):
+### Fase 2 — Una física en un archivo
+
+Copia `templates/physics.ts` a `src/motion/physics.ts`: springs descritos como Apple (damping ratio + response) y convertidos con `ω=2π/r, k=ω², c=2ζω`.
 
 | Token | ζ | response | Uso |
 |---|---|---|---|
 | `press` | 1 | 0.2 | feedback al presionar |
-| `snappy` | 1 | 0.3 | UI pequeña: indicadores, items de menú |
+| `snappy` | 1 | 0.3 | UI pequeña, indicadores, menús |
 | `settle` | 1 | 0.4 | entrar / reposicionar (default) |
-| `gentle` | 1 | 0.55 | superficies grandes, reveals de sección |
-| `momentum` | 0.8 | 0.4 | **solo** tras un gesto con velocidad (flick/soltar) |
-| `follow` | 1 | 0.3 | seguir al puntero (tilt) |
-| `magnet` | 0.85 | 0.35 | elementos atraídos por el puntero |
-| `ambient` | 1 | 0.9 | fondo, más lento y pesado que lo que se toca |
+| `gentle` | 1 | 0.55 | superficies grandes |
+| `momentum` | 0.8 | 0.4 | **solo** tras un gesto con velocidad |
+| `follow` | 1 | 0.3 | seguir al puntero / scroll |
+| `magnet` | 0.85 | 0.35 | atraídos por el puntero |
+| `ambient` | 1 | 0.9 | fondo, más pesado que lo que se toca |
 
-Default: `ζ = 1` (sin rebote). Rebote (`ζ≈0.8`) únicamente cuando el gesto traía momentum.
+Default `ζ=1`; rebote (`ζ≈0.8`) solo si el gesto traía momentum. Gemelo CSS: `node scripts/gen-spring.mjs` → `linear(...)` (`--spring`, `--spring-bounce`, `--t-press 160ms`, `--t-snappy 300ms`, `--t-settle 470ms`, `--t-gentle 650ms`). Todo `transition` de **transform** usa `var(--spring)`.
 
-Gemelo CSS: `node scripts/gen-spring.mjs` imprime `linear(...)` muestreado de la misma fórmula. Los springs críticamente amortiguados comparten curva y solo cambia el tiempo → 2 curvas (`--spring`, `--spring-bounce`) + duraciones (`--t-press 160ms`, `--t-snappy 300ms`, `--t-settle 470ms`, `--t-gentle 650ms`). Todo `transition` de **transform** usa `var(--spring)`; color/opacidad pueden seguir con un ease-out corto.
+### Fase 3 — Momentos firma primero, refactor después
 
-### 3. Aplica por tipo
+1. **Implementa los momentos firma** (código en `reference/signature-patterns.md`). Son el entregable; hazlos bien antes de nada más.
+2. **Luego** el barrido de consistencia (tokens, `whileTap`, variantes compartidas, Lenis con `lerp`). Esto es valioso pero es *invisible*: no lo presentes como el cambio.
 
-**Entradas / reveals** — variantes compartidas, no props sueltas por componente:
+Recetas base (verificadas):
 
-```ts
-export const reveal = {
-  hidden:  { opacity: 0, y: 24, scale: 0.985 },
-  visible: { opacity: 1, y: 0, scale: 1, transition: springs.gentle },
-}
-// small text/elements only: { opacity: 0, y: 18, filter: 'blur(8px)' } -> blur(0px)
-```
-
-**Press** — `whileTap={{ scale: 0.985 }} transition={springs.press}` (JS) o `:active { transform: scale(.97); transition-duration: var(--t-press) }` (CSS). Más rápido de bajar que de subir.
-
-**Superficie que sale de un origen (menú/sheet/popover)** — `transformOrigin` en el disparador; `hidden` y `exit` con los mismos valores (camino espejo); materialízala con `backdropFilter: blur(0→24px)` + escala, no con un fade plano.
-
-**Drag con inercia** (patrón verificado):
+- **Entradas:** variantes compartidas `reveal`/`item`/`focusIn` en un archivo, no props sueltas por componente. Blur solo en elementos pequeños.
+- **Press:** `whileTap={{ scale: .985 }} transition={springs.press}` o `:active { transition-duration: var(--t-press) }`; más rápido bajando que subiendo.
+- **Superficie que sale de un origen:** `transformOrigin` en el disparador; `hidden` y `exit` con los mismos valores; materializa con `backdropFilter: blur(0→24px)` + escala.
+- **Drag con inercia (descartar):**
 
 ```tsx
 const y = useMotionValue(0)
 <motion.div drag="y" dragMomentum={false}
-  dragConstraints={{ top: -1200, bottom: 0 }}
-  dragElastic={{ top: 0, bottom: 0.15 }}   // rubber-band solo hacia el lado sin salida
-  style={{ y }} onDragEnd={(_, info) => {
-    const projected = info.offset.y + project(info.velocity.y)
-    if (projected < -Math.max(120, height * 0.2)) close({ velocity: info.velocity.y, distance: height })
-    else animate(y, 0, { ...springs.momentum, velocity: info.velocity.y }) // vuelve heredando velocidad
+  dragConstraints={{ top: -1200, bottom: 0 }} dragElastic={{ top: 0, bottom: 0.15 }}
+  style={{ y }} onDragEnd={(_, i) => {
+    const projected = i.offset.y + project(i.velocity.y)
+    if (projected < -Math.max(120, height * 0.2)) close({ velocity: i.velocity.y, distance: height })
+    else animate(y, 0, { ...springs.momentum, velocity: i.velocity.y })
   }} />
 ```
+- **Scroll:** Lenis con `lerp` (no `duration+easing`); scrolls programáticos por `lenis.scrollTo`, no `scrollIntoView`; CSS oficial `.lenis.lenis-smooth { scroll-behavior:auto !important }`.
+- **Pointer-follow:** `useSpring(raw, springs.follow|magnet)`; el valor crudo se escribe 1:1 en cada movimiento.
 
-Decide con la **proyección** del flick, no con la posición de soltado. Solo existe el camino por el que el elemento llegó (entra desde arriba → se descarta hacia arriba).
+### Fase 4 — Demuestra la diferencia (obligatorio)
 
-**Scroll** — si hay Lenis: `lerp` (decaimiento exponencial, interrumpible), **no** `duration + easing`. Los scrolls programáticos (nav) deben pasar por `lenis.scrollTo(..., { lerp })`, no por `scrollIntoView({behavior:'smooth'})`, que pelea con la rueda. Añade el CSS oficial `.lenis.lenis-smooth { scroll-behavior: auto !important }`.
+1. **Traza después** con el mismo comando que en la línea base y compara. Regla de delta perceptible:
+   - En movimientos **pasivos** (fade/reveal), si t90 varía < ~25% y la silueta ASCII es la misma → **invisible**; no lo cuentes como mejora, solo como consistencia.
+   - Un momento firma debe mostrar algo que la línea base **no podía**: seguir un puntero, heredar velocidad, revertir a mitad, transformarse en otro elemento. Pruébalo con interacción real (Playwright: `mouse.down/move/up`, `hover`, doble clic rápido) y mide: posición vs input, continuidad tras soltar, ausencia de saltos al interrumpir.
+2. **Haz visible la diferencia al usuario:** graba un clip antes/después con Playwright (`browser.newContext({ recordVideo: { dir, size } })`, mismas acciones en `main` y en la rama) o pasa capturas de frames intermedios (p. ej. a 80/160/320 ms). Los números no sustituyen verlo.
+3. Corre `lint` + `build` y `prefers-reduced-motion` (todo visible, `transform: none`).
 
-**Pointer-follow (tilt/magnet)** — `useSpring(rawMotionValue, springs.follow|magnet)`; el valor crudo se escribe en cada `mousemove` (1:1) y el spring lo suaviza. Soltar (`mouseleave`) pone el crudo en 0 y el spring hace el regreso.
+Verificaciones que deben cumplirse (ejemplos en `scripts/verify-motion.example.mjs`):
 
-## Trampas reales (aprendidas aplicándolo)
-
-- **`exit` no puede depender de estado.** Un hijo en `AnimatePresence` conserva las props de su *último render*. Si el exit cambia según cómo se cerró (tap vs swipe), usa **una variante `exit` función** + `custom` en `AnimatePresence` **y** en el hijo; `custom` sí se actualiza al salir.
-- **Mezcla de `exit` en px y %:** pasa la distancia en px (mide `offsetHeight`); evita animar `%` desde un valor en px.
-- **`filter` en contenedores grandes** (aunque termine en `blur(0px)`) deja un stacking context y rompe `backdrop-filter` de los hijos. Blur solo en texto/elementos pequeños; en secciones usa opacidad + y + escala.
-- **`transition-duration` en lista se empareja por posición de propiedad.** Si `transition: transform, box-shadow, opacity`, el `:active` debe dar 3 valores en ese orden, o el press hereda el tiempo equivocado.
-- **Un `transition:` inline en JSX gana a `:active` de la hoja de estilos.** Mueve esas transiciones a CSS/clases si quieres un press más rápido que el release.
-- **`.fade-in-up` con `@keyframes` + `animation-delay`** no se puede interrumpir ni heredar velocidad: reemplázalo por variantes con spring.
-- **`once:false` + estados `hidden`/`visible`** hace que los reveals se repitan: úsalo igual en todas las secciones, no mezcles `{}` y `hidden` según el componente.
-- **Springs sobre `opacity`** no deben sobrepasar: con `ζ=1` no hay overshoot; con `ζ<1` limita opacity a 0–1 (Framer ya lo clampa en `opacity`).
-
-## Reduced motion / accesibilidad
-
-- `MotionConfig reducedMotion="user"` (Framer quita transforms y deja opacidad). Para CSS, el reset global de `prefers-reduced-motion` ya reduce las duraciones.
-- `prefers-reduced-transparency: reduce` → quita `backdrop-filter` y usa fondos sólidos.
-- Smooth-scroll (Lenis) se desactiva con reduced motion. Menú arrastrable debe seguir funcionando por tap/Esc (el drag es un atajo, no la única vía).
-- Un menú modal conserva foco/`Esc`/`aria-modal` intactos al añadir gestos.
-
-## Verifica con números, no a ojo
-
-Corre el sitio en un navegador real (Playwright + CDP touch) y mide; ver `scripts/verify-motion.example.mjs` (ajusta rutas/selectores). Debe cumplirse:
-
-| Prueba | Resultado esperado |
+| Prueba | Esperado |
 |---|---|
-| Arrastrar 60px | el elemento se desplaza **60px** (1:1) |
-| Dedo 140px más allá del borde | el elemento se mueve **mucho menos** (rubber-band) |
-| Soltar sin comprometer | vuelve a 0 con spring |
-| Flick rápido | sigue en la misma dirección tras soltar y se descarta |
-| Tap abrir → tap cerrar a mitad de vuelo | sin salto: parte de la posición actual |
-| Rueda durante un scroll programático | toma el control, no queda "atrapado" al destino |
-| `prefers-reduced-motion` | todo visible (`opacity: 1`, `transform: none`) |
+| Arrastrar N px | el elemento se desplaza N px (1:1) |
+| Pasar el límite | se mueve mucho menos (rubber-band) |
+| Soltar sin comprometer | vuelve con spring a la posición |
+| Flick | continúa en la misma dirección tras soltar |
+| Interrumpir a mitad (doble tap/clic) | sin salto: parte de la posición actual |
+| Rueda durante scroll programático | toma el control |
+| Teclado (Esc/flechas) | cada gesto tiene equivalente |
 | Consola | sin errores |
 
-Además revisa en cámara lenta/capturas intermedias (p. ej. a los 250 ms de la carga) que la entrada sea coordinada y no un fade genérico.
+## Trampas reales
 
-## Anti-patrones (rechazar)
+- **`exit` no puede depender de estado:** un hijo de `AnimatePresence` conserva las props de su último render. Usa variante `exit` como función + `custom` en `AnimatePresence` **y** en el hijo.
+- **Distancias en px, no %**, al animar `exit` desde valores en px.
+- **`filter` en contenedores grandes** (aun con `blur(0px)`) deja un stacking context y rompe `backdrop-filter` de los hijos.
+- **`transition-duration` en lista se empareja por posición** de propiedad (`transform, box-shadow, opacity` → 3 valores en ese orden).
+- **Un `transition:` inline en JSX gana a `:active`** de la hoja de estilos; muévelo a CSS si el press debe ser más rápido.
+- **`@keyframes` + `animation-delay`** no se interrumpen ni heredan velocidad; usa variantes con spring.
+- **`once:false` + `hidden`/`visible`:** úsalo igual en todas las secciones.
+- **Un drag dispara el click del link al soltar:** `onClickCapture` que lo cancele si hubo movimiento; `draggable={false}` en imágenes.
+- **`layoutId` + `border-radius`/`box-shadow` en clases:** se deforman al escalar; ponlos en `style`.
 
-- Un `cubic-bezier` + duración fija para algo que el usuario toca.
-- Animar el *destino* en vez del valor actual (salta al interrumpir).
+## Accesibilidad
+
+`MotionConfig reducedMotion="user"`; `prefers-reduced-transparency` quita `backdrop-filter`; el smooth-scroll se desactiva con reduced motion. Todo gesto tiene vía de tap/teclado; los diálogos conservan foco, `Esc` y `aria-modal`.
+
+## Anti-patrones
+
+- Presentar un barrido de curvas como "la mejora" cuando no se nota.
+- `cubic-bezier` + duración fija en algo que el usuario toca.
+- Animar el destino en vez del valor actual; bloquear input mientras anima.
 - Aparecer/desaparecer sin origen; entrar por un lado y salir por otro.
-- Rebotes en cosas que no traían momentum; springs distintos "porque sí".
-- Animaciones decorativas en bucle sin significado.
-- Feedback solo al soltar; input bloqueado mientras anima.
-- Cortes secos en los límites.
-- Fiarse de `swipeleft`-style (solo estado final) en lugar de tracking continuo.
+- Rebotes sin momentum previo; springs distintos "porque sí".
+- Bucles decorativos; cortes secos en los límites.
+- Gestos solo táctiles, o sin equivalente de teclado.
 
-## Entregable al terminar
+## Entregable
 
-Resume al usuario: (1) tokens de física definidos y dónde viven, (2) qué se convirtió por tipo (gesto / estado / micro), (3) qué se eliminó por no comunicar nada, (4) los números de verificación de la tabla de arriba, (5) trade-offs honestos (p. ej. peso extra de JS, o lo que no se pudo medir sin dispositivo real). Prueba también en hardware táctil real: el emulador no reproduce la sensación del dedo.
+Al terminar, reporta con honestidad: (1) los **momentos firma** y su *antes → después* en una frase, (2) la **tabla de trazas** antes/después con cuáles son perceptibles y cuáles solo consistencia, (3) tokens de física y dónde viven, (4) qué se eliminó, (5) cómo ver la diferencia (clip/capturas) y qué falta probar en hardware real.
