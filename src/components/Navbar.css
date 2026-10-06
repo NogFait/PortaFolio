@@ -69,7 +69,7 @@
   text-decoration: none;
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
-  transition: color 0.3s var(--ease-out), background-color 0.3s var(--ease-out), transform 0.16s var(--ease-out);
+  transition: color 0.3s var(--ease-out), background-color 0.3s var(--ease-out), transform var(--t-snappy) var(--spring);
   cursor: pointer;
   background: none;
   border: none;
@@ -82,6 +82,7 @@
 
 .navbar__link:active {
   transform: scale(0.96);
+  transition-duration: 0.3s, 0.3s, var(--t-press);
 }
 
 .navbar__link--active {
@@ -100,7 +101,6 @@
   background: var(--primary);
   border-radius: 2px;
   box-shadow: 0 0 8px rgba(192, 193, 255, 0.5);
-  animation: glow-pulse 2s ease-in-out infinite;
 }
 
 .navbar__actions {
@@ -119,7 +119,7 @@
   color: var(--on-surface-variant);
   border: none;
   cursor: pointer;
-  transition: background-color 0.3s var(--ease-out), transform 0.16s var(--ease-out);
+  transition: background-color 0.3s var(--ease-out), transform var(--t-snappy) var(--spring);
   font-size: 0.8125rem;
   text-decoration: none;
 }
@@ -133,6 +133,7 @@
 
 .navbar__cv-btn:active {
   transform: scale(0.95);
+  transition-duration: 0.3s, var(--t-press);
 }
 
 .navbar__cv-icon {
@@ -173,7 +174,7 @@
   height: 2px;
   background: var(--on-surface);
   border-radius: 2px;
-  transition: transform 0.3s var(--ease-out), opacity 0.3s var(--ease-out);
+  transition: transform var(--t-snappy) var(--spring), opacity var(--t-snappy) var(--spring);
   transform-origin: center;
 }
 
@@ -216,7 +217,7 @@
   text-decoration: none;
   padding: 1rem clamp(1.5rem, 0.5rem + 3vw, 4.5rem);
   border-radius: 0.75rem;
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.16s var(--ease-out);
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform var(--t-snappy) var(--spring);
   background: none;
   border: 1px solid rgba(255, 255, 255, 0.05);
   cursor: pointer;
@@ -234,6 +235,7 @@
 
 .navbar__mobile-link:active {
   transform: scale(0.97);
+  transition-duration: 0.3s, 0.3s, 0.3s, var(--t-press);
 }
 
 .navbar__mobile-cv-btn {
@@ -251,7 +253,7 @@
   text-transform: uppercase;
   letter-spacing: 0.1em;
   margin-top: 1rem;
-  transition: background-color 0.3s ease, transform 0.16s var(--ease-out);
+  transition: background-color 0.3s ease, transform var(--t-snappy) var(--spring);
   text-decoration: none;
 }
 
@@ -262,6 +264,19 @@
 
 .navbar__mobile-cv-btn:active {
   transform: scale(0.95);
+  transition-duration: 0.3s, var(--t-press);
+}
+
+.navbar__grabber {
+  position: absolute;
+  bottom: 0.75rem;
+  left: 50%;
+  width: 36px;
+  height: 4px;
+  margin-left: -18px;
+  border-radius: 2px;
+  background: rgba(var(--on-surface-rgb), 0.25);
+  pointer-events: none;
 }
 
 @media (max-width: 1024px) {

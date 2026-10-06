@@ -1,31 +1,14 @@
 import { motion } from 'framer-motion'
 import { projects } from "../data/Projects"
 import ProjectCard from "./ProjectCard"
-
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-}
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] as const },
-  },
-}
+import { item, stagger } from '../motion/variants'
 
 // Entrance-stagger wrapper only. ProjectCard already tilts and glares itself
 // (useTilt); a second rotation here used to stack on top of it and exaggerate
 // the hover effect.
 function GridItem({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <motion.div className={className} variants={itemVariants}>
+    <motion.div className={className} variants={item}>
       {children}
     </motion.div>
   )
@@ -35,7 +18,7 @@ const ProjectsSeccion = () => {
   return (
     <motion.div
       className="projects-grid"
-      variants={containerVariants}
+      variants={stagger(0.08)}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: false, margin: '-40px' }}

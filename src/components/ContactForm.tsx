@@ -205,7 +205,6 @@ const ContactForm = () => {
             alignItems: 'center',
             justifyContent: 'center',
             gap: '0.5rem',
-            transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, opacity 0.2s ease',
             boxShadow: '0 0 20px rgba(var(--primary-rgb), 0.3)',
             opacity: isSubmitting ? 0.7 : 1
           }}

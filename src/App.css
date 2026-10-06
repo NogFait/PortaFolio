@@ -36,7 +36,7 @@
 
 /* === PROJECT CARDS === */
 .project-card-img {
-  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform var(--t-gentle) var(--spring);
 }
 
 .project-card-border {
@@ -49,7 +49,7 @@
 }
 
 .project-card-link {
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform var(--t-snappy) var(--spring);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -69,7 +69,7 @@
 /* Touch devices get press feedback instead of a hover zoom */
 .projects-grid a:active .project-card-img {
   transform: scale(1.02);
-  transition-duration: 150ms;
+  transition-duration: var(--t-press);
 }
 
 /* === ABOUT === */
@@ -106,7 +106,7 @@
 }
 
 .about-badge {
-  transition: transform 0.3s ease;
+  transition: transform var(--t-snappy) var(--spring);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -177,6 +177,7 @@
 
 .contact-panel__social:active {
   transform: scale(0.95);
+  transition-duration: var(--t-press), 0.3s, 0.3s;
 }
 
 /* === FORM INPUTS === */

@@ -4,6 +4,7 @@ import { motion } from "framer-motion"
 import { SiGithub } from "react-icons/si"
 import { useBreakpoint, useMediaQuery } from "../hooks/useMediaQuery"
 import { useTilt } from "../hooks/useTilt"
+import { springs } from "../motion/physics"
 import { TECH_ICONS } from "../data/techIcons"
 
 type Layout = 'hero' | 'vertical' | 'compact' | 'split'
@@ -143,7 +144,7 @@ const ProjectImage = ({
         objectFit: project.objectFit ?? 'cover',
         objectPosition: objectPosition ?? 'center',
         opacity: loaded ? targetOpacity : 0,
-        transition: 'transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), opacity 250ms var(--ease-out)',
+        transition: 'transform var(--t-gentle) var(--spring), opacity 250ms var(--ease-out)',
       }}
       className="project-card-img"
     />
@@ -190,6 +191,8 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
         rel="noopener noreferrer"
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
+        whileTap={{ scale: 0.985 }}
+        transition={springs.press}
         style={{
           display: 'flex',
           flexDirection: 'column',
@@ -248,6 +251,8 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
         rel="noopener noreferrer"
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
+        whileTap={{ scale: 0.985 }}
+        transition={springs.press}
         style={{
           display: 'flex',
           flexDirection: 'column',
@@ -318,6 +323,8 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
         rel="noopener noreferrer"
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
+        whileTap={{ scale: 0.985 }}
+        transition={springs.press}
         style={{
           display: 'flex',
           flexDirection: isTablet ? 'column' : 'row',
@@ -406,6 +413,8 @@ const ProjectCard = ({ project, layout = 'compact' }: Props) => {
       rel="noopener noreferrer"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      whileTap={{ scale: 0.985 }}
+      transition={springs.press}
       style={{
         display: 'flex',
         flexDirection: 'column',

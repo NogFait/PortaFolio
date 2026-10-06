@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import perfil from '../assets/perfil.png'
 import { useBreakpoint } from '../hooks/useMediaQuery'
 import { useScrollAnimation } from '../hooks/useScrollAnimation'
+import { reveal } from '../motion/variants'
 import SplitText from './SplitText'
 
 const About = () => {
@@ -26,9 +27,9 @@ const About = () => {
           gap: isMobile ? '1.5rem' : isTablet ? '2.5rem' : '3rem',
           alignItems: 'center'
         }}
-        initial={{ opacity: 0, y: 30 }}
-        animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        variants={reveal}
+        initial="hidden"
+        animate={isVisible ? 'visible' : 'hidden'}
       >
         <div className="about-image-col" style={{
           gridColumn: 'span 4',

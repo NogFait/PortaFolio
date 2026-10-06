@@ -4,6 +4,7 @@ import { FaLinkedin } from 'react-icons/fa'
 import ContactForm from './ContactForm'
 import { useBreakpoint } from '../hooks/useMediaQuery'
 import { useScrollAnimation } from '../hooks/useScrollAnimation'
+import { reveal } from '../motion/variants'
 
 const ContactFormSection = () => {
   const { ref: sectionRef, isVisible } = useScrollAnimation<HTMLElement>({ once: false })
@@ -15,9 +16,9 @@ const ContactFormSection = () => {
     }}>
       <motion.div
         style={{ maxWidth: '1280px', width: '100%', margin: '0 auto' }}
-        initial={{ opacity: 0, y: 30 }}
-        animate={isVisible ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        variants={reveal}
+        initial="hidden"
+        animate={isVisible ? 'visible' : 'hidden'}
       >
         <div style={{
           borderRadius: '1.5rem',
@@ -65,7 +66,7 @@ const ContactFormSection = () => {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    transition: 'transform 0.3s ease'
+                    transition: 'transform var(--t-snappy) var(--spring)'
                   }}>
                     <span className="material-symbols-outlined" style={{ color: 'var(--secondary)' }}>mail</span>
                   </div>
@@ -101,7 +102,7 @@ const ContactFormSection = () => {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    transition: 'transform 0.3s ease'
+                    transition: 'transform var(--t-snappy) var(--spring)'
                   }}>
                     <span className="material-symbols-outlined" style={{ color: 'var(--secondary)' }}>location_on</span>
                   </div>
@@ -142,7 +143,7 @@ const ContactFormSection = () => {
                   justifyContent: 'center',
                   color: 'var(--on-surface-variant)',
                   textDecoration: 'none',
-                  transition: 'background-color 0.3s ease, color 0.3s ease, transform 0.3s ease'
+                  transition: 'background-color 0.3s ease, color 0.3s ease, transform var(--t-snappy) var(--spring)'
                 }}
                 className="contact-panel__social"
               >
@@ -163,7 +164,7 @@ const ContactFormSection = () => {
                   justifyContent: 'center',
                   color: 'var(--on-surface-variant)',
                   textDecoration: 'none',
-                  transition: 'background-color 0.3s ease, color 0.3s ease, transform 0.3s ease'
+                  transition: 'background-color 0.3s ease, color 0.3s ease, transform var(--t-snappy) var(--spring)'
                 }}
                 className="contact-panel__social"
               >
