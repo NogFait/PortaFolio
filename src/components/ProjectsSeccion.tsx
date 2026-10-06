@@ -4,6 +4,7 @@ import { projects } from "../data/Projects"
 import ProjectCard from "./ProjectCard"
 import ProjectDetail from "./ProjectDetail"
 import { item, stagger } from '../motion/variants'
+import { useScrollAnimation } from '../hooks/useScrollAnimation'
 
 // Entrance-stagger wrapper only. ProjectCard already tilts and glares itself
 // (useTilt); a second rotation here used to stack on top of it and exaggerate
@@ -33,14 +34,22 @@ const ProjectsSeccion = () => {
 
   const openProject = projects.find(p => p.id === openId)
 
+  // threshold 0 + bottom-only margin: reveals as soon as the grid is 40px inside,
+  // and (see useScrollAnimation) never hides while any part is still on screen
+  const { ref: gridRef, isVisible } = useScrollAnimation<HTMLDivElement>({
+    once: false,
+    threshold: 0,
+    rootMargin: '0px 0px -40px 0px',
+  })
+
   return (
     <LayoutGroup>
       <motion.div
+        ref={gridRef}
         className="projects-grid"
         variants={stagger(0.08)}
         initial="hidden"
-        whileInView="visible"
-        viewport={{ once: false, margin: '-40px' }}
+        animate={isVisible ? 'visible' : 'hidden'}
       >
         <GridItem className="projects-grid__hero">
           <ProjectCard project={projects[0]} layout="hero" onOpen={open} />

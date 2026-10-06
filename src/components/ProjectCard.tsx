@@ -60,31 +60,31 @@ const ProjectImage = ({
 
 // Names what clicking the card actually does: it opens the detail panel (the
 // external link lives inside it, where GitHub vs live site is spelled out).
-const ProjectLinkIndicator = () => (
+const ProjectLinkIndicator = ({ roomy = false }: { roomy?: boolean }) => (
   <span style={{
     display: 'inline-flex',
     alignItems: 'center',
     gap: '0.375rem',
     fontFamily: 'var(--font-mono)',
-    fontSize: '0.625rem',
+    fontSize: roomy ? '0.75rem' : '0.625rem',
     textTransform: 'uppercase',
     letterSpacing: '0.1em',
     color: 'var(--primary)',
   }} className="project-card-link">
     Ver detalle
-    <span className="material-symbols-outlined" style={{ fontSize: '0.875rem' }}>open_in_full</span>
+    <span className="material-symbols-outlined" style={{ fontSize: roomy ? '1rem' : '0.875rem' }}>open_in_full</span>
   </span>
 )
 
 // Cards only tease: two lines of context. Everything else (problem/solution, stack,
 // full description, the external link) lives in the detail panel one tap away.
-const Summary = ({ text, flex = false }: { text: string; flex?: boolean }) => (
+const Summary = ({ text, flex = false, roomy = false }: { text: string; flex?: boolean; roomy?: boolean }) => (
   <p style={{
     fontFamily: 'var(--font-body)',
-    fontSize: '0.8125rem',
+    fontSize: roomy ? '0.9375rem' : '0.8125rem',
     color: 'var(--on-surface-variant)',
-    lineHeight: '1.5',
-    margin: '0 0 0.875rem',
+    lineHeight: roomy ? '1.55' : '1.5',
+    margin: roomy ? '0 0 1rem' : '0 0 0.875rem',
     display: '-webkit-box',
     WebkitBoxOrient: 'vertical',
     WebkitLineClamp: 2,
@@ -102,6 +102,9 @@ const ProjectCard = ({ project, layout = 'compact', onOpen }: Props) => {
   })
 
   const tags = getTagsForProject(project.titulo)
+  // Desktop and tablet have the room: type steps up and the image gives way, so the
+  // text reads as the main content instead of a caption under a big screenshot.
+  const roomy = !isMobile
 
   // The card is a link (so middle/cmd-click and keyboard still work) that, on a
   // plain click, becomes the detail panel instead of leaving the page.
@@ -139,7 +142,7 @@ const ProjectCard = ({ project, layout = 'compact', onOpen }: Props) => {
           overflow: 'hidden',
           borderRadius: '0.75rem',
           background: 'var(--surface-container-high)',
-          height: isMobile ? 'auto' : '400px',
+          height: isMobile ? 'auto' : '420px',
           textDecoration: 'none',
           cursor: 'pointer',
           rotateX,
@@ -148,7 +151,7 @@ const ProjectCard = ({ project, layout = 'compact', onOpen }: Props) => {
         }}
       >
         <div style={{
-          flex: `0 0 ${isMobile ? '190px' : '220px'}`,
+          flex: `0 0 ${isMobile ? '190px' : '180px'}`,
           position: 'relative',
           overflow: 'hidden',
           background: project.bgColor ?? 'var(--surface-container-highest)'
@@ -165,13 +168,13 @@ const ProjectCard = ({ project, layout = 'compact', onOpen }: Props) => {
           <TagList tags={tags} marginBottom="0.75rem" />
           <h3 style={{
             fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)',
+            fontSize: isMobile ? 'clamp(1.375rem, 2.5vw, 1.75rem)' : 'clamp(1.75rem, 2.4vw, 2.25rem)',
             fontWeight: 700,
             color: 'var(--on-surface)',
             marginBottom: '0.75rem'
           }}>{project.titulo}</h3>
-          <Summary text={project.descripcion} />
-          <ProjectLinkIndicator />
+          <Summary text={project.descripcion} roomy={roomy} />
+          <ProjectLinkIndicator roomy={roomy} />
         </div>
         <motion.div style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', background: glareBackground, pointerEvents: 'none' }} />
         <div className="project-card-border" />
@@ -189,7 +192,7 @@ const ProjectCard = ({ project, layout = 'compact', onOpen }: Props) => {
           overflow: 'hidden',
           borderRadius: '0.75rem',
           background: 'var(--surface-container-high)',
-          height: isMobile ? 'auto' : '400px',
+          height: isMobile ? 'auto' : '420px',
           textDecoration: 'none',
           cursor: 'pointer',
           position: 'relative',
@@ -199,7 +202,7 @@ const ProjectCard = ({ project, layout = 'compact', onOpen }: Props) => {
         }}
       >
         <div style={{
-          flex: isMobile ? '0 0 170px' : 1,
+          flex: isMobile ? '0 0 170px' : '0 0 40%',
           position: 'relative',
           overflow: 'hidden',
           background: project.bgColor ?? 'var(--surface-container-highest)'
@@ -218,17 +221,17 @@ const ProjectCard = ({ project, layout = 'compact', onOpen }: Props) => {
             background: 'linear-gradient(to top, var(--surface-container-high) 0%, transparent 60%)'
           }} />
         </div>
-        <div style={{ padding: isMobile ? '1.25rem' : '1.5rem', flex: '0 0 auto', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ padding: isMobile ? '1.25rem' : '1.5rem', flex: isMobile ? '0 0 auto' : 1, display: 'flex', flexDirection: 'column', justifyContent: isMobile ? undefined : 'center' }}>
           <TagList tags={tags} marginBottom="0.75rem" />
           <h3 style={{
             fontFamily: 'var(--font-display)',
-            fontSize: '1.375rem',
+            fontSize: isMobile ? '1.375rem' : '1.75rem',
             fontWeight: 700,
             color: 'var(--on-surface)',
-            marginBottom: '0.375rem'
+            marginBottom: '0.5rem'
           }}>{project.titulo}</h3>
-          <Summary text={project.descripcion} />
-          <ProjectLinkIndicator />
+          <Summary text={project.descripcion} roomy={roomy} />
+          <ProjectLinkIndicator roomy={roomy} />
         </div>
         <motion.div style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', background: glareBackground, pointerEvents: 'none' }} />
         <div className="project-card-border" style={{ borderColor: 'rgba(var(--secondary-rgb), 0)' }} />
@@ -246,7 +249,7 @@ const ProjectCard = ({ project, layout = 'compact', onOpen }: Props) => {
           overflow: 'hidden',
           borderRadius: '0.75rem',
           background: 'var(--surface-container-high)',
-          height: isMobile || isTablet ? 'auto' : '340px',
+          height: isMobile || isTablet ? 'auto' : '360px',
           textDecoration: 'none',
           cursor: 'pointer',
           position: 'relative',
@@ -265,16 +268,16 @@ const ProjectCard = ({ project, layout = 'compact', onOpen }: Props) => {
           <TagList tags={tags} marginBottom="0.75rem" />
           <h3 style={{
             fontFamily: 'var(--font-display)',
-            fontSize: '1.375rem',
+            fontSize: isMobile ? '1.375rem' : '1.75rem',
             fontWeight: 700,
             color: 'var(--on-surface)',
             marginBottom: '0.75rem'
           }}>{project.titulo}</h3>
-          <Summary text={project.descripcion} />
-          <ProjectLinkIndicator />
+          <Summary text={project.descripcion} roomy={roomy} />
+          <ProjectLinkIndicator roomy={roomy} />
         </div>
         <div style={{
-          width: isTablet ? '100%' : '50%',
+          width: isTablet ? '100%' : '42%',
           height: isMobile ? '160px' : isTablet ? '200px' : '100%',
           position: 'relative',
           overflow: 'hidden',
@@ -305,7 +308,7 @@ const ProjectCard = ({ project, layout = 'compact', onOpen }: Props) => {
         overflow: 'hidden',
         borderRadius: '0.75rem',
         background: 'var(--surface-container-high)',
-        height: isMobile ? 'auto' : '340px',
+        height: isMobile ? 'auto' : '360px',
         textDecoration: 'none',
         cursor: 'pointer',
         position: 'relative',
@@ -315,7 +318,7 @@ const ProjectCard = ({ project, layout = 'compact', onOpen }: Props) => {
       }}
     >
       <div style={{
-        height: isMobile ? '170px' : '50%',
+        height: isMobile ? '170px' : '40%',
         position: 'relative',
         overflow: 'hidden',
         background: project.bgColor ?? 'var(--surface-container-highest)'
@@ -338,13 +341,13 @@ const ProjectCard = ({ project, layout = 'compact', onOpen }: Props) => {
         <TagList tags={tags} marginBottom="0.75rem" />
         <h3 style={{
           fontFamily: 'var(--font-display)',
-          fontSize: '1.25rem',
+          fontSize: isMobile ? '1.25rem' : '1.5rem',
           fontWeight: 700,
           color: 'var(--on-surface)',
           marginBottom: '0.5rem'
         }}>{project.titulo}</h3>
-        <Summary text={project.descripcion} flex />
-        <ProjectLinkIndicator />
+        <Summary text={project.descripcion} flex roomy={roomy} />
+        <ProjectLinkIndicator roomy={roomy} />
       </div>
       <motion.div style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', background: glareBackground, pointerEvents: 'none' }} />
     <div className="project-card-border" style={{ borderColor: 'rgba(70, 69, 84, 0)' }} />

@@ -7,7 +7,6 @@ import Projects from './components/Projects.tsx'
 import About from './components/About.tsx'
 import ContactFormSection from './components/ContactFormSection.tsx'
 import Footer from './components/Footer.tsx'
-import ScrollProgress from './components/ScrollProgress.tsx'
 import { useLenis } from './hooks/useLenis'
 
 function App() {
@@ -16,7 +15,6 @@ function App() {
   return (
     <MotionConfig reducedMotion="user">
       <div className="app">
-        <ScrollProgress />
         <Navbar />
         <main>
           <Hero />

@@ -37,7 +37,9 @@
 /* === PROJECT CARDS === */
 /* Depth on hover: the card lifts (JS spring) and its shadow grows underneath.
    The shadow is a pseudo-element faded with opacity (compositor-friendly) and sits
-   on the grid cell, not the card, because the card clips its own overflow. */
+   on the grid cell, not the card, because the card clips its own overflow. The cell is the
+   same box as the card, so plain :hover works (no :has(), which makes the browser re-check
+   styles whenever the pointer drifts over a card while the page scrolls). */
 .projects-grid > div { position: relative; }
 .projects-grid > div::before {
   content: '';
@@ -50,7 +52,7 @@
   transition: opacity var(--t-settle) var(--spring);
 }
 @media (hover: hover) and (pointer: fine) {
-  .projects-grid > div:has(> a:hover)::before { opacity: 1; }
+  .projects-grid > div:hover::before { opacity: 1; }
 }
 
 .project-card-img {
