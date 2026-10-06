@@ -1,5 +1,6 @@
 import { useMotionValue, useSpring, useMotionTemplate } from 'framer-motion'
 import type { MouseEvent } from 'react'
+import { springs } from '../motion/physics'
 
 interface UseTiltOptions {
   max?: number
@@ -12,9 +13,9 @@ export function useTilt({ max = 8, disabled = false }: UseTiltOptions = {}) {
   const glareX = useMotionValue(50)
   const glareY = useMotionValue(50)
 
-  const springConfig = { stiffness: 300, damping: 30, mass: 0.5 }
-  const rotateX = useSpring(rotateXRaw, springConfig)
-  const rotateY = useSpring(rotateYRaw, springConfig)
+  // Tracks the pointer with a critically damped spring (no wobble while it follows)
+  const rotateX = useSpring(rotateXRaw, springs.follow)
+  const rotateY = useSpring(rotateYRaw, springs.follow)
 
   const glareBackground = useMotionTemplate`radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255, 255, 255, 0.12), transparent 55%)`
 

@@ -1,5 +1,6 @@
 import { useMotionValue, useSpring } from 'framer-motion'
 import type { MouseEvent } from 'react'
+import { springs } from '../motion/physics'
 
 interface UseMagneticOptions {
   strength?: number
@@ -10,9 +11,10 @@ export function useMagnetic({ strength = 0.35, disabled = false }: UseMagneticOp
   const xRaw = useMotionValue(0)
   const yRaw = useMotionValue(0)
 
-  const springConfig = { stiffness: 150, damping: 15, mass: 0.15 }
-  const x = useSpring(xRaw, springConfig)
-  const y = useSpring(yRaw, springConfig)
+  // Slightly under-damped: when the pointer leaves, the element is released and
+  // overshoots a touch on its way home, instead of gliding back dead.
+  const x = useSpring(xRaw, springs.magnet)
+  const y = useSpring(yRaw, springs.magnet)
 
   const handleMouseMove = (e: MouseEvent<HTMLElement>) => {
     if (disabled) return

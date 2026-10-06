@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import ProjectsSeccion from "./ProjectsSeccion"
 import { useBreakpoint } from '../hooks/useMediaQuery'
 import { useScrollAnimation } from '../hooks/useScrollAnimation'
+import { reveal } from '../motion/variants'
 
 const Projects = () => {
   const { ref: sectionRef, isVisible } = useScrollAnimation<HTMLElement>({ once: false })
@@ -17,9 +18,9 @@ const Projects = () => {
 
       <motion.div
         style={{ maxWidth: '1280px', width: '100%', margin: '0 auto' }}
-        initial={{ opacity: 0, y: 30 }}
-        animate={isVisible ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
+        variants={reveal}
+        initial="hidden"
+        animate={isVisible ? 'visible' : 'hidden'}
       >
         <div style={{
           display: 'flex',

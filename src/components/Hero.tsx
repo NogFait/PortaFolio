@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react'
 import { motion, useMotionValue, useSpring, useScroll, useTransform } from 'framer-motion'
 import { useMediaQuery } from '../hooks/useMediaQuery'
+import { springs } from '../motion/physics'
+import { focusIn, stagger } from '../motion/variants'
 
 class Particle {
   x: number
@@ -41,7 +43,8 @@ class Particle {
 const Hero = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const mouseX = useMotionValue(50)
-  const springX = useSpring(mouseX, { stiffness: 100, damping: 30 })
+  // Ambient glow: heavier and slower than anything the user touches
+  const springX = useSpring(mouseX, springs.ambient)
 
   const { scrollY } = useScroll()
   const glowY = useTransform(scrollY, [0, 400], [-50, -20])
@@ -166,8 +169,13 @@ const Hero = () => {
         }}
       />
 
-      <div style={{ maxWidth: '900px', position: 'relative', zIndex: 1 }}>
-        <div className="fade-in-up" style={{ animationDelay: '0.1s', marginBottom: '2rem' }}>
+      <motion.div
+        style={{ maxWidth: '900px', position: 'relative', zIndex: 1 }}
+        variants={stagger(0.09, 0.1)}
+        initial="hidden"
+        animate="visible"
+      >
+        <motion.div variants={focusIn} style={{ marginBottom: '2rem' }}>
           <div style={{
             display: 'inline-flex',
             alignItems: 'center',
@@ -196,10 +204,10 @@ const Hero = () => {
               Disponible para nuevos proyectos
             </span>
           </div>
-        </div>
+        </motion.div>
 
         <motion.h1
-          className="fade-in-up"
+          variants={focusIn}
           style={{
             fontFamily: 'var(--font-display)',
             fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
@@ -207,8 +215,7 @@ const Hero = () => {
             fontWeight: 800,
             color: 'var(--on-surface)',
             marginBottom: '1.5rem',
-            letterSpacing: '-0.03em',
-            animationDelay: '0.2s'
+            letterSpacing: '-0.03em'
           }}
         >
           Construyendo sistemas reales,{' '}
@@ -222,28 +229,26 @@ const Hero = () => {
         </motion.h1>
 
         <motion.p
-          className="fade-in-up"
+          variants={focusIn}
           style={{
             fontFamily: 'var(--font-body)',
             fontSize: 'clamp(1rem, 2vw, 1.25rem)',
             lineHeight: '1.6',
             color: 'var(--on-surface-variant)',
             maxWidth: '640px',
-            margin: '0 auto 2.5rem',
-            animationDelay: '0.3s'
+            margin: '0 auto 2.5rem'
           }}
         >
           Técnico Universitario en Programación (UTN) enfocado en el desarrollo Full-stack. Me especializo en construir aplicaciones funcionales, escalables y bien estructuradas.
         </motion.p>
 
-        <div
-          className="fade-in-up"
+        <motion.div
+          variants={focusIn}
           style={{
             display: 'flex',
             gap: '1rem',
             flexWrap: 'wrap',
-            justifyContent: 'center',
-            animationDelay: '0.4s'
+            justifyContent: 'center'
           }}
         >
           <a href="#projects" className="hero-btn" style={{
@@ -256,8 +261,7 @@ const Hero = () => {
             fontWeight: 700,
             fontSize: '0.9375rem',
             borderRadius: '0.75rem',
-            textDecoration: 'none',
-            transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease'
+            textDecoration: 'none'
           }}>
             Ver Proyectos
             <span className="material-symbols-outlined" style={{ fontSize: '1.125rem' }}>arrow_downward</span>
@@ -275,13 +279,12 @@ const Hero = () => {
             fontSize: '0.9375rem',
             borderRadius: '0.75rem',
             textDecoration: 'none',
-            border: '1px solid rgba(70, 69, 84, 0.2)',
-            transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease, box-shadow 0.3s ease'
+            border: '1px solid rgba(70, 69, 84, 0.2)'
           }}>
             Hablemos
           </a>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       <div className="animate-float" style={{
         position: 'absolute',

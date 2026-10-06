@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, animate, useMotionValue } from 'framer-motion'
+import type { PanInfo, Variants } from 'framer-motion'
+import { project, springs } from '../motion/physics'
+import { scrollToTarget } from '../hooks/useLenis'
 import './Navbar.css'
 
 const NAV_SECTIONS = [
@@ -8,25 +11,59 @@ const NAV_SECTIONS = [
   { id: 'contact', label: 'Contacto' },
 ] as const
 
-const mobileOverlayVariants = {
-  hidden: { opacity: 0 },
+type Dismiss = { velocity: number; distance: number } | null
+
+// The menu is a material that comes down out of the navbar: it arrives slightly
+// small and above its resting place, and leaves along the exact same path.
+// Opened by tap and closed by tap/Esc it mirrors itself; closed by an upward
+// swipe it keeps going in the direction (and at the speed) of the finger.
+// (`hidden` holds the starting pose; `hidden` and `exit` share the same values.)
+const mobileOverlayVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    y: -24,
+    scale: 0.98,
+    backdropFilter: 'blur(0px)',
+  },
   visible: {
     opacity: 1,
-    transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] as const, staggerChildren: 0.04, delayChildren: 0.05 },
+    y: 0,
+    scale: 1,
+    backdropFilter: 'blur(24px)',
+    transition: { ...springs.settle, staggerChildren: 0.04, delayChildren: 0.04 },
   },
+  // Resolved through AnimatePresence's `custom`: a leaving child keeps the props
+  // of its last render, so the exit has to decide for itself how to leave.
+  exit: (d: Dismiss) =>
+    d
+      ? {
+          opacity: 0,
+          y: -d.distance - 40,
+          backdropFilter: 'blur(0px)',
+          transition: { ...springs.settle, y: { ...springs.settle, velocity: d.velocity } },
+        }
+      : {
+          opacity: 0,
+          y: -24,
+          scale: 0.98,
+          backdropFilter: 'blur(0px)',
+          transition: springs.snappy,
+        },
 }
 
-const mobileItemVariants = {
-  hidden: { opacity: 0, y: 8 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.2, ease: [0.16, 1, 0.3, 1] as const } },
+const mobileItemVariants: Variants = {
+  hidden: { opacity: 0, y: 12, scale: 0.97 },
+  visible: { opacity: 1, y: 0, scale: 1, transition: springs.snappy },
 }
 
 const Navbar = () => {
   const [activeSection, setActiveSection] = useState('')
   const [isMobileOpen, setIsMobileOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [dismiss, setDismiss] = useState<Dismiss>(null)
   const hamburgerRef = useRef<HTMLButtonElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
+  const overlayY = useMotionValue(0)
 
   useEffect(() => {
     const handleRoute = () => {
@@ -85,10 +122,23 @@ const Navbar = () => {
   const scrollTo = (id: string) => {
     const targetId = id === 'about' ? 'about-label' : id === 'projects' ? 'projects-label' : id
     const el = document.getElementById(targetId)
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' })
-    }
+    if (el) scrollToTarget(el)
+    setDismiss(null)
     setIsMobileOpen(false)
+  }
+
+  // Release of the swipe: project where the flick would land and commit to the
+  // side it is heading for. Only the upward path exists (the menu came from the
+  // top), so downward drags are rubber-banded and always return.
+  const handleOverlayDragEnd = (_: PointerEvent, info: PanInfo) => {
+    const height = overlayRef.current?.offsetHeight ?? 0
+    const projected = info.offset.y + project(info.velocity.y)
+    if (projected < -Math.max(120, height * 0.2)) {
+      setDismiss({ velocity: info.velocity.y, distance: height })
+      setIsMobileOpen(false)
+    } else {
+      animate(overlayY, 0, { ...springs.momentum, velocity: info.velocity.y })
+    }
   }
 
   return (
@@ -97,7 +147,7 @@ const Navbar = () => {
         <div className="navbar__inner">
           <button
             className="navbar__logo"
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            onClick={() => scrollToTarget(0)}
           >
             FAUSTO CHIRINO
           </button>
@@ -115,7 +165,7 @@ const Navbar = () => {
                   <motion.div
                     layoutId="nav-indicator"
                     className="navbar__indicator"
-                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                    transition={springs.snappy}
                   />
                 )}
               </li>
@@ -131,7 +181,10 @@ const Navbar = () => {
             <button
               ref={hamburgerRef}
               className={`navbar__hamburger ${isMobileOpen ? 'navbar__hamburger--open' : ''}`}
-              onClick={() => setIsMobileOpen(prev => !prev)}
+              onClick={() => {
+                setDismiss(null)
+                setIsMobileOpen(prev => !prev)
+              }}
               aria-label="Toggle menu"
               aria-expanded={isMobileOpen}
               aria-controls="mobile-menu"
@@ -144,7 +197,7 @@ const Navbar = () => {
         </div>
       </nav>
 
-      <AnimatePresence>
+      <AnimatePresence custom={dismiss}>
         {isMobileOpen && (
           <motion.div
             ref={overlayRef}
@@ -154,9 +207,17 @@ const Navbar = () => {
             aria-label="Menú de navegación"
             className="navbar__mobile-overlay"
             variants={mobileOverlayVariants}
+            custom={dismiss}
             initial="hidden"
             animate="visible"
-            exit="hidden"
+            exit="exit"
+            style={{ y: overlayY, transformOrigin: 'top center' }}
+            drag="y"
+            dragDirectionLock
+            dragMomentum={false}
+            dragConstraints={{ top: -1200, bottom: 0 }}
+            dragElastic={{ top: 0, bottom: 0.15 }}
+            onDragEnd={handleOverlayDragEnd}
           >
             {NAV_SECTIONS.map(s => (
               <motion.button
@@ -177,6 +238,7 @@ const Navbar = () => {
               <span className="material-symbols-outlined">terminal</span>
               CV
             </motion.a>
+            <span className="navbar__grabber" aria-hidden="true" />
           </motion.div>
         )}
       </AnimatePresence>
