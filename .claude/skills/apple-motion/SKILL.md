@@ -1,6 +1,6 @@
 ---
 name: apple-motion
-description: Aplica a una web un movimiento estilo Apple que SE NOTA — springs, física, interrumpibilidad, gestos con inercia, elementos compartidos y continuidad espacial, con una sola física coherente — midiendo antes/después en vez de solo cambiar curvas. Úsalo cuando pidan "animaciones estilo Apple", "que se sienta fluido/físico/natural/premium", "springs", "drag/swipe con momentum", "rubber-band", "card que se expande", "interrumpible", unificar o auditar el movimiento de una web. English: apply Apple-style motion behavior that is actually perceptible (springs, velocity handoff, shared-element transitions, interruptibility), proven with before/after motion traces. Teoría de fondo: `apple-design`; una animación puntual: `animate`.
+description: Aplica a una web un movimiento estilo Apple que SE NOTA — springs, física, interrumpibilidad, gestos con inercia, elementos compartidos y continuidad espacial, con una sola física coherente — midiendo antes/después en vez de solo cambiar curvas. Úsalo cuando pidan "animaciones estilo Apple", "que se sienta fluido/físico/natural/premium", "springs", "drag/swipe con momentum", "rubber-band", "card que se expande", "interrumpible", unificar o auditar el movimiento de una web. English: apply Apple-style motion behavior that is actually perceptible (springs, velocity handoff, shared-element transitions, interruptibility), proven with before/after motion traces. El movimiento debe costar casi nada: se mide fluidez y rendimiento (frames, hilo principal, bundle) contra una línea base, no solo cómo se ve. Teoría de fondo: `apple-design`; una animación puntual: `animate`; auditoría general de carga: `impeccable` (optimize).
 ---
 
 # Apple Motion — diseña el comportamiento, y comprueba que se note
@@ -24,6 +24,7 @@ La física se siente en cuatro situaciones: **(1) input continuo** (drag, punter
 6. **Límites elásticos** (`rubberband`), nunca cortes secos.
 7. **Sutil y coordinado:** desplazamiento + escala + opacidad (+ blur solo en elementos pequeños). Sin rebotes gratuitos ni loops decorativos.
 8. **Una sola física** en JS y CSS.
+9. **El movimiento no cuesta fluidez.** Cada efecto entra a un presupuesto de rendimiento y se mide contra la línea base (sección *Presupuesto de rendimiento*). Un efecto que baja los fps no es premium: se arregla o se elimina.
 
 ## Procedimiento
 
@@ -75,7 +76,7 @@ Recetas base (verificadas):
 
 - **Entradas:** variantes compartidas `reveal`/`item`/`focusIn` en un archivo, no props sueltas por componente. Blur solo en elementos pequeños.
 - **Press:** `whileTap={{ scale: .985 }} transition={springs.press}` o `:active { transition-duration: var(--t-press) }`; más rápido bajando que subiendo.
-- **Superficie que sale de un origen:** `transformOrigin` en el disparador; `hidden` y `exit` con los mismos valores; materializa con `backdropFilter: blur(0→24px)` + escala.
+- **Superficie que sale de un origen:** `transformOrigin` en el disparador; `hidden` y `exit` con los mismos valores; materializa con **escala + opacidad** (nunca animes `backdrop-filter`: ver *Presupuesto de rendimiento*).
 - **Drag con inercia (descartar):**
 
 ```tsx
@@ -98,6 +99,8 @@ const y = useMotionValue(0)
    - Un momento firma debe mostrar algo que la línea base **no podía**: seguir un puntero, heredar velocidad, revertir a mitad, transformarse en otro elemento. Pruébalo con interacción real (Playwright: `mouse.down/move/up`, `hover`, doble clic rápido) y mide: posición vs input, continuidad tras soltar, ausencia de saltos al interrumpir.
 2. **Haz visible la diferencia al usuario:** graba un clip antes/después con Playwright (`browser.newContext({ recordVideo: { dir, size } })`, mismas acciones en `main` y en la rama) o pasa capturas de frames intermedios (p. ej. a 80/160/320 ms). Los números no sustituyen verlo.
 3. Corre `lint` + `build` y `prefers-reduced-motion` (todo visible, `transform: none`).
+4. **Fase 4b — rendimiento** (ver *Presupuesto de rendimiento*): mide línea base vs nueva en móvil ×4 y escritorio; si algo cuesta, A/B para aislar y arreglar o eliminar. Sin esta tabla el trabajo no está terminado.
+5. **Recorre cada vista y cada navegación** en 1440×900, 1280×720, 1024×768, 768×1024, 390×844 y 360×640: ningún contenido atenuado u oculto mientras se ve, nada tapado por la barra fija, cada enlace/CTA aterriza donde debe, y el contenido que salió de una card sigue alcanzable en su panel.
 
 Verificaciones que deben cumplirse (ejemplos en `scripts/verify-motion.example.mjs` y `scripts/verify-shared-element.example.mjs`):
 
@@ -116,6 +119,46 @@ Verificaciones que deben cumplirse (ejemplos en `scripts/verify-motion.example.m
 | Teclado (Esc/flechas) | cada gesto tiene equivalente |
 | Consola | sin errores |
 
+## Presupuesto de rendimiento (obligatorio)
+
+> Mejorar la fluidez percibida **sin** gastar la fluidez real. La navegación de la web debe quedar igual de ligera, o más, que antes del movimiento.
+
+**Reglas**
+
+1. **Anima solo `transform` y `opacity`** (los maneja el compositor). No animes `width/height/top/left/margin` (layout), `box-shadow`, `border-radius` grande, gradientes, ni `filter`/`backdrop-filter`. Excepciones justificadas y pequeñas: un blur de entrada de una sola vez en texto corto (`focusIn`).
+2. **Nada de desenfoque a pantalla completa que haga fade.** Medido en este proyecto: un scrim con `backdrop-filter` que aparece/desaparece **duplicó los tiempos de frame** del panel (escritorio p95 100 → 33 ms, máx 217 → 50 ms al quitarlo; móvil con CPU ×4: 91 → 26 frames lentos). Si la superficie ya es casi opaca (≥ .95), el blur es invisible: quítalo. La profundidad la da el oscurecimiento + la sombra del panel.
+3. **Presupuesto de efectos ligados al scroll: 1–2, en elementos grandes de jerarquía.** Cada hook de scroll tiene costo. Medido: una barra de progreso (Framer o `animation-timeline: scroll()`) sumó ~10–15 % de trabajo de estilos durante el scroll y en un sitio corto no aportaba: se eliminó. El hero que retrocede y la navbar direccional no costaron nada medible.
+4. **No pongas un spring sobre un valor ya suavizado** (Lenis en rueda, scroll nativo en táctil): solo añade un bucle de frames.
+5. **Selectores:** evita `:has()` para estados `:hover` en listas que se scrollean (invalida estilos cuando el puntero pasa bajo el contenido). Usa `:hover` directo sobre la celda.
+6. **Valores continuos = `MotionValue`, no `useState`.** `setState` solo en cambios discretos (visible/oculto). Sin re-render por frame.
+7. **`will-change`:** solo en lo que morfa (el panel), no global. Un bucle de `requestAnimationFrame` por tema, y en pausa fuera de pantalla; en reposo el costo debe ser ≈ al de la línea base.
+8. **Bundle:** el movimiento no debe inflar el JS (medido aquí: +4.5 KB gzip, +3 %). Si crece, `LazyMotion` + `m`.
+9. **Degradación:** `prefers-reduced-motion` y `prefers-reduced-transparency` apagan lo costoso; en listas largas limita el `stagger` y no animes más de ~10–15 elementos a la vez.
+
+**Medir (Fase 4b — no se salta)**
+
+```bash
+# misma orden sobre la línea base y sobre la versión nueva; móvil = CPU ×4 (gama media)
+node scripts/measure-perf.mjs --url <base> --profile mobile  --label before
+node scripts/measure-perf.mjs --url <new>  --profile mobile  --label after
+node scripts/measure-perf.mjs --url <new>  --profile desktop --label after
+```
+
+Reporta por escenario (reposo, scroll, hover, menú, panel): p50/p95/máx de frame, frames > 33 ms, long tasks, ms de script/layout/estilo por segundo y nº de layouts/recalcs; y el tamaño gzip del bundle (`cat dist/assets/*.js | gzip -9 | wc -c`).
+
+**Criterios de aceptación**
+
+| Métrica | Debe cumplirse |
+|---|---|
+| Reposo | script/seg ≈ línea base (sin bucles nuevos) |
+| Scroll | script/seg ≤ +10 % y frames > 33 ms no peor que la base |
+| Cada interacción nueva (móvil ×4) | p95 ≤ 50 ms (ideal ≤ 33), máx < 150 ms |
+| Bundle | JS gzip ≤ +5 % |
+
+**Si falla: A/B para aislar, no adivinar.** Quita una pieza a la vez (o inyecta CSS en caliente: `CSS='…' node scripts/measure-perf.mjs …`) y mide solo ese escenario (`--only scroll`). Así se encontró aquí que el culpable del scroll era la barra de progreso y no el hero ni la navbar, y que el del panel era el blur del scrim. Arregla o elimina; no justifiques con "se ve mejor".
+
+**Cuidado con el entorno:** headless rasteriza por software (p50 ~30 fps en escritorio incluso en el original). Confía en la **diferencia** entre corridas del mismo entorno, repite cada medición 2 veces (el ruido es ±10 %) y confirma en un dispositivo real.
+
 ## Trampas reales
 
 - **`exit` no puede depender de estado:** un hijo de `AnimatePresence` conserva las props de su último render. Usa variante `exit` como función + `custom` en `AnimatePresence` **y** en el hijo.
@@ -124,7 +167,7 @@ Verificaciones que deben cumplirse (ejemplos en `scripts/verify-motion.example.m
 - **`transition-duration` en lista se empareja por posición** de propiedad (`transform, box-shadow, opacity` → 3 valores en ese orden).
 - **Un `transition:` inline en JSX gana a `:active`** de la hoja de estilos; muévelo a CSS si el press debe ser más rápido.
 - **`@keyframes` + `animation-delay`** no se interrumpen ni heredan velocidad; usa variantes con spring.
-- **`once:false` + `hidden`/`visible`:** úsalo igual en todas las secciones.
+- **`once:false` + `hidden`/`visible`:** úsalo igual en todas las secciones, y que el re-ocultado ocurra **solo cuando el elemento queda por debajo del viewport**, nunca al salir por arriba ni con un umbral (`threshold`) que apague el final de una sección alta mientras aún se ve (medido en móvil de 360×640: un CTA al 10 % de opacidad a la vista).
 - **Un drag dispara el click del link al soltar:** `onClickCapture` que lo cancele si hubo movimiento; `draggable={false}` en imágenes.
 - **`layoutId` + `border-radius`/`box-shadow` en clases:** se deforman al escalar; ponlos en `style`.
 - **Panel de un card compartido: renderízalo con `createPortal(…, document.body)`.** Un `position: fixed` dentro de un ancestro con `transform` u `overflow:hidden` (una sección con reveal) se recorta o se ancla mal.
@@ -156,7 +199,9 @@ Verificaciones que deben cumplirse (ejemplos en `scripts/verify-motion.example.m
 - Rebotes sin momentum previo; springs distintos "porque sí".
 - Bucles decorativos; cortes secos en los límites.
 - Gestos solo táctiles, o sin equivalente de teclado.
+- Contenido que se atenúa o se oculta **mientras todavía está a la vista** (reveals que se repiten, fades de scroll que bajan de ~0.6).
+- Animar `backdrop-filter`/`filter`/layout, o decorar con efectos ligados al scroll sin medir su costo.
 
 ## Entregable
 
-Al terminar, reporta con honestidad: (1) los **momentos firma** y su *antes → después* en una frase, (2) la **tabla de trazas** antes/después con cuáles son perceptibles y cuáles solo consistencia, (3) tokens de física y dónde viven, (4) qué se eliminó, (5) cómo ver la diferencia (clip/capturas) y qué falta probar en hardware real.
+Al terminar, reporta con honestidad: (1) los **momentos firma** y su *antes → después* en una frase, (2) la **tabla de trazas** antes/después con cuáles son perceptibles y cuáles solo consistencia, (3) tokens de física y dónde viven, (4) qué se eliminó, (5) **tabla de rendimiento antes/después** (móvil ×4 y escritorio) con lo que se tuvo que arreglar o eliminar, (6) cómo ver la diferencia (clip/capturas) y qué falta probar en hardware real.
