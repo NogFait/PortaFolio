@@ -89,8 +89,10 @@ const ProjectDetail = ({ project, onClose }: Props) => {
     }
   }
 
-  // The image yields height to the content so the call to action stays in view on short screens
-  const imageHeight = isMobile ? 'clamp(150px, 24dvh, 200px)' : 'clamp(180px, 27vh, 300px)'
+  // The image is a preview, not the content: a fixed, modest share of the panel so the text
+  // is readable without scrolling. (It used to size itself from the screenshot's natural
+  // height and took ~65% of the panel, squeezing the text out of view.)
+  const imageHeight = isMobile ? 'clamp(150px, 24dvh, 200px)' : 'clamp(150px, 24vh, 250px)'
 
   return createPortal(
     <>
@@ -165,6 +167,8 @@ const ProjectDetail = ({ project, onClose }: Props) => {
             style={{
               position: 'relative',
               flex: `0 0 ${imageHeight}`,
+              minHeight: 0,
+              overflow: 'hidden',
               background: project.bgColor ?? 'var(--surface-container-highest)',
               touchAction: isMobile ? 'none' : 'auto',
               cursor: isMobile ? 'grab' : 'default',
@@ -175,6 +179,9 @@ const ProjectDetail = ({ project, onClose }: Props) => {
               alt={`Captura de pantalla del proyecto ${project.titulo}`}
               draggable={false}
               style={{
+                // out of flow: the screenshot can never size its box
+                position: 'absolute',
+                inset: 0,
                 width: '100%',
                 height: '100%',
                 objectFit: project.objectFit ?? 'cover',
