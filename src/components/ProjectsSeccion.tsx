@@ -1,6 +1,8 @@
-import { motion } from 'framer-motion'
+import { useCallback, useRef, useState } from 'react'
+import { AnimatePresence, LayoutGroup, motion } from 'framer-motion'
 import { projects } from "../data/Projects"
 import ProjectCard from "./ProjectCard"
+import ProjectDetail from "./ProjectDetail"
 import { item, stagger } from '../motion/variants'
 
 // Entrance-stagger wrapper only. ProjectCard already tilts and glares itself
@@ -15,30 +17,52 @@ function GridItem({ children, className }: { children: React.ReactNode; classNam
 }
 
 const ProjectsSeccion = () => {
+  const [openId, setOpenId] = useState<string | null>(null)
+  const triggerRef = useRef<HTMLElement | null>(null)
+
+  const open = useCallback((id: string, trigger: HTMLElement) => {
+    triggerRef.current = trigger
+    setOpenId(id)
+  }, [])
+
+  const close = useCallback(() => {
+    setOpenId(null)
+    // the panel was reached from a specific card: hand focus back to it
+    triggerRef.current?.focus({ preventScroll: true })
+  }, [])
+
+  const openProject = projects.find(p => p.id === openId)
+
   return (
-    <motion.div
-      className="projects-grid"
-      variants={stagger(0.08)}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: false, margin: '-40px' }}
-    >
-      <GridItem className="projects-grid__hero">
-        <ProjectCard project={projects[0]} layout="hero" />
-      </GridItem>
+    <LayoutGroup>
+      <motion.div
+        className="projects-grid"
+        variants={stagger(0.08)}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: false, margin: '-40px' }}
+      >
+        <GridItem className="projects-grid__hero">
+          <ProjectCard project={projects[0]} layout="hero" onOpen={open} />
+        </GridItem>
 
-      <GridItem className="projects-grid__tall">
-        <ProjectCard project={projects[1]} layout="vertical" />
-      </GridItem>
+        <GridItem className="projects-grid__tall">
+          <ProjectCard project={projects[1]} layout="vertical" onOpen={open} />
+        </GridItem>
 
-      <GridItem className="projects-grid__compact">
-        <ProjectCard project={projects[3]} layout="compact" />
-      </GridItem>
+        <GridItem className="projects-grid__compact">
+          <ProjectCard project={projects[3]} layout="compact" onOpen={open} />
+        </GridItem>
 
-      <GridItem className="projects-grid__split">
-        <ProjectCard project={projects[2]} layout="split" />
-      </GridItem>
-    </motion.div>
+        <GridItem className="projects-grid__split">
+          <ProjectCard project={projects[2]} layout="split" onOpen={open} />
+        </GridItem>
+      </motion.div>
+
+      <AnimatePresence>
+        {openProject && <ProjectDetail key={openProject.id} project={openProject} onClose={close} />}
+      </AnimatePresence>
+    </LayoutGroup>
   )
 }
 

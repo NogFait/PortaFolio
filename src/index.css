@@ -47,6 +47,8 @@ html.lenis, html.lenis body {
 .lenis.lenis-smooth {
   scroll-behavior: auto !important;
 }
+html { scrollbar-gutter: stable; }
+html.scroll-locked { overflow: hidden; }
 
 body {
   font-family: var(--font-body);

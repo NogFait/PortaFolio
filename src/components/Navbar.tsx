@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import { motion, AnimatePresence, animate, useMotionValue } from 'framer-motion'
+import { motion, AnimatePresence, animate, useMotionValue, useMotionValueEvent, useScroll } from 'framer-motion'
 import type { PanInfo, Variants } from 'framer-motion'
 import { project, springs } from '../motion/physics'
 import { scrollToTarget } from '../hooks/useLenis'
+import { useBreakpoint } from '../hooks/useMediaQuery'
 import './Navbar.css'
 
 const NAV_SECTIONS = [
@@ -64,6 +65,20 @@ const Navbar = () => {
   const hamburgerRef = useRef<HTMLButtonElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
   const overlayY = useMotionValue(0)
+  const { isTablet } = useBreakpoint()
+
+  // Direction-aware chrome: on small screens the bar steps out of the way while
+  // reading (scrolling down) and returns the instant the user scrolls back up.
+  // The threshold ignores the jitter of momentum scrolling; desktop keeps it fixed
+  // because the active-section pill is part of the page's wayfinding there.
+  const { scrollY } = useScroll()
+  const [navHidden, setNavHidden] = useState(false)
+  useMotionValueEvent(scrollY, 'change', (y) => {
+    const delta = y - (scrollY.getPrevious() ?? y)
+    if (y < 80 || delta < -4) setNavHidden(false)
+    else if (delta > 4) setNavHidden(true)
+  })
+  const hideNav = isTablet && navHidden && !isMobileOpen
 
   useEffect(() => {
     const handleRoute = () => {
@@ -143,7 +158,12 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className={`navbar${scrolled ? ' navbar--scrolled' : ''}`}>
+      <motion.nav
+        className={`navbar${scrolled ? ' navbar--scrolled' : ''}`}
+        animate={{ y: hideNav ? -72 : 0 }}
+        transition={springs.snappy}
+        onFocusCapture={() => setNavHidden(false)}
+      >
         <div className="navbar__inner">
           <button
             className="navbar__logo"
@@ -195,7 +215,7 @@ const Navbar = () => {
             </button>
           </div>
         </div>
-      </nav>
+      </motion.nav>
 
       <AnimatePresence custom={dismiss}>
         {isMobileOpen && (
