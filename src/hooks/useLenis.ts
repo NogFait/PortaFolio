@@ -57,3 +57,13 @@ export function unlockScroll() {
   instance?.start()
   document.documentElement.classList.remove('scroll-locked')
 }
+
+// Sections are reached through their label (which carries the scroll-margin that clears the
+// fixed navbar), so the menu, the logo and the hero buttons all land in the same spot.
+const SECTION_TARGET = { projects: 'projects-label', about: 'about-label', contact: 'contact' } as const
+export type SectionId = keyof typeof SECTION_TARGET
+
+export function scrollToSection(id: SectionId) {
+  const el = document.getElementById(SECTION_TARGET[id])
+  if (el) scrollToTarget(el)
+}

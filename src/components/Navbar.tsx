@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence, animate, useMotionValue, useMotionValueEvent, useScroll } from 'framer-motion'
 import type { PanInfo, Variants } from 'framer-motion'
 import { project, springs } from '../motion/physics'
-import { scrollToTarget } from '../hooks/useLenis'
+import { scrollToSection, scrollToTarget } from '../hooks/useLenis'
+import type { SectionId } from '../hooks/useLenis'
 import { useBreakpoint } from '../hooks/useMediaQuery'
 import './Navbar.css'
 
@@ -24,13 +25,11 @@ const mobileOverlayVariants: Variants = {
     opacity: 0,
     y: -24,
     scale: 0.98,
-    backdropFilter: 'blur(0px)',
   },
   visible: {
     opacity: 1,
     y: 0,
     scale: 1,
-    backdropFilter: 'blur(24px)',
     transition: { ...springs.settle, staggerChildren: 0.04, delayChildren: 0.04 },
   },
   // Resolved through AnimatePresence's `custom`: a leaving child keeps the props
@@ -40,14 +39,12 @@ const mobileOverlayVariants: Variants = {
       ? {
           opacity: 0,
           y: -d.distance - 40,
-          backdropFilter: 'blur(0px)',
           transition: { ...springs.settle, y: { ...springs.settle, velocity: d.velocity } },
         }
       : {
           opacity: 0,
           y: -24,
           scale: 0.98,
-          backdropFilter: 'blur(0px)',
           transition: springs.snappy,
         },
 }
@@ -86,6 +83,14 @@ const Navbar = () => {
       const scrollPosition = window.scrollY + 120
 
       setScrolled(window.scrollY > 50)
+
+      // The last section can never reach the threshold (the page ends first), so the
+      // bottom of the page counts as being in it.
+      const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4
+      if (atBottom) {
+        setActiveSection(NAV_SECTIONS[NAV_SECTIONS.length - 1].id)
+        return
+      }
 
       for (let i = sections.length - 1; i >= 0; i--) {
         const section = sections[i]
@@ -134,10 +139,8 @@ const Navbar = () => {
     return () => document.removeEventListener('keydown', onKeyDown)
   }, [isMobileOpen])
 
-  const scrollTo = (id: string) => {
-    const targetId = id === 'about' ? 'about-label' : id === 'projects' ? 'projects-label' : id
-    const el = document.getElementById(targetId)
-    if (el) scrollToTarget(el)
+  const scrollTo = (id: SectionId) => {
+    scrollToSection(id)
     setDismiss(null)
     setIsMobileOpen(false)
   }

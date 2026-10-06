@@ -108,9 +108,10 @@ const ProjectDetail = ({ project, onClose }: Props) => {
             position: 'absolute',
             inset: 0,
             opacity: dim,
-            background: 'rgba(6, 14, 32, 0.72)',
-            backdropFilter: 'blur(10px)',
-            WebkitBackdropFilter: 'blur(10px)',
+            // No backdrop blur: a full-screen blur that fades in and out is recomputed every
+            // frame (measured: it doubled the panel's frame times). The dim and the panel's own
+            // shadow carry the depth.
+            background: 'rgba(6, 14, 32, 0.8)',
           }}
         />
       </motion.div>
@@ -145,6 +146,7 @@ const ProjectDetail = ({ project, onClose }: Props) => {
             y,
             scale,
             transformOrigin: 'center bottom',
+            willChange: 'transform', // promote the morphing panel to its own layer
             pointerEvents: 'auto',
             width: isMobile ? '100%' : 'min(880px, 100%)',
             maxHeight: isMobile ? '92dvh' : '88vh',
@@ -195,8 +197,7 @@ const ProjectDetail = ({ project, onClose }: Props) => {
               style={{
                 position: 'absolute', top: 12, right: 12, width: 44, height: 44, padding: 0,
                 display: 'grid', placeItems: 'center', borderRadius: '50%',
-                background: 'rgba(6, 14, 32, 0.6)', color: 'var(--on-surface)',
-                backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
+                background: 'rgba(6, 14, 32, 0.75)', color: 'var(--on-surface)',
               }}
             >
               <span className="material-symbols-outlined" aria-hidden="true">close</span>

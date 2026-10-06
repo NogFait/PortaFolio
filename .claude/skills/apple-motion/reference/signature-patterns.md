@@ -64,7 +64,7 @@ const interactive = {
 // Detail: PORTAL (evita ancestros con transform/overflow), scrim, y el panel con el mismo layoutId
 createPortal(<>
   <motion.div onClick={onClose} initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} style={{position:'fixed',inset:0,zIndex:1100}}>
-    <motion.div style={{ position:'absolute', inset:0, opacity: dim /* = useTransform(y,[0,360],[1,.2]) */, background:'rgba(6,14,32,.72)', backdropFilter:'blur(10px)' }} />
+    <motion.div style={{ position:'absolute', inset:0, opacity: dim /* = useTransform(y,[0,360],[1,.2]) */, background:'rgba(6,14,32,.8)' /* SIN backdrop-filter: un blur a pantalla completa con fade duplica los tiempos de frame */ }} />
   </motion.div>
   <div style={{ position:'fixed', inset:0, zIndex:1101, display:'flex', alignItems: isMobile?'flex-end':'center', justifyContent:'center', pointerEvents:'none' }}>
     <motion.div layoutId={`project-${id}`} role="dialog" aria-modal="true" aria-labelledby={titleId}
@@ -100,7 +100,7 @@ useMotionValueEvent(scrollY, 'change', y => {
 <motion.nav animate={{ y: hidden ? -72 : 0 }} transition={springs.snappy} />
 ```
 
-Variante con velocidad (sutil, ±2°, solo en elementos grandes y lentos): `const v = useSpring(useVelocity(scrollY), springs.follow)`; `const skew = useTransform(v, [-2000, 2000], [-2, 2], { clamp: true })`. Si se nota "mareo", baja el rango.
+Variante con velocidad (sutil, ±2°; **mídela antes de dejarla**, re-rasteriza el elemento en cada tick; solo en elementos grandes y lentos): `const v = useSpring(useVelocity(scrollY), springs.follow)`; `const skew = useTransform(v, [-2000, 2000], [-2, 2], { clamp: true })`. Si se nota "mareo", baja el rango.
 
 ## D. Profundidad en hover/press (micro, pero constante)
 
@@ -113,6 +113,8 @@ Sombra sin animar `box-shadow` (no es compositor): pseudo-elemento `.card::after
 
 ## E. Expandir/colapsar interrumpible (acordeón, FAQ, detalles)
 
+> Animar `height` dispara layout en cada frame: úsalo en paneles pequeños y pocos a la vez; mídelo si la lista es larga.
+
 ```tsx
 <AnimatePresence initial={false}>
   {open && <motion.div key="body"
@@ -122,7 +124,9 @@ Sombra sin animar `box-shadow` (no es compositor): pseudo-elemento `.card::after
 ```
 Clic doble rápido debe revertir desde la altura actual sin saltar (Framer lo hace con springs; con CSS `height` no). Contenido interno en `opacity` + leve `y`, no animar su layout.
 
-## F. Progreso/parallax ligado al scroll con inercia
+## F. Parallax ligado al scroll (presupuesto: 1–2 en toda la página)
+
+> Una barra de progreso de lectura **no** entra aquí: medida, sumó ~10–15 % de estilos en scroll (con Framer y también con `animation-timeline: scroll()`) y en un sitio corto no aporta. Úsalo para el elemento de jerarquía (el hero), no para decorar.
 
 ```tsx
 const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })

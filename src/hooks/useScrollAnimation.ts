@@ -39,7 +39,11 @@ export function useScrollAnimation<T extends HTMLElement>(options: UseScrollAnim
           }
           if (once) observer.unobserve(element);
         } else if (!once) {
-          setIsVisible(false);
+          // Replay only when the element is back below the viewport (the reader scrolled
+          // up past it). Leaving through the top must never hide it: a tall section's last
+          // strip, or a card's bottom edge, would fade out while still on screen.
+          const viewportHeight = entry.rootBounds?.height ?? window.innerHeight;
+          if (entry.boundingClientRect.top > viewportHeight / 2) setIsVisible(false);
         }
       },
       { threshold, rootMargin }

@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { motion, useMotionValue, useSpring, useScroll, useTransform } from 'framer-motion'
 import { useMediaQuery } from '../hooks/useMediaQuery'
 import { springs } from '../motion/physics'
+import { scrollToSection } from '../hooks/useLenis'
 import { focusIn, stagger } from '../motion/variants'
 
 class Particle {
@@ -53,9 +54,11 @@ const Hero = () => {
   // The hero recedes as the next section arrives: it drifts up slower than the
   // page, shrinks slightly and fades. Bound 1:1 to scroll (no animation of its own),
   // so reversing the scroll reverses it exactly.
+  // It only ever dims to 0.6: the CTAs stay readable for as long as they are on screen
+  // (on a short phone they are still visible well into the scroll).
   const recedeY = useTransform(scrollY, [0, 600], [0, -80])
   const recedeScale = useTransform(scrollY, [0, 600], [1, 0.95])
-  const recedeOpacity = useTransform(scrollY, [0, 420], [1, 0.1])
+  const recedeOpacity = useTransform(scrollY, [0, 500], [1, 0.6])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -267,7 +270,7 @@ const Hero = () => {
             justifyContent: 'center'
           }}
         >
-          <a href="#projects" className="hero-btn" style={{
+          <a href="#projects" className="hero-btn" onClick={(e) => { e.preventDefault(); scrollToSection('projects') }} style={{
             display: 'inline-flex',
             alignItems: 'center',
             gap: '0.5rem',
@@ -283,7 +286,7 @@ const Hero = () => {
             <span className="material-symbols-outlined" style={{ fontSize: '1.125rem' }}>arrow_downward</span>
           </a>
 
-          <a href="#contact" className="hero-btn" style={{
+          <a href="#contact" className="hero-btn" onClick={(e) => { e.preventDefault(); scrollToSection('contact') }} style={{
             display: 'inline-flex',
             alignItems: 'center',
             gap: '0.5rem',
