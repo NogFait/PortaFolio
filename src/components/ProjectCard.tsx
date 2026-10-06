@@ -1,11 +1,11 @@
 import { useState } from "react"
-import type { MouseEvent } from "react"
+import type { CSSProperties, MouseEvent } from "react"
 import type { Project } from "../types/ProjectType"
 import { motion } from "framer-motion"
 import { useBreakpoint, useMediaQuery } from "../hooks/useMediaQuery"
 import { useTilt } from "../hooks/useTilt"
 import { springs } from "../motion/physics"
-import { TagList, TechStack, ProjectEvidence } from "./ProjectParts"
+import { TagList } from "./ProjectParts"
 import { getTagsForProject } from "../data/projectTags"
 
 type Layout = 'hero' | 'vertical' | 'compact' | 'split'
@@ -76,6 +76,24 @@ const ProjectLinkIndicator = () => (
   </span>
 )
 
+// Cards only tease: two lines of context. Everything else (problem/solution, stack,
+// full description, the external link) lives in the detail panel one tap away.
+const Summary = ({ text, flex = false }: { text: string; flex?: boolean }) => (
+  <p style={{
+    fontFamily: 'var(--font-body)',
+    fontSize: '0.8125rem',
+    color: 'var(--on-surface-variant)',
+    lineHeight: '1.5',
+    margin: '0 0 0.875rem',
+    display: '-webkit-box',
+    WebkitBoxOrient: 'vertical',
+    WebkitLineClamp: 2,
+    lineClamp: 2,
+    overflow: 'hidden',
+    flex: flex ? 1 : undefined,
+  } as CSSProperties}>{text}</p>
+)
+
 const ProjectCard = ({ project, layout = 'compact', onOpen }: Props) => {
   const { isMobile, isTablet, isDesktop } = useBreakpoint()
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)')
@@ -121,7 +139,7 @@ const ProjectCard = ({ project, layout = 'compact', onOpen }: Props) => {
           overflow: 'hidden',
           borderRadius: '0.75rem',
           background: 'var(--surface-container-high)',
-          height: isMobile ? 'auto' : '480px',
+          height: isMobile ? 'auto' : '400px',
           textDecoration: 'none',
           cursor: 'pointer',
           rotateX,
@@ -152,11 +170,8 @@ const ProjectCard = ({ project, layout = 'compact', onOpen }: Props) => {
             color: 'var(--on-surface)',
             marginBottom: '0.75rem'
           }}>{project.titulo}</h3>
-          <ProjectEvidence project={project} compact={isMobile} />
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
-            <TechStack tecnologias={project.tecnologias} />
-            <ProjectLinkIndicator />
-          </div>
+          <Summary text={project.descripcion} />
+          <ProjectLinkIndicator />
         </div>
         <motion.div style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', background: glareBackground, pointerEvents: 'none' }} />
         <div className="project-card-border" />
@@ -174,7 +189,7 @@ const ProjectCard = ({ project, layout = 'compact', onOpen }: Props) => {
           overflow: 'hidden',
           borderRadius: '0.75rem',
           background: 'var(--surface-container-high)',
-          height: isMobile ? 'auto' : '480px',
+          height: isMobile ? 'auto' : '400px',
           textDecoration: 'none',
           cursor: 'pointer',
           position: 'relative',
@@ -212,16 +227,7 @@ const ProjectCard = ({ project, layout = 'compact', onOpen }: Props) => {
             color: 'var(--on-surface)',
             marginBottom: '0.375rem'
           }}>{project.titulo}</h3>
-          <p style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: '0.8125rem',
-            color: 'var(--on-surface-variant)',
-            lineHeight: '1.5',
-            marginBottom: '0.75rem'
-          }}>{project.descripcion}</p>
-          <div style={{ marginBottom: '0.75rem' }}>
-            <TechStack tecnologias={project.tecnologias} />
-          </div>
+          <Summary text={project.descripcion} />
           <ProjectLinkIndicator />
         </div>
         <motion.div style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', background: glareBackground, pointerEvents: 'none' }} />
@@ -240,7 +246,7 @@ const ProjectCard = ({ project, layout = 'compact', onOpen }: Props) => {
           overflow: 'hidden',
           borderRadius: '0.75rem',
           background: 'var(--surface-container-high)',
-          height: isMobile ? 'auto' : isTablet ? '480px' : '400px',
+          height: isMobile || isTablet ? 'auto' : '340px',
           textDecoration: 'none',
           cursor: 'pointer',
           position: 'relative',
@@ -264,32 +270,7 @@ const ProjectCard = ({ project, layout = 'compact', onOpen }: Props) => {
             color: 'var(--on-surface)',
             marginBottom: '0.75rem'
           }}>{project.titulo}</h3>
-          <ProjectEvidence project={project} compact />
-          {project.resultados && project.resultados.length > 0 ? (
-            <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '0.75rem' }}>
-              {project.resultados.map(r => (
-                <div key={r.label}>
-                  <span style={{
-                    fontFamily: 'var(--font-display)',
-                    fontSize: '1.25rem',
-                    fontWeight: 700,
-                    color: 'var(--secondary)',
-                    display: 'block'
-                  }}>{r.value}</span>
-                  <span style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: '0.625rem',
-                    textTransform: 'uppercase',
-                    color: 'var(--outline)'
-                  }}>{r.label}</span>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div style={{ marginBottom: '0.75rem' }}>
-              <TechStack tecnologias={project.tecnologias} />
-            </div>
-          )}
+          <Summary text={project.descripcion} />
           <ProjectLinkIndicator />
         </div>
         <div style={{
@@ -324,7 +305,7 @@ const ProjectCard = ({ project, layout = 'compact', onOpen }: Props) => {
         overflow: 'hidden',
         borderRadius: '0.75rem',
         background: 'var(--surface-container-high)',
-        height: isMobile ? 'auto' : '400px',
+        height: isMobile ? 'auto' : '340px',
         textDecoration: 'none',
         cursor: 'pointer',
         position: 'relative',
@@ -354,6 +335,7 @@ const ProjectCard = ({ project, layout = 'compact', onOpen }: Props) => {
         }} />
       </div>
       <div style={{ padding: isMobile ? '1.25rem' : '1.5rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <TagList tags={tags} marginBottom="0.75rem" />
         <h3 style={{
           fontFamily: 'var(--font-display)',
           fontSize: '1.25rem',
@@ -361,18 +343,7 @@ const ProjectCard = ({ project, layout = 'compact', onOpen }: Props) => {
           color: 'var(--on-surface)',
           marginBottom: '0.5rem'
         }}>{project.titulo}</h3>
-        <p style={{
-          fontFamily: 'var(--font-body)',
-          fontSize: '0.8125rem',
-          color: 'var(--on-surface-variant)',
-          lineHeight: '1.5',
-          marginBottom: '0.75rem',
-          flex: 1
-        }}>{project.descripcion}</p>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
-          <TagList tags={tags} marginBottom="0" />
-          <TechStack tecnologias={project.tecnologias} iconOnly />
-        </div>
+        <Summary text={project.descripcion} flex />
         <ProjectLinkIndicator />
       </div>
       <motion.div style={{ position: 'absolute', inset: 0, borderRadius: 'inherit', background: glareBackground, pointerEvents: 'none' }} />

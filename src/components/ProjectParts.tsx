@@ -1,4 +1,3 @@
-import type { Project } from '../types/ProjectType'
 import { TECH_ICONS } from '../data/techIcons'
 
 const TAG_COLORS: Record<string, { bg: string; text: string; border: string }> = {
@@ -56,42 +55,6 @@ export const TagList = ({ tags, marginBottom = '1rem' }: { tags: string[]; margi
           {tag}
         </span>
       ))}
-    </div>
-  )
-}
-
-// Renders the problema/solucion pair when the data exists; falls back to the
-// plain descripcion otherwise, since not every project has that evidence yet.
-export const ProjectEvidence = ({ project, compact = false }: { project: Project; compact?: boolean }) => {
-  const textStyle = {
-    fontFamily: 'var(--font-body)',
-    fontSize: compact ? '0.8125rem' : '0.875rem',
-    color: 'var(--on-surface-variant)',
-    lineHeight: '1.5',
-    margin: 0,
-  }
-  const labelStyle = {
-    fontFamily: 'var(--font-mono)',
-    fontSize: '0.625rem',
-    textTransform: 'uppercase' as const,
-    letterSpacing: '0.1em',
-    color: 'var(--secondary)',
-  }
-
-  if (!project.problema || !project.solucion) {
-    return <p style={{ ...textStyle, marginBottom: compact ? '1rem' : '1.5rem' }}>{project.descripcion}</p>
-  }
-
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem', marginBottom: compact ? '1rem' : '1.5rem' }}>
-      <div>
-        <span style={labelStyle}>Problema</span>
-        <p style={{ ...textStyle, marginTop: '0.25rem' }}>{project.problema}</p>
-      </div>
-      <div>
-        <span style={labelStyle}>Solución</span>
-        <p style={{ ...textStyle, marginTop: '0.25rem' }}>{project.solucion}</p>
-      </div>
     </div>
   )
 }
