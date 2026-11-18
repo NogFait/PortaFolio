@@ -51,21 +51,14 @@ const ProjectsSeccion = () => {
         initial="hidden"
         animate={isVisible ? 'visible' : 'hidden'}
       >
-        <GridItem className="projects-grid__hero">
-          <ProjectCard project={projects[0]} layout="hero" onOpen={open} />
-        </GridItem>
-
-        <GridItem className="projects-grid__tall">
-          <ProjectCard project={projects[1]} layout="vertical" onOpen={open} />
-        </GridItem>
-
-        <GridItem className="projects-grid__compact">
-          <ProjectCard project={projects[3]} layout="compact" onOpen={open} />
-        </GridItem>
-
-        <GridItem className="projects-grid__split">
-          <ProjectCard project={projects[2]} layout="split" onOpen={open} />
-        </GridItem>
+        {projects.map(project => {
+          const size = project.size ?? 'half'
+          return (
+            <GridItem key={project.id} className={`projects-grid__${size}`}>
+              <ProjectCard project={project} size={size} onOpen={open} />
+            </GridItem>
+          )
+        })}
       </motion.div>
 
       <AnimatePresence>

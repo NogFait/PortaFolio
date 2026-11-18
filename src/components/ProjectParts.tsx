@@ -5,6 +5,7 @@ const TAG_COLORS: Record<string, { bg: string; text: string; border: string }> =
   Fullstack: { bg: 'rgba(var(--primary-rgb), 0.3)', text: '#ececff', border: 'rgba(var(--primary-rgb), 0.5)' },
   'E-commerce': { bg: 'rgba(255, 183, 131, 0.15)', text: '#ffb783', border: 'rgba(255, 183, 131, 0.2)' },
   'Desarrollo Web': { bg: 'rgba(var(--primary-rgb), 0.25)', text: '#e1e0ff', border: 'rgba(var(--primary-rgb), 0.35)' },
+  IA: { bg: 'rgba(96, 165, 250, 0.18)', text: '#9cc5ff', border: 'rgba(96, 165, 250, 0.35)' },
 }
 
 export const TechStack = ({ tecnologias, iconOnly = false }: { tecnologias?: string[]; iconOnly?: boolean }) => {

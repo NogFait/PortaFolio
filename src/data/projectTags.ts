@@ -4,7 +4,7 @@ export function getTagsForProject(title: string): string[] {
   const map: Record<string, string[]> = {
     'Client Flow': ['SaaS', 'Fullstack'],
     'FoodStore': ['E-commerce'],
-    'El Tornillo': ['Desarrollo Web'],
+    'CodeBase Doctor IA': ['Fullstack', 'IA'],
     'Studio Glam': ['Desarrollo Web'],
   }
   return map[title] ?? []

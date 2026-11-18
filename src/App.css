@@ -5,33 +5,47 @@
   gap: 1.5rem;
 }
 
-.projects-grid__hero {
-  grid-column: span 8;
-}
-
-.projects-grid__tall {
-  grid-column: span 4;
-}
-
-.projects-grid__compact {
-  grid-column: span 4;
-}
-
-.projects-grid__split {
-  grid-column: span 8;
-}
+/* El tamano de cada tile viene del dato del proyecto (`size`), no del
+   componente. Toda fila tiene que cerrar en 12 columnas:
+   feature(8)+side(4), half(6)+half(6), third(4)x3. */
+.projects-grid__feature { grid-column: span 8; }
+.projects-grid__side    { grid-column: span 4; }
+.projects-grid__half    { grid-column: span 6; }
+.projects-grid__third   { grid-column: span 4; }
 
 @media (max-width: 1024px) {
   .projects-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  .projects-grid__hero,
-  .projects-grid__tall,
-  .projects-grid__compact,
-  .projects-grid__split {
+  .projects-grid__feature,
+  .projects-grid__side,
+  .projects-grid__half,
+  .projects-grid__third {
     grid-column: span 1;
   }
+}
+
+/* La caja de imagen usa aspect-ratio, nunca un alto fijo: con alto fijo y
+   ancho fluido el ratio cambia con cada breakpoint y ninguna portada entra
+   bien. Los de feature y side estan elegidos para que las dos cards queden
+   a la misma altura en su fila. */
+.project-card__media {
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.project-card--feature .project-card__media { aspect-ratio: 5 / 2; }
+.project-card--side    .project-card__media { aspect-ratio: 6 / 5; }
+.project-card--half    .project-card__media { aspect-ratio: 16 / 9; }
+.project-card--third   .project-card__media { aspect-ratio: 4 / 3; }
+
+/* Apilado no hay fila que emparejar, asi que side y third dejan su ratio
+   alto: todas pasan a 16/9 y ninguna se come la pantalla. */
+@media (max-width: 1024px) {
+  .project-card--side  .project-card__media,
+  .project-card--third .project-card__media { aspect-ratio: 16 / 9; }
 }
 
 /* === PROJECT CARDS === */
